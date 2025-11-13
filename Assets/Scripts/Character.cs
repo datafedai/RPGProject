@@ -32,21 +32,16 @@ public class Character : MonoBehaviour
             for (int i = 0; i < characterSprites.Length; i++)
             {
   
-                //Debug.Log("sprite transform: " + characters[i].transform);
+                // get child of sprite for character name
                 foreach (Transform childTransform in characterSprites[i].transform)
                 {
                     GameObject childGameObject = childTransform.gameObject;
                     //Debug.Log("Found child: " + childGameObject.name);
                     characterName = childGameObject.name;
                 }
-
-                //characterDataEntries.Add(new CharacterDataEntry { characterName = characters[i].name, isActive = true, speed = 10 });
-                //Debug.Log(characters[i].name);                
+                
                 speed = UnityEngine.Random.Range(1f, 100f);
                 isActive = true;
-                //Debug.Log("Character name: " + characterName + " : " + i);
-                //Debug.Log("Speed: " + speed);
-
 
                 // add data: populate List
                 if (characterDataList == null)
@@ -54,8 +49,7 @@ public class Character : MonoBehaviour
                     characterDataList = new List<CharacterData>();
                 }
 
-                // Example of adding data
-                //dataList.Add(new MyCustomData { name = "Item 1", value = 10 });
+                // add character data to list
                 characterDataList.Add(new CharacterData { character_name = characterName, is_active = isActive, character_speed = speed });
 
             }
