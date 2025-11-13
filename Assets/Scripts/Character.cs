@@ -13,7 +13,7 @@ public class Character : MonoBehaviour
 
     private string characterName;
     private bool isActive;
-    private float speed;
+    private int speed;
     public List<CharacterData> characterDataList;
 
 
@@ -22,7 +22,15 @@ public class Character : MonoBehaviour
 
     }
 
-    void MakeActive()
+    void MakeActive(CharacterData eachCharacterEntry)
+    {
+        Debug.Log("Name: " + eachCharacterEntry.character_name + ", "
+        + "Speed: " + eachCharacterEntry.character_speed + ", "
+        + "isActive? " + eachCharacterEntry.is_active);
+    }
+
+
+    void MainFunction()
     {
         // find sprite objects
         GameObject[] characterSprites = GameObject.FindGameObjectsWithTag("sprite");
@@ -31,7 +39,7 @@ public class Character : MonoBehaviour
 
             for (int i = 0; i < characterSprites.Length; i++)
             {
-  
+
                 // get child of sprite for character name
                 foreach (Transform childTransform in characterSprites[i].transform)
                 {
@@ -39,9 +47,9 @@ public class Character : MonoBehaviour
                     //Debug.Log("Found child: " + childGameObject.name);
                     characterName = childGameObject.name;
                 }
-                
-                speed = UnityEngine.Random.Range(1f, 100f);
-                isActive = true;
+
+                speed = UnityEngine.Random.Range(1, 100);
+                isActive =true;
 
                 // add data: populate List
                 if (characterDataList == null)
@@ -63,11 +71,9 @@ public class Character : MonoBehaviour
         characterDataList.Sort((x, y) => y.character_speed.CompareTo(x.character_speed));
 
         // print character data
-        foreach (CharacterData entry in characterDataList)
+        foreach (CharacterData eachCharacter in characterDataList)
         {
-            Debug.Log("Name: " + entry.character_name + ", " 
-            + "Speed: " + Mathf.Round(entry.character_speed * 10.0f) * 0.1f + ", "
-            + "isActive? " + entry.is_active);
+            MakeActive(eachCharacter);
         }
 
 
@@ -77,7 +83,7 @@ public class Character : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        MakeActive();
+        MainFunction();
     }
 
     // Update is called once per frame
