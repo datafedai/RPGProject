@@ -35,12 +35,13 @@ public class Character : MonoBehaviour
 
     void MainFunction()
     {
-        // find sprite objects
+        // find sprite objects, total 8
         GameObject[] characterSprites = GameObject.FindGameObjectsWithTag("sprite");
 
         //Debug.Log("child of characterSprites[0]: " + characterSprites[0].transform.GetChild(0).name);
         if (characterSprites != null)
         {
+            // loop each sprite of 8 to get character name and random speed value
             for (int i = 0; i < characterSprites.Length; i++)
             {
                 // get child name from sprite transform for each sprite
