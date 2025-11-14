@@ -1,16 +1,19 @@
-//using UnityEngine;
-
-
 using UnityEngine;
 using System;
 using System.Collections.Generic; // Required for List
 
 
+[Serializable]
+public class CharacterData
+{
+    public string character_name;
+    public bool is_active;
+    public float character_speed;
+}
 
 
 public class Character : MonoBehaviour
 {
-
     private string characterName;
     private bool isActive;
     private int speed;
@@ -36,11 +39,9 @@ public class Character : MonoBehaviour
         GameObject[] characterSprites = GameObject.FindGameObjectsWithTag("sprite");
         if (characterSprites != null)
         {
-
             for (int i = 0; i < characterSprites.Length; i++)
             {
-
-                // get child of sprite for character name
+                // get child transform for each sprite
                 foreach (Transform childTransform in characterSprites[i].transform)
                 {
                     GameObject childGameObject = childTransform.gameObject;
@@ -58,7 +59,8 @@ public class Character : MonoBehaviour
                 }
 
                 // add character data to list
-                characterDataList.Add(new CharacterData { character_name = characterName, is_active = isActive, character_speed = speed });
+                characterDataList.Add(new CharacterData 
+                   { character_name = characterName, is_active = isActive, character_speed = speed });
 
             }
         }
@@ -96,11 +98,3 @@ public class Character : MonoBehaviour
 }
 
 
-
-[Serializable]
-public class CharacterData
-{
-    public string character_name;
-    public bool is_active;
-    public float character_speed;
-}
