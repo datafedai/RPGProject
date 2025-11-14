@@ -37,17 +37,25 @@ public class Character : MonoBehaviour
     {
         // find sprite objects
         GameObject[] characterSprites = GameObject.FindGameObjectsWithTag("sprite");
+
+        //Debug.Log("child of characterSprites[0]: " + characterSprites[0].transform.GetChild(0).name);
         if (characterSprites != null)
         {
             for (int i = 0; i < characterSprites.Length; i++)
             {
-                // get child transform for each sprite
+                // get child name from sprite transform for each sprite
+                characterName = characterSprites[i].transform.GetChild(0).name;
+
+                // or below
+                /*
                 foreach (Transform childTransform in characterSprites[i].transform)
                 {
                     GameObject childGameObject = childTransform.gameObject;
                     //Debug.Log("Found child: " + childGameObject.name);
                     characterName = childGameObject.name;
                 }
+                */
+
 
                 speed = UnityEngine.Random.Range(1, 100);
                 isActive =true;
