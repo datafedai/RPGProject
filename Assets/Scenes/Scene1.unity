@@ -909,6 +909,23 @@ Transform:
   - {fileID: 1556349066}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1118841941 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1252300943239936, guid: 0ca170d8fb2b30c4fa8900220e41d787, type: 3}
+  m_PrefabInstance: {fileID: 1287617876}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1118841944
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1118841941}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d29e82ded5708e541bafd5b30884dd81, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Movement
 --- !u!1 &1233203406
 GameObject:
   m_ObjectHideFlags: 0
@@ -1010,7 +1027,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1252300943239936, guid: 0ca170d8fb2b30c4fa8900220e41d787, type: 3}
       propertyPath: m_Name
-      value: Referee
+      value: Referee King
       objectReference: {fileID: 0}
     - target: {fileID: 4421900341329478, guid: 0ca170d8fb2b30c4fa8900220e41d787, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1055,7 +1072,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 1252300943239936, guid: 0ca170d8fb2b30c4fa8900220e41d787, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1118841944}
   m_SourcePrefab: {fileID: 100100000, guid: 0ca170d8fb2b30c4fa8900220e41d787, type: 3}
 --- !u!1001 &1332649939
 PrefabInstance:
