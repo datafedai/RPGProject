@@ -1,6 +1,7 @@
 using UnityEngine;
 using System;
-using System.Collections.Generic; // Required for List
+using System.Collections.Generic;
+using UnityEngine.Rendering; // Required for List
 
 
 [Serializable]
@@ -9,6 +10,9 @@ public class CharacterData
     public string character_name;
     public bool is_active;
     public float character_speed;
+    public int position;
+
+
 }
 
 
@@ -18,6 +22,10 @@ public class Character : MonoBehaviour
     private bool isActive;
     private int speed;
     public List<CharacterData> characterDataList;
+    private int position;
+    private int health = 100;
+    private int attckPower = 50;
+    private List<string> characterNames;
 
 
     void Die()
@@ -29,23 +37,25 @@ public class Character : MonoBehaviour
     {
         Debug.Log("Name: " + eachCharacterEntry.character_name + ", "
         + "Speed: " + eachCharacterEntry.character_speed + ", "
-        + "isActive? " + eachCharacterEntry.is_active);
+        + "isActive? " + eachCharacterEntry.is_active + ", "
+        + "Position: " + eachCharacterEntry.position);
     }
 
 
     void MainFunction()
     {
         // find sprite objects, total 8
-        GameObject[] characterSprites = GameObject.FindGameObjectsWithTag("sprite");
+        //GameObject[] characterSprites = GameObject.FindGameObjectsWithTag("sprite");
+
 
         //Debug.Log("child of characterSprites[0]: " + characterSprites[0].transform.GetChild(0).name);
-        if (characterSprites != null)
+        if (characterNames != null)
         {
             // loop each sprite of 8 to get character name and random speed value
-            for (int i = 0; i < characterSprites.Length; i++)
+            for (int i = 0; i < characterNames.Count; i++)
             {
                 // get child name from sprite transform for each sprite
-                characterName = characterSprites[i].transform.GetChild(0).name;
+                characterName = characterNames[i];
 
                 // or below
                 /*
@@ -67,9 +77,10 @@ public class Character : MonoBehaviour
                     characterDataList = new List<CharacterData>();
                 }
 
+                position = i + 1;
                 // add character data to list
                 characterDataList.Add(new CharacterData 
-                   { character_name = characterName, is_active = isActive, character_speed = speed });
+                   { character_name = characterName, is_active = isActive, character_speed = speed, position = position });
 
             }
         }
@@ -94,6 +105,12 @@ public class Character : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        characterNames = new List<string>()
+        {
+          "Sword Man", "Spear Soldier", "Hammer Man", "Brown Horse", 
+          "Green Eyes", "Black Horse", "Sword Pirate", "Green Sword"  
+        };
+
         MainFunction();
     }
 

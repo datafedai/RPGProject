@@ -926,6 +926,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d29e82ded5708e541bafd5b30884dd81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Movement
+  speed: 0
 --- !u!1 &1233203406
 GameObject:
   m_ObjectHideFlags: 0
@@ -1087,7 +1088,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1688452843344484, guid: 7cdb699f28c96ee4b9e64c83a9a02b2b, type: 3}
       propertyPath: m_Name
-      value: Black Ninja
+      value: Green Sword
       objectReference: {fileID: 0}
     - target: {fileID: 4966856857106734, guid: 7cdb699f28c96ee4b9e64c83a9a02b2b, type: 3}
       propertyPath: m_LocalScale.x
@@ -1414,7 +1415,7 @@ GameObject:
   - component: {fileID: 2047663992}
   - component: {fileID: 2047663991}
   m_Layer: 0
-  m_Name: blackNinjaSprite
+  m_Name: greenSwordSprite
   m_TagString: sprite
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1752,13 +1753,13 @@ SceneRoots:
   m_Roots:
   - {fileID: 519420032}
   - {fileID: 619394802}
-  - {fileID: 2065804581}
   - {fileID: 1024920206}
-  - {fileID: 737326657}
   - {fileID: 2110800570}
-  - {fileID: 2047663992}
-  - {fileID: 224097774}
+  - {fileID: 737326657}
+  - {fileID: 2065804581}
   - {fileID: 1233203408}
   - {fileID: 680895000}
+  - {fileID: 224097774}
+  - {fileID: 2047663992}
   - {fileID: 2010935862}
   - {fileID: 1287617876}
