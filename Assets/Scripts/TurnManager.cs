@@ -1,14 +1,15 @@
+using System.Collections.Generic;
 using JetBrains.Annotations;
 using UnityEngine;
-
-
-
-
-
 
 public class TurnManager : MonoBehaviour
 {
 
+    public List<string> characterNames = new List<string>()
+        {
+          "Sword Man", "Spear Soldier", "Hammer Man", "Brown Horse", 
+          "Green Eyes", "Black Horse", "Sword Pirate", "Green Sword"  
+        };
     // total 8
     public enum positions
     {

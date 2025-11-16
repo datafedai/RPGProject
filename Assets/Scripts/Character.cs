@@ -8,9 +8,11 @@ using UnityEngine.Rendering; // Required for List
 public class CharacterData
 {
     public string character_name;
-    public bool is_active;
-    public float character_speed;
-    public int position;
+    public bool is_character_active;
+    public int character_speed;
+    public int character_health;
+    public int character_attack_power;
+    public int character_position;
 
 
 }
@@ -19,12 +21,12 @@ public class CharacterData
 public class Character : MonoBehaviour
 {
     private string characterName;
-    private bool isActive;
-    private int speed;
-    public List<CharacterData> characterDataList;
-    private int position;
+    private bool isActive = false;
+    private int speed = 10;
     private int health = 100;
-    private int attckPower = 50;
+    private int attackPower = 50;
+    private int position = 1;
+    public List<CharacterData> characterDataList;
     private List<string> characterNames;
 
 
@@ -36,9 +38,11 @@ public class Character : MonoBehaviour
     void MakeActive(CharacterData eachCharacterEntry)
     {
         Debug.Log("Name: " + eachCharacterEntry.character_name + ", "
+        + "isActive? " + eachCharacterEntry.is_character_active + ", "
         + "Speed: " + eachCharacterEntry.character_speed + ", "
-        + "isActive? " + eachCharacterEntry.is_active + ", "
-        + "Position: " + eachCharacterEntry.position);
+        + "Position: " + eachCharacterEntry.character_position + ", "
+        + "Health: " + eachCharacterEntry.character_health + ", "
+        + "AttackPower: " + eachCharacterEntry.character_attack_power);
     }
 
 
@@ -80,7 +84,9 @@ public class Character : MonoBehaviour
                 position = i + 1;
                 // add character data to list
                 characterDataList.Add(new CharacterData 
-                   { character_name = characterName, is_active = isActive, character_speed = speed, position = position });
+                   { character_name = characterName, is_character_active = isActive, 
+                    character_speed = speed, character_position = position,
+                    character_health = health, character_attack_power = attackPower});
 
             }
         }
