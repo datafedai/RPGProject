@@ -1,17 +1,20 @@
+using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
 using UnityEngine;
 
 public class TurnManager : MonoBehaviour
 {
-
+    //MyEnum value = (MyEnum)someInt;
+    // Position value = (Position)someInt;
     public List<string> characterNames = new List<string>()
         {
           "Sword Man", "Spear Soldier", "Hammer Man", "Brown Horse", 
           "Green Eyes", "Black Horse", "Sword Pirate", "Green Sword"  
         };
-    // total 8
-    public enum positions
+    
+    Position characterPositions;
+    public enum Position
     {
         Friend_North,
         Friend_East,
@@ -28,6 +31,11 @@ public class TurnManager : MonoBehaviour
     {
         // pos: nsew
         // public enum positions: friendly nwse, enemy nwse
+        Debug.Log(Enum.GetValues(typeof(Position)));
+        foreach(Position each in Enum.GetValues(typeof(Position)))
+        {
+            Debug.Log(each);
+        }
 
 
 
@@ -42,6 +50,7 @@ public class TurnManager : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        handleAwaitingInputPhase();
 
     }
 

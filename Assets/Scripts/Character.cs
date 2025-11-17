@@ -1,7 +1,8 @@
 using UnityEngine;
 using System;
 using System.Collections.Generic;
-using UnityEngine.Rendering; // Required for List
+using UnityEngine.Rendering;
+using UnityEngine.UIElements; // Required for List
 
 
 [Serializable]
@@ -12,7 +13,7 @@ public class CharacterData
     public int character_speed;
     public int character_health;
     public int character_attack_power;
-    public int character_position;
+    public string character_position;
 
 
 }
@@ -25,7 +26,7 @@ public class Character : MonoBehaviour
     private int speed = 10;
     private int health = 100;
     private int attackPower = 50;
-    private int position = 1;
+    private string position = "Friend_North";
     public List<CharacterData> characterDataList;
     private List<string> characterNames;
 
@@ -81,7 +82,7 @@ public class Character : MonoBehaviour
                     characterDataList = new List<CharacterData>();
                 }
 
-                position = i + 1;
+
                 // add character data to list
                 characterDataList.Add(new CharacterData 
                    { character_name = characterName, is_character_active = isActive, 
