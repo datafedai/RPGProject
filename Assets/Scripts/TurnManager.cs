@@ -22,11 +22,13 @@ public class TurnManager : MonoBehaviour
 {
     //MyEnum value = (MyEnum)someInt;
     // Position value = (Position)someInt;
+    /*
     public static List<string> character_names = new List<string>()
         {
           "Sword Man", "Spear Soldier", "Hammer Man", "Brown Horse", 
           "Green Eyes", "Black Horse", "Sword Pirate", "Green Sword"  
         };
+    */
     
     public Position characterPositions;
 

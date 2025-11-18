@@ -13,11 +13,9 @@ public class CharacterData
     public int character_speed;
     public int character_health;
     public int character_attack_power;
-    public string character_position;
-
-
+    //public string character_position;
+    public Position character_position;
 }
-
 
 public class Character : MonoBehaviour
 {
@@ -26,10 +24,12 @@ public class Character : MonoBehaviour
     private int speed = 10;
     private int health = 100;
     private int attackPower = 50;
-    private string position;
+    //private string position;
+    private Position characterPosition;
     public List<CharacterData> characterDataList;
-    private List<string> characterNames;
+    //private List<string> characterNames;
     TurnManager managerScript;
+    public List<string> characterNames;
 
 
     void Die()
@@ -42,14 +42,14 @@ public class Character : MonoBehaviour
         Debug.Log("Name: " + eachCharacterEntry.character_name + ", "
         + "isActive? " + eachCharacterEntry.is_character_active + ", "
         + "Speed: " + eachCharacterEntry.character_speed + ", "
-        + "Position: " + eachCharacterEntry.character_position + ", "
+        + "Position: " + (1+(int)eachCharacterEntry.character_position) + ", "
         + "Health: " + eachCharacterEntry.character_health + ", "
         + "AttackPower: " + eachCharacterEntry.character_attack_power);
 
         //GameState currentState = GameState.Playing;
         //int stateIndex = (int)currentState; // stateIndex will be 1
-        string p = eachCharacterEntry.character_position;
-        Debug.Log("Test: " + (int)Position.Enemy_East);
+        //string p = eachCharacterEntry.character_position;
+        //Debug.Log("Test: " + (int)Position.Enemy_East);
     }
 
 
@@ -87,8 +87,10 @@ public class Character : MonoBehaviour
 
                 managerScript.characterPositions = (Position)(i);
                 //Debug.Log("for managerScript.characterPos: " + managerScript.characterPositions);
-                position = managerScript.characterPositions.ToString();
+                //position = managerScript.characterPositions.ToString();
                 //Debug.Log("position test: " + position);
+                //characterPosition = Position.Enemy_South;
+                characterPosition = (Position)(i);
 
 
                 // add data: populate List
@@ -104,7 +106,7 @@ public class Character : MonoBehaviour
                     character_name = characterName,
                     is_character_active = isActive,
                     character_speed = speed,
-                    character_position = position,
+                    character_position = characterPosition,
                     character_health = health,
                     character_attack_power = attackPower
                 });
