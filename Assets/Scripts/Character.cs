@@ -26,9 +26,10 @@ public class Character : MonoBehaviour
     private int speed = 10;
     private int health = 100;
     private int attackPower = 50;
-    private string position = "Friend_North";
+    private string position;
     public List<CharacterData> characterDataList;
     private List<string> characterNames;
+    TurnManager managerScript;
 
 
     void Die()
@@ -44,6 +45,11 @@ public class Character : MonoBehaviour
         + "Position: " + eachCharacterEntry.character_position + ", "
         + "Health: " + eachCharacterEntry.character_health + ", "
         + "AttackPower: " + eachCharacterEntry.character_attack_power);
+
+        //GameState currentState = GameState.Playing;
+        //int stateIndex = (int)currentState; // stateIndex will be 1
+        string p = eachCharacterEntry.character_position;
+        Debug.Log("Test: " + (int)Position.Enemy_East);
     }
 
 
@@ -74,7 +80,16 @@ public class Character : MonoBehaviour
 
 
                 speed = UnityEngine.Random.Range(1, 100);
-                isActive =true;
+                isActive = true;
+
+                managerScript = GetComponent<TurnManager>();
+                //Debug.Log("Test: " + TurnManager.character_names[i]);
+
+                managerScript.characterPositions = (Position)(i);
+                //Debug.Log("for managerScript.characterPos: " + managerScript.characterPositions);
+                position = managerScript.characterPositions.ToString();
+                //Debug.Log("position test: " + position);
+
 
                 // add data: populate List
                 if (characterDataList == null)
@@ -84,10 +99,15 @@ public class Character : MonoBehaviour
 
 
                 // add character data to list
-                characterDataList.Add(new CharacterData 
-                   { character_name = characterName, is_character_active = isActive, 
-                    character_speed = speed, character_position = position,
-                    character_health = health, character_attack_power = attackPower});
+                characterDataList.Add(new CharacterData
+                {
+                    character_name = characterName,
+                    is_character_active = isActive,
+                    character_speed = speed,
+                    character_position = position,
+                    character_health = health,
+                    character_attack_power = attackPower
+                });
 
             }
         }
@@ -114,8 +134,8 @@ public class Character : MonoBehaviour
     {
         characterNames = new List<string>()
         {
-          "Sword Man", "Spear Soldier", "Hammer Man", "Brown Horse", 
-          "Green Eyes", "Black Horse", "Sword Pirate", "Green Sword"  
+          "Sword Man", "Spear Soldier", "Hammer Man", "Brown Horse",
+          "Green Eyes", "Black Horse", "Sword Pirate", "Green Sword"
         };
 
         MainFunction();
