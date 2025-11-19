@@ -13,22 +13,19 @@ public class CharacterData
     public int character_speed;
     public int character_health;
     public int character_attack_power;
-    //public string character_position;
     public Position character_position;
 }
 
 public class Character : MonoBehaviour
 {
     private string characterName;
-    private bool isActive = false;
-    private int speed = 10;
-    private int health = 100;
-    private int attackPower = 50;
-    //private string position;
+    private bool isActive;
+    private int speed;
+    private int health;
+    private int attackPower;
     private Position characterPosition;
+
     public List<CharacterData> characterDataList;
-    //private List<string> characterNames;
-    public TurnManager managerScript;
     public List<string> characterNames;
 
 
@@ -46,21 +43,11 @@ public class Character : MonoBehaviour
         + "Position: " + (1+(int)eachCharacterEntry.character_position) + ", "
         + "Health: " + eachCharacterEntry.character_health + ", "
         + "AttackPower: " + eachCharacterEntry.character_attack_power);
-
-        //GameState currentState = GameState.Playing;
-        //int stateIndex = (int)currentState; // stateIndex will be 1
-        //string p = eachCharacterEntry.character_position;
-        //Debug.Log("Test: " + (int)Position.Enemy_East);
     }
 
 
     void MainFunction()
     {
-        // find sprite objects, total 8
-        //GameObject[] characterSprites = GameObject.FindGameObjectsWithTag("sprite");
-
-
-        //Debug.Log("child of characterSprites[0]: " + characterSprites[0].transform.GetChild(0).name);
         if (characterNames != null)
         {
             // loop each sprite of 8 to get character name and random speed value
@@ -68,32 +55,8 @@ public class Character : MonoBehaviour
             {
                 // get child name from sprite transform for each sprite
                 characterName = characterNames[i];
-
-                // or below
-                /*
-                foreach (Transform childTransform in characterSprites[i].transform)
-                {
-                    GameObject childGameObject = childTransform.gameObject;
-                    //Debug.Log("Found child: " + childGameObject.name);
-                    characterName = childGameObject.name;
-                }
-                */
-
-
                 speed = UnityEngine.Random.Range(1, 100);
-                isActive = true;
-
-                managerScript = GetComponent<TurnManager>();
-                //Debug.Log("Test: " + TurnManager.character_names[i]);
-
-                //TurnManager.Position pos = (managerScript.Position)(i);
-                //Debug.Log("for managerScript.characterPos: " + managerScript.characterPositions);
-                //position = managerScript.characterPositions.ToString();
-                //Debug.Log("position test: " + position);
-                //characterPosition = Position.Enemy_South;
                 characterPosition = (Position)(i);
-                //Debug.Log(characterPosition);
-
 
                 // add data: populate List
                 if (characterDataList == null)
@@ -136,13 +99,18 @@ public class Character : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        //managerScript = new TurnManager();
+        // initialize data
+        isActive = false;
+        health = 100;
+        attackPower = 50;
+
         characterNames = new List<string>()
         {
           "Sword Man", "Spear Soldier", "Hammer Man", "Brown Horse",
           "Green Eyes", "Black Horse", "Sword Pirate", "Green Sword"
         };
 
+        // call MainFunction to populate data into characterDataList
         MainFunction();
     }
 
@@ -151,7 +119,6 @@ public class Character : MonoBehaviour
     {
 
     }
-
 
 }
 
