@@ -28,7 +28,7 @@ public class Character : MonoBehaviour
     private Position characterPosition;
     public List<CharacterData> characterDataList;
     //private List<string> characterNames;
-    TurnManager managerScript;
+    public TurnManager managerScript;
     public List<string> characterNames;
 
 
@@ -42,6 +42,7 @@ public class Character : MonoBehaviour
         Debug.Log("Name: " + eachCharacterEntry.character_name + ", "
         + "isActive? " + eachCharacterEntry.is_character_active + ", "
         + "Speed: " + eachCharacterEntry.character_speed + ", "
+        + "Position: " + eachCharacterEntry.character_position + ", "
         + "Position: " + (1+(int)eachCharacterEntry.character_position) + ", "
         + "Health: " + eachCharacterEntry.character_health + ", "
         + "AttackPower: " + eachCharacterEntry.character_attack_power);
@@ -85,12 +86,13 @@ public class Character : MonoBehaviour
                 managerScript = GetComponent<TurnManager>();
                 //Debug.Log("Test: " + TurnManager.character_names[i]);
 
-                managerScript.characterPositions = (Position)(i);
+                //TurnManager.Position pos = (managerScript.Position)(i);
                 //Debug.Log("for managerScript.characterPos: " + managerScript.characterPositions);
                 //position = managerScript.characterPositions.ToString();
                 //Debug.Log("position test: " + position);
                 //characterPosition = Position.Enemy_South;
                 characterPosition = (Position)(i);
+                //Debug.Log(characterPosition);
 
 
                 // add data: populate List
@@ -134,6 +136,7 @@ public class Character : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        //managerScript = new TurnManager();
         characterNames = new List<string>()
         {
           "Sword Man", "Spear Soldier", "Hammer Man", "Brown Horse",

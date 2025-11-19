@@ -4,7 +4,8 @@ using JetBrains.Annotations;
 using UnityEngine;
 
 
-    public enum Position
+
+        public enum Position
     {
         Friend_North,
         Friend_East,
@@ -15,7 +16,6 @@ using UnityEngine;
         Enemy_South,
         Enemy_West
     }
-
 
     
 public class TurnManager : MonoBehaviour
@@ -29,6 +29,8 @@ public class TurnManager : MonoBehaviour
           "Green Eyes", "Black Horse", "Sword Pirate", "Green Sword"  
         };
     */
+
+
     
     public Position characterPositions;
 
