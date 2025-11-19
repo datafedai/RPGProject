@@ -50,15 +50,15 @@ public class Character : MonoBehaviour
     {
         if (characterNames != null)
         {
-            // loop each sprite of 8 to get character name and random speed value
+            // loop each character of characterNames list
             for (int i = 0; i < characterNames.Count; i++)
             {
-                // get child name from sprite transform for each sprite
+                // populate characterName, speed, and characterPosition variables
                 characterName = characterNames[i];
                 speed = UnityEngine.Random.Range(1, 100);
-                characterPosition = (Position)(i);
+                characterPosition = (Position)(i); // saved as Friend_North, Friend_East, ...
 
-                // add data: populate List
+                // create a list of type CharacterData to contain character data into
                 if (characterDataList == null)
                 {
                     characterDataList = new List<CharacterData>();
