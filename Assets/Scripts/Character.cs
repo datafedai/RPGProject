@@ -16,8 +16,10 @@ public class CharacterData
     public Position character_position;
 }
 
+
 public class Character : MonoBehaviour
 {
+    [SerializeField] private TurnManager turnManager;
     private string characterName;
     private bool isActive;
     private int speed;
@@ -85,11 +87,12 @@ public class Character : MonoBehaviour
 
         // sort by speed in descending order
         characterDataList.Sort((x, y) => y.character_speed.CompareTo(x.character_speed));
+        turnManager.sendCharacterOrderData(characterDataList);
 
         // print character data
         foreach (CharacterData eachCharacter in characterDataList)
         {
-            MakeActive(eachCharacter);
+            //MakeActive(eachCharacter);
         }
 
 
