@@ -48,7 +48,7 @@ public class Character : MonoBehaviour
     }
 
 
-    void MainFunction()
+    void loadCharacterData()
     {
         if (characterNames != null)
         {
@@ -58,6 +58,7 @@ public class Character : MonoBehaviour
                 // populate characterName, speed, and characterPosition variables
                 characterName = characterNames[i];
                 speed = UnityEngine.Random.Range(1, 100);
+                attackPower = UnityEngine.Random.Range(10, 70);
                 characterPosition = (Position)(i); // saved as Friend_North, Friend_East, ...
 
                 // create a list of type CharacterData to contain character data into
@@ -86,26 +87,26 @@ public class Character : MonoBehaviour
         }
 
         // sort by speed in descending order
-        characterDataList.Sort((x, y) => y.character_speed.CompareTo(x.character_speed));
-        turnManager.sendCharacterOrderData(characterDataList);
+        //characterDataList.Sort((x, y) => y.character_speed.CompareTo(x.character_speed));
 
-        // print character data
-        foreach (CharacterData eachCharacter in characterDataList)
-        {
-            //MakeActive(eachCharacter);
-        }
+        // sort by Position in ascending order
+        characterDataList.Sort((x, y) => x.character_position.CompareTo(y.character_position));
+        turnManager.sendSortedCharacterData(characterDataList);
 
-
+        // confirm
+        Debug.Log("loadCharacterDate successful.");
     }
 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        Debug.Log("Characters script, Start executed.");
+        Debug.Log("GameState: " + turnManager.gameState);
         // initialize data
         isActive = false;
         health = 100;
-        attackPower = 50;
+        //attackPower = 50;
 
         characterNames = new List<string>()
         {
@@ -114,7 +115,8 @@ public class Character : MonoBehaviour
         };
 
         // call MainFunction to populate data into characterDataList
-        MainFunction();
+        loadCharacterData();
+
     }
 
     // Update is called once per frame
