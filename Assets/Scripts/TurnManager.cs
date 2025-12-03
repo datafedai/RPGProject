@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using JetBrains.Annotations;
 using Unity.VisualScripting;
 using UnityEditor.Rendering;
@@ -163,6 +164,22 @@ public class TurnManager : MonoBehaviour
 
     }
 
+    void handleNoHealth()
+    {
+        for(int i = 0; i < sortedCharacterData.Count; i++)
+        {
+            if(sortedCharacterData[i].character_health <= 0)
+            {
+                GameObject gameObject = GameObject.Find(sortedCharacterData[i].character_name);
+                if(gameObject != null)
+                {
+                    Destroy(gameObject);
+                    Debug.Log(sortedCharacterData[i].character_name + " is destroyed.");
+                }
+            }
+        }
+    }
+
 
     void handleAttack()
     {
@@ -175,6 +192,9 @@ public class TurnManager : MonoBehaviour
 
         //Debug.Log("after attack");
         printHealthData("after attack");
+
+        // destroy a character if no health
+        handleNoHealth();
 
         gameState = GameState.AttackOver;
 
