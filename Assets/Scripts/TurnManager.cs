@@ -45,10 +45,10 @@ public class TurnManager : MonoBehaviour
     private int friendLives;
     private int enemyLives;
     private int currentEnemyIndex;
-    private Button greenEyesButton;
-    private Button balckHorseButton;
-    private Button sowrdPirateButton;
-    private Button greenSwordButton;
+    public Button buttonGreenEyes;
+    public Button buttonBlackHorse;
+    public Button buttonSordPirate;
+    public Button buttonGreenSword;
 
 
     public void sendSortedCharacterData(List<CharacterData> characters)
@@ -175,6 +175,7 @@ public class TurnManager : MonoBehaviour
                 {
                     Destroy(gameObject);
                     Debug.Log(sortedCharacterData[i].character_name + " is destroyed.");
+                    //buttonGreenEyes.gameObject.SetActive(false);
                 }
             }
         }
