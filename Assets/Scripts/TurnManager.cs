@@ -61,14 +61,6 @@ public class TurnManager : MonoBehaviour
 
     public void handleAwaitingInputPhase(string clickedEnemyName)
     {
-        /*
-        foreach(Position each in Enum.GetValues(typeof(Position)))
-        {
-            Debug.Log(each);
-        }
-        */
-
-
         Debug.Log(clickedEnemyName + " is selected to attack.");
         currentEnemyIndex = indexSortedCharacterData(clickedEnemyName);
 
@@ -253,6 +245,8 @@ public class TurnManager : MonoBehaviour
 
     void updateHealth()
     {
+        // update Health score after attack
+        Debug.Log("Updating Health score after attack");
         string playerName = sortedCharacterData[currentPlayerIndex].character_name;
         string enemyName = sortedCharacterData[currentEnemyIndex].character_name;
 
@@ -277,14 +271,8 @@ public class TurnManager : MonoBehaviour
 
         //Debug.Log(playerName + " : " + playerHealth + " : " + playerAttckPower);
         //Debug.Log(enemyName + " : " + enemyHealth + " : " + enemyAttackPower);
-
     }
 
-    void processButtonClick()
-    {
-        Debug.Log("Button Clicked");
-
-    }
 
     void handleGameFlow()
     {
@@ -312,36 +300,6 @@ public class TurnManager : MonoBehaviour
             break;
         }
 
-
-        /*
-        //Debug.Log(gameState);
-        if (gameState == GameState.GameOver || gameState == GameState.DataNotReady)
-        {
-            //Debug.Log("Game is over or not ready yet.");
-            return;
-        }
-
-        if (gameState == GameState.AwaitingInput)
-        {
-            return;
-
-            //initiateTurn();            
-        }
-
-        if (gameState == GameState.AttackOn)
-        {
-            handleAttack();
-        }
-
-
-        if (gameState == GameState.AttackOver)
-        {
-            // change player
-            initiateTurn();
-        }
-        */
-
-
     }
 
 
@@ -353,27 +311,15 @@ public class TurnManager : MonoBehaviour
     {
         Debug.Log("Manager script Start");
         Debug.Log("GameState: " + gameState);
-        /*
-        // Add a listener to the button's onClick event
-        greenEyesButton.onClick.AddListener(processButtonClick);
-        balckHorseButton.onClick.AddListener(processButtonClick);
-        sowrdPirateButton.onClick.AddListener(processButtonClick);
-        greenEyesButton.onClick.AddListener(processButtonClick);
-*/
 
         currentActiveCharacterIndex = 0;
         currentPlayerIndex = 0;
-        //gameState = GameState.DataNotReady;
-        //handleAwaitingInputPhase();
-
-        //printCharacterData();
     }
 
 
     // Update is called once per frame
     void Update()
     {
-
         handleGameFlow();
     }
 }
