@@ -18,6 +18,7 @@ public class ButtonHandler : MonoBehaviour
         //Debug.Log("Clicked enemy name: " + clickedButtonName);
 
         turnManager.handleAwaitingInputPhase(clickedButtonName);
+        Debug.Log("Clicked " + clickedButtonName);
         
     }
 
