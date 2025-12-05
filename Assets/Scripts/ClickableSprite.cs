@@ -7,7 +7,7 @@ public class ClickableSprite : MonoBehaviour
     void OnMouseDown()
     {
         // This function is called when the mouse button is pressed over the collider
-        Debug.Log("Clicked " + gameObject.name);
+        //Debug.Log(gameObject.name + " is selected to attack.");
 
         // desired action: calling another function
         turnManager.handleAwaitingInputPhase(gameObject.name);
@@ -15,7 +15,7 @@ public class ClickableSprite : MonoBehaviour
 
     void Start()
     {
-        Debug.Log("ClickableSprite script, Start executed.");
+        //Debug.Log("ClickableSprite script, Start executed.");
     }
 
     // Update is called once per frame

@@ -18,7 +18,7 @@ public class Movement : MonoBehaviour
 
     void Start()
     {
-        Debug.Log("Movement script, Start executed.");
+        //Debug.Log("Movement script, Start executed.");
 
         moveAction = InputSystem.actions.FindAction("Move");
         speed = 10;

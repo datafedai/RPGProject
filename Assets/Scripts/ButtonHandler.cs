@@ -32,7 +32,7 @@ public class ButtonHandler : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        Debug.Log("ButtonHandle script, Start executed.");
+        //Debug.Log("ButtonHandle script, Start executed.");
         // Add a listener to the button's onClick event
         /*
         if (greenEyesButton != null)

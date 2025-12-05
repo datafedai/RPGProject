@@ -45,28 +45,26 @@ public class TurnManager : MonoBehaviour
     private int friendLives;
     private int enemyLives;
     private int currentEnemyIndex;
-    public Button buttonGreenEyes;
-    public Button buttonBlackHorse;
-    public Button buttonSordPirate;
-    public Button buttonGreenSword;
-
 
     public void sendSortedCharacterData(List<CharacterData> characters)
     {
         sortedCharacterData = characters;
         //dataReceived = true;
         gameState = GameState.AwaitingInput;
+
+        Debug.Log("sendSortedCharacterDate successful.");
+        Debug.Log("GameState in TurnManager.cs: " + gameState);
     }
 
 
     public void handleAwaitingInputPhase(string clickedEnemyName)
     {
-        Debug.Log(clickedEnemyName + " is selected to attack.");
+        Debug.Log(sortedCharacterData[currentPlayerIndex].character_name + " selected " + clickedEnemyName + " to attack.");
         currentEnemyIndex = indexSortedCharacterData(clickedEnemyName);
 
         if (sortedCharacterData[currentEnemyIndex].character_health > 0)
         {
-            Debug.Log("Friend Position:Enemy Position = " + (1 + currentPlayerIndex) + ":" + (1 + currentEnemyIndex));
+            //Debug.Log("Friend Position:Enemy Position = " + (1 + currentPlayerIndex) + ":" + (1 + currentEnemyIndex));
 
             gameState = GameState.AttackOn;
         }
@@ -99,7 +97,7 @@ public class TurnManager : MonoBehaviour
 
     void initiateTurn()
     {
-        Debug.Log("previous friend player position: " + (1+currentPlayerIndex));
+       // Debug.Log("previous friend player position: " + (1+currentPlayerIndex));
 
         //Debug.Log(sortedCharacterData[currentPlayerIndex].character_health);
         currentPlayerIndex++;
@@ -107,15 +105,13 @@ public class TurnManager : MonoBehaviour
         {
             Debug.Log("skipping friend at position " + (1+currentPlayerIndex%4) + " because of no health score");
             currentPlayerIndex++;
-
         }
 
 
         currentPlayerIndex = currentPlayerIndex % 4;
-        Debug.Log("Next Friend Player Position and Health: " + (1 + currentPlayerIndex) 
-        + " : " + sortedCharacterData[currentPlayerIndex].character_health);
+        //Debug.Log("Next Friend Player Position and Health: " + (1 + currentPlayerIndex) 
+        //+ " : " + sortedCharacterData[currentPlayerIndex].character_health);
         gameState = GameState.AwaitingInput;
-
     }
 
     void printHealthData(string timePoint)
@@ -166,7 +162,7 @@ public class TurnManager : MonoBehaviour
                 if(gameObject != null)
                 {
                     Destroy(gameObject);
-                    Debug.Log(sortedCharacterData[i].character_name + " is destroyed.");
+                    Debug.Log(sortedCharacterData[i].character_name + " died.");
                     //buttonGreenEyes.gameObject.SetActive(false);
                 }
             }
@@ -178,7 +174,7 @@ public class TurnManager : MonoBehaviour
     {
         //Debug.Log("before attack");
         //printCharacterData();
-        printHealthData("before attack");
+        //printHealthData("before attack");
         printAttackPowerData();
 
         updateHealth();
@@ -218,7 +214,7 @@ public class TurnManager : MonoBehaviour
 
     void updateLives()
     {
-        Debug.Log("updating remaining lives.");
+        //Debug.Log("updating remaining lives.");
         friendLives = 4;
         enemyLives = 4;
         for (int i = 0; i < sortedCharacterData.Count; i++)
@@ -246,7 +242,7 @@ public class TurnManager : MonoBehaviour
     void updateHealth()
     {
         // update Health score after attack
-        Debug.Log("Updating Health score after attack");
+        //Debug.Log("Updating Health score after attack");
         string playerName = sortedCharacterData[currentPlayerIndex].character_name;
         string enemyName = sortedCharacterData[currentEnemyIndex].character_name;
 
@@ -276,12 +272,8 @@ public class TurnManager : MonoBehaviour
 
     void handleGameFlow()
     {
-
         switch(gameState)
         {
-            case GameState.GameOver:
-            break;
-
             case GameState.DataNotReady:
             break;
 
@@ -299,7 +291,6 @@ public class TurnManager : MonoBehaviour
             default:
             break;
         }
-
     }
 
 
@@ -309,8 +300,8 @@ public class TurnManager : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        Debug.Log("Manager script Start");
-        Debug.Log("GameState: " + gameState);
+        //Debug.Log("Manager script Start, executed.");
+        Debug.Log("GameState in TurnManager.cs: " + gameState);
 
         currentActiveCharacterIndex = 0;
         currentPlayerIndex = 0;
@@ -320,6 +311,15 @@ public class TurnManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        handleGameFlow();
+        if(gameState == GameState.GameOver)
+        {
+            Debug.Log("Quitting Game!");
+            UnityEditor.EditorApplication.isPlaying = false;
+        }
+        else
+        {
+            handleGameFlow();            
+        }
+
     }
 }

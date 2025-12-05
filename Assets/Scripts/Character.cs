@@ -92,17 +92,14 @@ public class Character : MonoBehaviour
         // sort by Position in ascending order
         characterDataList.Sort((x, y) => x.character_position.CompareTo(y.character_position));
         turnManager.sendSortedCharacterData(characterDataList);
-
-        // confirm
-        Debug.Log("loadCharacterDate successful.");
     }
 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        Debug.Log("Characters script, Start executed.");
-        Debug.Log("GameState: " + turnManager.gameState);
+        //Debug.Log("Characters script, Start executed.");
+        Debug.Log("GameState in Character.cs: " + turnManager.gameState);
         // initialize data
         isActive = false;
         health = 100;
