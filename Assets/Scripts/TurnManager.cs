@@ -27,7 +27,7 @@ public enum GameState
     DataNotReady,
     AwaitingInput,
     AttackOn,
-    AttackOver,
+    InitiateTurn,
     GameOver
 }
 
@@ -185,7 +185,7 @@ public class TurnManager : MonoBehaviour
         // destroy a character if no health
         handleNoHealth();
 
-        gameState = GameState.AttackOver;
+        gameState = GameState.InitiateTurn;
 
         // update remaining lives
         // if no lives left on eather team, game is over
@@ -284,7 +284,7 @@ public class TurnManager : MonoBehaviour
             handleAttack();
             break;
 
-            case GameState.AttackOver:
+            case GameState.InitiateTurn:
             initiateTurn();
             break;
 

@@ -130,7 +130,7 @@ GameObject:
   - component: {fileID: 115296307}
   - component: {fileID: 115296306}
   m_Layer: 0
-  m_Name: hammerManSprite
+  m_Name: Hammer Man
   m_TagString: sprite
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1397,7 +1397,7 @@ GameObject:
   - component: {fileID: 1554515444}
   - component: {fileID: 1554515443}
   m_Layer: 0
-  m_Name: swordManSprite
+  m_Name: Sword Man
   m_TagString: sprite
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1847,7 +1847,7 @@ GameObject:
   - component: {fileID: 2051127259}
   - component: {fileID: 2051127258}
   m_Layer: 0
-  m_Name: brownHorseSprite
+  m_Name: Brown Horse
   m_TagString: sprite
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1938,7 +1938,7 @@ GameObject:
   - component: {fileID: 2083733734}
   - component: {fileID: 2083733733}
   m_Layer: 0
-  m_Name: spearSoldierSprite
+  m_Name: Spear Soldier
   m_TagString: sprite
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
