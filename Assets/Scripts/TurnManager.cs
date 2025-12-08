@@ -72,10 +72,8 @@ public class TurnManager : MonoBehaviour
         {
             Debug.Log("The selected enemy is already dead. Choose another enemy.");
         }
-
-
-
     }
+
 
     private int indexSortedCharacterData(string enemyName)
     {
@@ -154,13 +152,19 @@ public class TurnManager : MonoBehaviour
 
     void handleNoHealth()
     {
+        // for each character
         for(int i = 0; i < sortedCharacterData.Count; i++)
         {
+            // if not Health score
             if(sortedCharacterData[i].character_health <= 0)
             {
+                // get the character without Health score to fight
                 GameObject gameObject = GameObject.Find(sortedCharacterData[i].character_name);
+
+                // if not already destroyed
                 if(gameObject != null)
                 {
+                    // destroy
                     Destroy(gameObject);
                     Debug.Log(sortedCharacterData[i].character_name + " died.");
                     //buttonGreenEyes.gameObject.SetActive(false);
