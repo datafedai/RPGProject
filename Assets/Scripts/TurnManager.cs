@@ -221,12 +221,17 @@ public class TurnManager : MonoBehaviour
         //Debug.Log("updating remaining lives.");
         friendLives = 4;
         enemyLives = 4;
+
+        // for each character
         for (int i = 0; i < sortedCharacterData.Count; i++)
         {
+            // if friend has no Health score
             if (i < 4 && sortedCharacterData[i].character_health <= 0)
             {
+                // decrease the number of alive lives
                 friendLives--;
             }
+            // for enemy
             else if (i > 3 && sortedCharacterData[i].character_health <= 0)
             {
                 enemyLives--;
