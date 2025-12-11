@@ -29,6 +29,8 @@ public class Character : MonoBehaviour
 
     public List<CharacterData> characterDataList;
     public List<string> characterNames;
+    private List<int> speedList;
+    private List<int> powerList;
 
 
     void Die()
@@ -48,8 +50,54 @@ public class Character : MonoBehaviour
     }
 
 
+    List<int> getSpeed(int minSpeed, int maxSpeed)
+    {
+        List<int> speedValues = new List<int>(8);
+
+        for(int i = 0; i < 8; i++)
+        {
+            speed = UnityEngine.Random.Range(minSpeed, maxSpeed);
+            speedValues.Add(speed);
+        }
+
+        speedValues.Sort((x,y) => y.CompareTo(x));
+        return speedValues;
+    }
+
+    void printSpeedValues(List<int> speedValues)
+    {
+        for(int i = 0; i < 8; i++)
+        Debug.Log("speed values: " + speedList[i]);             
+    }
+
+    List<int> getAttackPower(int minPower, int maxPower)
+    {
+        List<int> powerValues = new List<int>(8);
+
+        for(int i = 0; i < 8; i++)
+        {
+            attackPower = UnityEngine.Random.Range(minPower, maxPower);
+            powerValues.Add(attackPower);
+        }
+
+        powerValues.Sort((x,y) => x.CompareTo(y));
+        return powerValues;
+    }
+
+    void printPowerValues(List<int> powerValues)
+    {
+        for(int i = 0; i < 8; i++)
+        Debug.Log("power values: " + powerValues[i]);             
+    }    
+
     void loadCharacterData()
     {
+        speedList = getSpeed(30, 100);
+        printSpeedValues(speedList);
+
+        powerList = getAttackPower(30, 100);
+        printPowerValues(powerList);
+        
         if (characterNames != null)
         {
             // loop each character of characterNames list
@@ -57,8 +105,11 @@ public class Character : MonoBehaviour
             {
                 // populate characterName, speed, and characterPosition variables
                 characterName = characterNames[i];
-                speed = UnityEngine.Random.Range(1, 100);
-                attackPower = UnityEngine.Random.Range(10, 70);
+                //speed = UnityEngine.Random.Range(30, 100);
+                speed = speedList[i];
+                //attackPower = UnityEngine.Random.Range(30, 100);
+                attackPower = powerList[i];
+
                 characterPosition = (Position)(i); // saved as Friend_North, Friend_East, ...
 
                 // create a list of type CharacterData to contain character data into
@@ -87,10 +138,7 @@ public class Character : MonoBehaviour
         }
 
         // sort by speed in descending order
-        //characterDataList.Sort((x, y) => y.character_speed.CompareTo(x.character_speed));
-
-        // sort by Position in ascending order
-        characterDataList.Sort((x, y) => x.character_position.CompareTo(y.character_position));
+        characterDataList.Sort((x, y) => y.character_speed.CompareTo(x.character_speed));
         turnManager.sendSortedCharacterData(characterDataList);
     }
 

@@ -41,10 +41,15 @@ public class TurnManager : MonoBehaviour
     //int currentPlayerIndex = 0;
     private List<CharacterData> sortedCharacterData;
     private int currentActiveCharacterIndex;
-    private int currentPlayerIndex;
+    public int currentPlayerIndex;
     private int friendLives;
     private int enemyLives;
     private int currentEnemyIndex;
+
+    public int getcurrentPlayerIndex()
+    {
+        return currentPlayerIndex;
+    }
 
     public void sendSortedCharacterData(List<CharacterData> characters)
     {
@@ -59,6 +64,7 @@ public class TurnManager : MonoBehaviour
 
     public void handleAwaitingInputPhase(string clickedEnemyName)
     {
+        //Debug.Log("Player: " + sortedCharacterData[currentPlayerIndex].character_name);
         Debug.Log(sortedCharacterData[currentPlayerIndex].character_name + " selected " + clickedEnemyName + " to attack.");
         currentEnemyIndex = indexSortedCharacterData(clickedEnemyName);
 
@@ -99,16 +105,17 @@ public class TurnManager : MonoBehaviour
 
         //Debug.Log(sortedCharacterData[currentPlayerIndex].character_health);
         currentPlayerIndex++;
-        while (sortedCharacterData[currentPlayerIndex%4].character_health <= 0)
+        while (sortedCharacterData[currentPlayerIndex%8].character_health <= 0)
         {
-            Debug.Log("skipping friend at position " + (1+currentPlayerIndex%4) + " because of no health score");
+            Debug.Log("skipping friend at position " + (1+currentPlayerIndex%8) + " because of no health score");
             currentPlayerIndex++;
         }
 
 
-        currentPlayerIndex = currentPlayerIndex % 4;
+        currentPlayerIndex = currentPlayerIndex % 8;
         //Debug.Log("Next Friend Player Position and Health: " + (1 + currentPlayerIndex) 
         //+ " : " + sortedCharacterData[currentPlayerIndex].character_health);
+        Debug.Log("Next Player: " + sortedCharacterData[currentPlayerIndex].character_name);
         gameState = GameState.AwaitingInput;
     }
 
@@ -173,6 +180,13 @@ public class TurnManager : MonoBehaviour
         }
     }
 
+    void choosePlayer()
+    {
+        string playerName = "HHH";
+        Debug.Log("Player: " + playerName);
+
+        //gameState = GameState.AttackOn;
+    }
 
     void handleAttack()
     {
@@ -185,6 +199,7 @@ public class TurnManager : MonoBehaviour
 
         //Debug.Log("after attack");
         printHealthData("after attack");
+        //printCharacterData();
 
         // destroy a character if no health
         handleNoHealth();
@@ -265,7 +280,7 @@ public class TurnManager : MonoBehaviour
         //Debug.Log(enemyName + " : " + enemyHealth + " : " + enemyAttackPower);
         //Debug.Log(playerName + " attacked " + enemyName);
 
-        int newPlayerHealth = playerHealth - enemyAttackPower;
+        int newPlayerHealth = playerHealth;
         int newEnemyHealth = enemyHealth - playerAttckPower;
 
         sortedCharacterData[currentPlayerIndex].character_health = newPlayerHealth;
@@ -287,6 +302,7 @@ public class TurnManager : MonoBehaviour
             break;
 
             case GameState.AwaitingInput:
+            //choosePlayer();
             break;
 
             case GameState.AttackOn:
@@ -314,6 +330,8 @@ public class TurnManager : MonoBehaviour
 
         currentActiveCharacterIndex = 0;
         currentPlayerIndex = 0;
+
+        //printCharacterData();
     }
 
 
