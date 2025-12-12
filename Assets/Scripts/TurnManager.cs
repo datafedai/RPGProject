@@ -233,7 +233,8 @@ public class TurnManager : MonoBehaviour
         //currentPlayerIndex++;
         currentPlayerIndex = playOrderIndex.Dequeue();
         string currentPlayerName = sortedCharacterData[currentPlayerIndex].character_name;
-        Debug.Log("current player: " + currentPlayerName);
+        Position position = sortedCharacterData[currentPlayerIndex].character_position;
+        Debug.Log("current player: " + currentPlayerName + " at " + position);
 
         while (sortedCharacterData[currentPlayerIndex].character_health <= 0)
         {
@@ -241,7 +242,9 @@ public class TurnManager : MonoBehaviour
             //currentPlayerIndex++;
             currentPlayerIndex = playOrderIndex.Dequeue();
             currentPlayerName = sortedCharacterData[currentPlayerIndex].character_name;
-            Debug.Log("revised current player: " + currentPlayerName);
+            //Debug.Log("revised current player: " + currentPlayerName);
+            position = sortedCharacterData[currentPlayerIndex].character_position;
+            Debug.Log("revised current player: " + currentPlayerName + " at " + position);
         }
 
 
@@ -250,8 +253,10 @@ public class TurnManager : MonoBehaviour
         //+ " : " + sortedCharacterData[currentPlayerIndex].character_health);
         int nextPlayerIndex = playOrderIndex.Peek();
         string nextPlayerName = sortedCharacterData[nextPlayerIndex].character_name;
+        position = sortedCharacterData[nextPlayerIndex].character_position;
 
-        Debug.Log("Next Player: " + nextPlayerName);
+        //Debug.Log("Next Player: " + nextPlayerName);
+        Debug.Log("next player: " + nextPlayerName + " at " + position);
         gameState = GameState.AwaitingInput;
     }
 
