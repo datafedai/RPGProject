@@ -7,6 +7,8 @@ using Unity.VisualScripting;
 using UnityEditor.Rendering;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Linq;
+using UnityEngine.Rendering;
 
 
 
@@ -31,6 +33,13 @@ public enum GameState
     GameOver
 }
 
+[Serializable]
+public class PlayOrderData
+{
+    public int playerIndex;
+    public int playerSpeed;
+    public float lapTime;
+}
 
 public class TurnManager : MonoBehaviour
 {
@@ -44,7 +53,10 @@ public class TurnManager : MonoBehaviour
     public int currentPlayerIndex;
     private int friendLives;
     private int enemyLives;
-    private int currentEnemyIndex;
+    private int currentOponentIndex;
+    public List<PlayOrderData> playOrderDataList;
+    public List<PlayOrderData> sortedPlayOrderDataList;
+    private Queue<int> playOrderIndex = new Queue<int>();
 
     public int getcurrentPlayerIndex()
     {
@@ -55,20 +67,134 @@ public class TurnManager : MonoBehaviour
     {
         sortedCharacterData = characters;
         //dataReceived = true;
+
+        // generatePlayOrder
+        generatePlayOrder();
+
         gameState = GameState.AwaitingInput;
 
         Debug.Log("sendSortedCharacterDate successful.");
         Debug.Log("GameState in TurnManager.cs: " + gameState);
     }
 
+    void generatePlayOrder()
+    {
+        Debug.Log("Generating play order ...");
+        int player_index;
+        int player_speed;
+        float lap_time;
+        int prime = 701;
+
+        // lap time on each loop of distance 701 of 7 loops
+        // 701, 3457, 23
+        for (int j = prime; j < prime * 7; j = j + prime)
+        {
+            // for each character of 8
+            for (int i = 0; i < 8; i++)
+            {
+                player_index = i;
+                player_speed = sortedCharacterData[i].character_speed;
+                lap_time = (j * 1.0f) / sortedCharacterData[i].character_speed;
+                //Debug.Log("speed: " + sortedCharacterData[i].character_speed + ", lap time: " + lap_time);
+
+                playOrderDataList.Add(new PlayOrderData
+                {
+                    playerIndex = player_index,
+                    playerSpeed = player_speed,
+                    lapTime = lap_time
+                });
+
+            }
+
+
+        }
+
+        //Debug.Log("length of palyerOrder: " + playOrderDataList.Count);
+        //playOrderDataList.Sort((x,y) => x.lapTime.CompareTo(y.lapTime));
+        //printPlayOrder(playOrderDataList);
+
+
+        var sortedPlayOrderDataList = playOrderDataList.OrderBy(player => player.lapTime)
+           .ThenByDescending(player => player.playerSpeed)
+           .ToList();
+
+        printSortedPlayOrder(sortedPlayOrderDataList);
+        generatePlayOrderIndex(sortedPlayOrderDataList);
+        //printSortedPlayOrderIndex();
+        if (currentPlayerIndex == -1)
+        {
+            //Debug.Log("hey i am here");
+            initiateTurn();
+        }
+
+
+    }
+
+    void printSortedPlayOrder(List<PlayOrderData> sortedDataList)
+    {
+
+        foreach (var p in sortedDataList)
+        {
+            Debug.Log($"Index: {p.playerIndex}, Speed: {p.playerSpeed}, Lap Time: {p.lapTime}");
+        }
+    }
+
+
+
+    void printPlayOrder(List<PlayOrderData> dataList)
+    {
+        for (int i = 0; i < 8 * 6; i++)
+        {
+            Debug.Log("index: " + dataList[i].playerIndex + ", speed: " + dataList[i].playerSpeed + ", lap_time: " + dataList[i].lapTime);
+        }
+
+    }
+
+    public void generatePlayOrderIndex(List<PlayOrderData> sortedPlayOrderData)
+    {
+        for (int i = 0; i < sortedPlayOrderData.Count; i++)
+        {
+            //Debug.Log(sortedPlayOrderData[i].playerIndex);
+            playOrderIndex.Enqueue(sortedPlayOrderData[i].playerIndex);
+        }
+
+        //Debug.Log(playOrderIndex.Count);
+    }
+
+    void printSortedPlayOrderIndex()
+    {
+        for (int i = 0; i < playOrderIndex.Count; i++)
+        {
+            if (playOrderIndex.Count > 0)
+            {
+                // Dequeue removes and returns the element at the front
+                int currentPlayerIndex = playOrderIndex.Dequeue();
+                Debug.Log($"current player index dequeued and processed: {currentPlayerIndex}. Queue count: {playOrderIndex.Count}");
+
+                int nextPlayerIndex = playOrderIndex.Peek();
+                Debug.Log($"Next Player Index to be processed (peeked): {nextPlayerIndex}. Queue count: {playOrderIndex.Count}");
+            }
+            else
+            {
+                Debug.LogWarning("Player Index queue is empty. No index to process.");
+            }
+
+        }
+
+    }
 
     public void handleAwaitingInputPhase(string clickedEnemyName)
     {
         //Debug.Log("Player: " + sortedCharacterData[currentPlayerIndex].character_name);
-        Debug.Log(sortedCharacterData[currentPlayerIndex].character_name + " selected " + clickedEnemyName + " to attack.");
-        currentEnemyIndex = indexSortedCharacterData(clickedEnemyName);
+        //printPlayOrder(playOrderDataList);
 
-        if (sortedCharacterData[currentEnemyIndex].character_health > 0)
+
+
+
+        Debug.Log(sortedCharacterData[currentPlayerIndex].character_name + " selected " + clickedEnemyName + " to attack.");
+        currentOponentIndex = indexSortedCharacterData(clickedEnemyName);
+
+        if (sortedCharacterData[currentOponentIndex].character_health > 0)
         {
             //Debug.Log("Friend Position:Enemy Position = " + (1 + currentPlayerIndex) + ":" + (1 + currentEnemyIndex));
 
@@ -101,21 +227,31 @@ public class TurnManager : MonoBehaviour
 
     void initiateTurn()
     {
-       // Debug.Log("previous friend player position: " + (1+currentPlayerIndex));
+        // Debug.Log("previous friend player position: " + (1+currentPlayerIndex));
 
         //Debug.Log(sortedCharacterData[currentPlayerIndex].character_health);
-        currentPlayerIndex++;
-        while (sortedCharacterData[currentPlayerIndex%8].character_health <= 0)
+        //currentPlayerIndex++;
+        currentPlayerIndex = playOrderIndex.Dequeue();
+        string currentPlayerName = sortedCharacterData[currentPlayerIndex].character_name;
+        Debug.Log("current player: " + currentPlayerName);
+
+        while (sortedCharacterData[currentPlayerIndex].character_health <= 0)
         {
-            Debug.Log("skipping friend at position " + (1+currentPlayerIndex%8) + " because of no health score");
-            currentPlayerIndex++;
+            Debug.Log("skipping index: " + currentPlayerIndex + " because of no health score");
+            //currentPlayerIndex++;
+            currentPlayerIndex = playOrderIndex.Dequeue();
+            currentPlayerName = sortedCharacterData[currentPlayerIndex].character_name;
+            Debug.Log("revised current player: " + currentPlayerName);
         }
 
 
-        currentPlayerIndex = currentPlayerIndex % 8;
+        //currentPlayerIndex = currentPlayerIndex % 8;
         //Debug.Log("Next Friend Player Position and Health: " + (1 + currentPlayerIndex) 
         //+ " : " + sortedCharacterData[currentPlayerIndex].character_health);
-        Debug.Log("Next Player: " + sortedCharacterData[currentPlayerIndex].character_name);
+        int nextPlayerIndex = playOrderIndex.Peek();
+        string nextPlayerName = sortedCharacterData[nextPlayerIndex].character_name;
+
+        Debug.Log("Next Player: " + nextPlayerName);
         gameState = GameState.AwaitingInput;
     }
 
@@ -160,16 +296,16 @@ public class TurnManager : MonoBehaviour
     void handleNoHealth()
     {
         // for each character
-        for(int i = 0; i < sortedCharacterData.Count; i++)
+        for (int i = 0; i < sortedCharacterData.Count; i++)
         {
             // if not Health score
-            if(sortedCharacterData[i].character_health <= 0)
+            if (sortedCharacterData[i].character_health <= 0)
             {
                 // get the character without Health score to fight
                 GameObject gameObject = GameObject.Find(sortedCharacterData[i].character_name);
 
                 // if not already destroyed
-                if(gameObject != null)
+                if (gameObject != null)
                 {
                     // destroy
                     Destroy(gameObject);
@@ -268,13 +404,13 @@ public class TurnManager : MonoBehaviour
         // update Health score after attack
         //Debug.Log("Updating Health score after attack");
         string playerName = sortedCharacterData[currentPlayerIndex].character_name;
-        string enemyName = sortedCharacterData[currentEnemyIndex].character_name;
+        string enemyName = sortedCharacterData[currentOponentIndex].character_name;
 
         int playerAttckPower = sortedCharacterData[currentPlayerIndex].character_attack_power;
-        int enemyAttackPower = sortedCharacterData[currentEnemyIndex].character_attack_power;
+        int enemyAttackPower = sortedCharacterData[currentOponentIndex].character_attack_power;
 
         int playerHealth = sortedCharacterData[currentPlayerIndex].character_health;
-        int enemyHealth = sortedCharacterData[currentEnemyIndex].character_health;
+        int enemyHealth = sortedCharacterData[currentOponentIndex].character_health;
 
         //Debug.Log(playerName + " : " + playerHealth + " : " + playerAttckPower);
         //Debug.Log(enemyName + " : " + enemyHealth + " : " + enemyAttackPower);
@@ -284,10 +420,10 @@ public class TurnManager : MonoBehaviour
         int newEnemyHealth = enemyHealth - playerAttckPower;
 
         sortedCharacterData[currentPlayerIndex].character_health = newPlayerHealth;
-        sortedCharacterData[currentEnemyIndex].character_health = newEnemyHealth;
+        sortedCharacterData[currentOponentIndex].character_health = newEnemyHealth;
 
         playerHealth = sortedCharacterData[currentPlayerIndex].character_health;
-        enemyHealth = sortedCharacterData[currentEnemyIndex].character_health;
+        enemyHealth = sortedCharacterData[currentOponentIndex].character_health;
 
         //Debug.Log(playerName + " : " + playerHealth + " : " + playerAttckPower);
         //Debug.Log(enemyName + " : " + enemyHealth + " : " + enemyAttackPower);
@@ -296,25 +432,25 @@ public class TurnManager : MonoBehaviour
 
     void handleGameFlow()
     {
-        switch(gameState)
+        switch (gameState)
         {
             case GameState.DataNotReady:
-            break;
+                break;
 
             case GameState.AwaitingInput:
-            //choosePlayer();
-            break;
+                //choosePlayer();
+                break;
 
             case GameState.AttackOn:
-            handleAttack();
-            break;
+                handleAttack();
+                break;
 
             case GameState.InitiateTurn:
-            initiateTurn();
-            break;
+                initiateTurn();
+                break;
 
             default:
-            break;
+                break;
         }
     }
 
@@ -329,7 +465,7 @@ public class TurnManager : MonoBehaviour
         Debug.Log("GameState in TurnManager.cs: " + gameState);
 
         currentActiveCharacterIndex = 0;
-        currentPlayerIndex = 0;
+        currentPlayerIndex = -1;
 
         //printCharacterData();
     }
@@ -338,14 +474,14 @@ public class TurnManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(gameState == GameState.GameOver)
+        if (gameState == GameState.GameOver)
         {
             Debug.Log("Quitting Game!");
             UnityEditor.EditorApplication.isPlaying = false;
         }
         else
         {
-            handleGameFlow();            
+            handleGameFlow();
         }
 
     }

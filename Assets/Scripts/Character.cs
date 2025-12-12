@@ -2,7 +2,8 @@ using UnityEngine;
 using System;
 using System.Collections.Generic;
 using UnityEngine.Rendering;
-using UnityEngine.UIElements; // Required for List
+using UnityEngine.UIElements;
+using System.Runtime.CompilerServices; // Required for List
 
 
 [Serializable]
@@ -31,6 +32,7 @@ public class Character : MonoBehaviour
     public List<string> characterNames;
     private List<int> speedList;
     private List<int> powerList;
+    private List<int> randomNumList;
 
 
     void Die()
@@ -44,7 +46,7 @@ public class Character : MonoBehaviour
         + "isActive? " + eachCharacterEntry.is_character_active + ", "
         + "Speed: " + eachCharacterEntry.character_speed + ", "
         + "Position: " + eachCharacterEntry.character_position + ", "
-        + "Position: " + (1+(int)eachCharacterEntry.character_position) + ", "
+        + "Position: " + (1 + (int)eachCharacterEntry.character_position) + ", "
         + "Health: " + eachCharacterEntry.character_health + ", "
         + "AttackPower: " + eachCharacterEntry.character_attack_power);
     }
@@ -54,50 +56,75 @@ public class Character : MonoBehaviour
     {
         List<int> speedValues = new List<int>(8);
 
-        for(int i = 0; i < 8; i++)
+        for (int i = 0; i < 8; i++)
         {
             speed = UnityEngine.Random.Range(minSpeed, maxSpeed);
             speedValues.Add(speed);
         }
 
-        speedValues.Sort((x,y) => y.CompareTo(x));
+        speedValues.Sort((x, y) => y.CompareTo(x));
         return speedValues;
     }
 
     void printSpeedValues(List<int> speedValues)
     {
-        for(int i = 0; i < 8; i++)
-        Debug.Log("speed values: " + speedList[i]);             
+        for (int i = 0; i < 8; i++)
+            Debug.Log("speed values: " + speedList[i]);
     }
+
+    List<int> getUniqueRandomNumbers(int minNum, int maxNum)
+    {
+        List<int> valuesList = new List<int>(8);
+        int value;
+
+        for (int i = 0; i < 8; i++)
+        {
+            do
+            {
+                value = UnityEngine.Random.Range(minNum, maxNum + 1);
+            } while (valuesList.Contains(value));
+
+            valuesList.Add(value);
+        }
+
+        return valuesList;
+    }
+
+
 
     List<int> getAttackPower(int minPower, int maxPower)
     {
         List<int> powerValues = new List<int>(8);
 
-        for(int i = 0; i < 8; i++)
+        for (int i = 0; i < 8; i++)
         {
             attackPower = UnityEngine.Random.Range(minPower, maxPower);
             powerValues.Add(attackPower);
         }
 
-        powerValues.Sort((x,y) => x.CompareTo(y));
+        powerValues.Sort((x, y) => x.CompareTo(y));
         return powerValues;
     }
 
     void printPowerValues(List<int> powerValues)
     {
-        for(int i = 0; i < 8; i++)
-        Debug.Log("power values: " + powerValues[i]);             
-    }    
+        for (int i = 0; i < 8; i++)
+            Debug.Log("power values: " + powerValues[i]);
+    }
 
     void loadCharacterData()
     {
-        speedList = getSpeed(30, 100);
-        printSpeedValues(speedList);
+        //speedList = getSpeed(30, 70);
+        speedList = getUniqueRandomNumbers(10, 50);
+        speedList.Sort((x, y) => y.CompareTo(x));
+        //printSpeedValues(speedList);
 
-        powerList = getAttackPower(30, 100);
-        printPowerValues(powerList);
-        
+
+        //powerList = getAttackPower(30, 70);
+        powerList = getUniqueRandomNumbers(30, 70);
+        powerList.Sort((x, y) => x.CompareTo(y));
+        //printPowerValues(powerList);
+
         if (characterNames != null)
         {
             // loop each character of characterNames list
