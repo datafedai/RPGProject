@@ -4,25 +4,35 @@ using System.Collections.Generic;
 using UnityEngine.Rendering;
 using UnityEngine.UIElements;
 using System.Runtime.CompilerServices; // Required for List
+using System.Linq; // Required for LINQ
 
 
 [Serializable]
 public class CharacterData
 {
+    public int character_index;
     public string character_name;
-    public bool is_character_active;
+    public bool is_character_alive;
     public int character_speed;
     public int character_health;
     public int character_attack_power;
     public Position character_position;
 }
 
+[Serializable]
+public class SpeedPower
+{
+    public int speed;
+    public int power;
+}
 
 public class Character : MonoBehaviour
 {
     [SerializeField] private TurnManager turnManager;
+
+    private int characterIndex;
     private string characterName;
-    private bool isActive;
+    private bool isAlive;
     private int speed;
     private int health;
     private int attackPower;
@@ -33,6 +43,7 @@ public class Character : MonoBehaviour
     private List<int> speedList;
     private List<int> powerList;
     private List<int> randomNumList;
+    public List<SpeedPower> speedPowerList;
 
 
     void Die()
@@ -40,15 +51,19 @@ public class Character : MonoBehaviour
 
     }
 
-    void MakeActive(CharacterData eachCharacterEntry)
+    void printCharacterData(List<CharacterData> characterDataList)
     {
-        Debug.Log("Name: " + eachCharacterEntry.character_name + ", "
-        + "isActive? " + eachCharacterEntry.is_character_active + ", "
-        + "Speed: " + eachCharacterEntry.character_speed + ", "
-        + "Position: " + eachCharacterEntry.character_position + ", "
-        + "Position: " + (1 + (int)eachCharacterEntry.character_position) + ", "
-        + "Health: " + eachCharacterEntry.character_health + ", "
-        + "AttackPower: " + eachCharacterEntry.character_attack_power);
+        foreach (var eachCharacterEntry in characterDataList)
+        {
+            Debug.Log("Index: " + eachCharacterEntry.character_index + ", "
+            + "Name: " + eachCharacterEntry.character_name + ", "
+            + "isActive? " + eachCharacterEntry.is_character_alive + ", "
+            + "Speed: " + eachCharacterEntry.character_speed + ", "
+            + "Position: " + eachCharacterEntry.character_position + ", "
+            + "Health: " + eachCharacterEntry.character_health + ", "
+            + "AttackPower: " + eachCharacterEntry.character_attack_power);
+        }
+
     }
 
 
@@ -125,17 +140,35 @@ public class Character : MonoBehaviour
         powerList.Sort((x, y) => x.CompareTo(y));
         //printPowerValues(powerList);
 
+        // combine random speed(descending) and random power(ascending) 
+        for(int k = 0; k < 8; k++)
+        {
+            speedPowerList.Add(new SpeedPower
+            {
+                speed = speedList[k],
+                power = powerList[k]
+            });
+        }
+
+        // shuffle speedPowerList
+        List<SpeedPower> shuffledSpeedPowerList = speedPowerList.OrderBy(i => System.Guid.NewGuid()).ToList();
+
+
+
         if (characterNames != null)
         {
             // loop each character of characterNames list
             for (int i = 0; i < characterNames.Count; i++)
             {
                 // populate characterName, speed, and characterPosition variables
+                characterIndex = i;
                 characterName = characterNames[i];
                 //speed = UnityEngine.Random.Range(30, 100);
-                speed = speedList[i];
+                //speed = speedList[i];
                 //attackPower = UnityEngine.Random.Range(30, 100);
-                attackPower = powerList[i];
+                //attackPower = powerList[i];
+                speed = shuffledSpeedPowerList[i].speed;
+                attackPower = shuffledSpeedPowerList[i].power; 
 
                 characterPosition = (Position)(i); // saved as Friend_North, Friend_East, ...
 
@@ -149,8 +182,9 @@ public class Character : MonoBehaviour
                 // add character data to list
                 characterDataList.Add(new CharacterData
                 {
+                    character_index = characterIndex,
                     character_name = characterName,
-                    is_character_active = isActive,
+                    is_character_alive = isAlive,
                     character_speed = speed,
                     character_position = characterPosition,
                     character_health = health,
@@ -167,6 +201,8 @@ public class Character : MonoBehaviour
         // sort by speed in descending order
         characterDataList.Sort((x, y) => y.character_speed.CompareTo(x.character_speed));
         turnManager.sendSortedCharacterData(characterDataList);
+
+        printCharacterData(characterDataList);
     }
 
 
@@ -176,7 +212,7 @@ public class Character : MonoBehaviour
         //Debug.Log("Characters script, Start executed.");
         Debug.Log("GameState in Character.cs: " + turnManager.gameState);
         // initialize data
-        isActive = false;
+        isAlive = true;
         health = 100;
         //attackPower = 50;
 
