@@ -46,12 +46,16 @@ public class PlayOrderData
 [Serializable]
 public class CombatReadinessData
 {
+    // Important data needed for combat readiness bar
     public int playerIndex;
+    public float currentPosition;
+    public float heightPercentile;
+
+    // Additional data for calculations
     public int playerSpeed;
     public float lapTime;
     public float currentTime;
-    public float currentPosition;
-    public float heightPercentile;
+
 }
 
 
@@ -299,7 +303,7 @@ public class TurnManager : MonoBehaviour
         }
     }
 
-    void handleNoHealth()
+    void handleNoHealth() //TODO: rename to more appropriate name for cleanup
     {
         //printCharacterList(sortedCharacterList);
 
@@ -410,7 +414,7 @@ public class TurnManager : MonoBehaviour
         //Debug.Log("playOrderDataList count: " + sortedPlayOrderList.Count);
         //printPlayOrderList(sortedPlayOrderList);
         //printCharacterList(sortedCharacterList);
-        removeDeadPlayer(sortedPlayOrderList, sortedCharacterList);
+        removeDeadPlayer(sortedPlayOrderList, sortedCharacterList); // Cleans up dead characters from last turn
         //printAttackPowerData();
         //printHealthScore();
 
@@ -599,6 +603,7 @@ public class TurnManager : MonoBehaviour
 
     void handleAttack()
     {
+
         //Debug.Log("before attack");
         //printCharacterData();
         //printHealthData("before attack");
@@ -680,18 +685,18 @@ public class TurnManager : MonoBehaviour
         string playerName = sortedCharacterList[currentPlayerIndex].character_name;
         string enemyName = sortedCharacterList[currentOponentIndex].character_name;
 
-        int playerAttckPower = sortedCharacterList[currentPlayerIndex].character_attack_power;
-        int enemyAttackPower = sortedCharacterList[currentOponentIndex].character_attack_power;
+        int playerAttackPower = sortedCharacterList[currentPlayerIndex].character_attack_power;
+        int enemyAttackPower = sortedCharacterList[currentOponentIndex].character_attack_power; // unused currently because enemy does not counter-attack
 
-        int playerHealth = sortedCharacterList[currentPlayerIndex].character_health;
+        int playerHealth = sortedCharacterList[currentPlayerIndex].character_health; // unused currently because enemy does not counter-attack
         int enemyHealth = sortedCharacterList[currentOponentIndex].character_health;
 
-        //Debug.Log(playerName + " : " + playerHealth + " : " + playerAttckPower);
+        //Debug.Log(playerName + " : " + playerHealth + " : " + playerAttackPower);
         //Debug.Log(enemyName + " : " + enemyHealth + " : " + enemyAttackPower);
         //Debug.Log(playerName + " attacked " + enemyName);
 
         int newPlayerHealth = playerHealth;
-        int newEnemyHealth = enemyHealth - playerAttckPower;
+        int newEnemyHealth = enemyHealth - playerAttackPower;
 
         sortedCharacterList[currentPlayerIndex].character_health = newPlayerHealth;
         sortedCharacterList[currentOponentIndex].character_health = newEnemyHealth;
@@ -699,7 +704,7 @@ public class TurnManager : MonoBehaviour
         playerHealth = sortedCharacterList[currentPlayerIndex].character_health;
         enemyHealth = sortedCharacterList[currentOponentIndex].character_health;
 
-        //Debug.Log(playerName + " : " + playerHealth + " : " + playerAttckPower);
+        //Debug.Log(playerName + " : " + playerHealth + " : " + playerAttackPower);
         //Debug.Log(enemyName + " : " + enemyHealth + " : " + enemyAttackPower);
     }
 
