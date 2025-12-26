@@ -55,9 +55,14 @@ public class CombatReadinessData
 }
 
 
+
 public class TurnManager : MonoBehaviour
 {
+    public const int NumCharacters = 8;
+    public const int NumLaps = 100;
+    public const int TrackLength = 701; 
     public Position characterPositions;
+    [SerializeField] private Character character;
     public GameState gameState;
     private List<CharacterData> sortedCharacterList;
     private int currentActiveCharacterIndex;
@@ -87,6 +92,8 @@ public class TurnManager : MonoBehaviour
         sortedCharacterList = characters;
         //dataReceived = true;
 
+        // print character data
+        //printCharacterList(characters);
         // generatePlayOrder
         generatePlayOrder();
 
@@ -102,15 +109,15 @@ public class TurnManager : MonoBehaviour
         int player_index;
         int player_speed;
         float lap_time;
-        int trackLength = 701;
-        int numLaps = 6;
+
+        
 
         // lap time on each loop of distance 701 of 6 loops
         // example of track distances: 701, 3457, 23
-        for (int j = trackLength; j <= trackLength * numLaps; j = j + trackLength)
+        for (int j = TrackLength; j <= TrackLength * NumLaps; j = j + TrackLength)
         {
             // for each character of 8
-            for (int i = 0; i < 8; i++)
+            for (int i = 0; i < NumCharacters; i++)
             {
                 player_index = sortedCharacterList[i].character_index;
                 player_speed = sortedCharacterList[i].character_speed;
@@ -137,7 +144,7 @@ public class TurnManager : MonoBehaviour
 
         //Debug.Log("length of palyerOrder: " + playOrderDataList.Count);
         //playOrderDataList.Sort((x,y) => x.lapTime.CompareTo(y.lapTime));
-        //printPlayOrder(playOrderDataList);
+        //printPlayOrder(playOrderList);
 
         // sort lap time data, 
         // primary order by increasing lap time: in the order that characters passed the start line until all completed 6 laps. 
@@ -149,12 +156,12 @@ public class TurnManager : MonoBehaviour
 
 
         // output
-        printSortedPlayOrder(sortedPlayOrderList);
+        //printPlayOrder(sortedPlayOrderList);
 
         // take only indexes for playing turn order
         //generatePlayOrderIndex(sortedPlayOrderList);
         //Debug.Log("length: " + sortedPlayOrderDataList.Count);
-        enqueSortedPlayOrderDataList(sortedPlayOrderList);
+        //enqueSortedPlayOrderDataList(sortedPlayOrderList);
         //printSortedPlayOrderIndex();
 
         // if turn is never assigned, assign the first turn
@@ -193,7 +200,7 @@ public class TurnManager : MonoBehaviour
 
     void printPlayOrder(List<PlayOrderData> dataList)
     {
-        for (int i = 0; i < 8 * 6; i++)
+        for (int i = 0; i < NumCharacters * NumLaps; i++)
         {
             Debug.Log("index: " + dataList[i].playerIndex + ", speed: " + dataList[i].playerSpeed + ", lap_time: " + dataList[i].lapTime);
         }
@@ -292,207 +299,15 @@ public class TurnManager : MonoBehaviour
         }
     }
 
-    void removeDeadPlayer(List<PlayOrderData> _playOrderList, List<CharacterData> _characterList)
-    {
-        Debug.Log("before: " + _playOrderList.Count);
-        foreach (var c in _characterList)
-        {
-            int i = -1;
-            if (c.character_health <= 0 && c.is_character_alive == true)
-            {
-                i = (int)c.character_position;
-                _playOrderList.RemoveAll(_playOrderList => _playOrderList.playerIndex == i);
-                c.is_character_alive = false;
-                Debug.Log("index removed: " + i + " health: " + c.character_health);
-
-
-            }
-        }
-
-        Debug.Log("after: " + _playOrderList.Count);
-        updateLives();
-
-    }
-
-
-    void initiateTurn()
-    {
-        //Debug.Log("playOrderDataList count: " + sortedPlayOrderList.Count);
-        //printPlayOrderList(sortedPlayOrderList);
-        //printCharacterList(sortedCharacterList);
-        removeDeadPlayer(sortedPlayOrderList, sortedCharacterList);
-
-        //currentPlayerIndex = playOrderIndex.Dequeue();
-        //PlayOrderData playOrderData = playOrderDataQue.Dequeue();
-        PlayOrderData playOrderData = sortedPlayOrderList[0];
-        //sortedPlayOrderList.RemoveAt(0);
-
-        currentPlayerIndex = playOrderData.playerIndex;
-        string currentPlayerName = sortedCharacterList[currentPlayerIndex].character_name;
-        Position position = sortedCharacterList[currentPlayerIndex].character_position;
-        Debug.Log("Current Player: " + currentPlayerName + " at " + position);
-
-
-        //Debug.Log("dequed data: " + "index, " + playOrderData.playerIndex + "  speed, " + playOrderData.playerSpeed + "  lap, " + playOrderData.lapTime);
-        /*
-        while (sortedCharacterList[currentPlayerIndex].character_health <= 0)
-        {
-            Debug.Log("skipping index: " + currentPlayerIndex + " because of no health score");
-            //currentPlayerIndex = playOrderIndex.Dequeue();
-            //playOrderData = playOrderDataQue.Dequeue();
-
-            playOrderData = sortedPlayOrderList[0];
-            sortedPlayOrderList.RemoveAt(0);
-
-            currentPlayerIndex = playOrderData.playerIndex;
-            currentPlayerName = sortedCharacterList[currentPlayerIndex].character_name;
-            position = sortedCharacterList[currentPlayerIndex].character_position;
-            Debug.Log("Revised Current Player: " + currentPlayerName + " at " + position);
-        }
-        */
-
-
-        // sortedPlayOrderDataListQue length
-        //Debug.Log("play order ramaining Que: " + playOrderDataListQue.Count);
-
-
-        if (currentPlayerIndex <= 3)
-        {
-            Debug.Log("Click on a character in the RIGHT side to attack.");
-        }
-        else
-        {
-            Debug.Log("Click on a character in the LEFT side to attack.");
-        }
-
-        //int nextPlayerIndex = playOrderIndex.Peek();
-        //PlayOrderData nextPlayerData = playOrderDataQue.Peek();
-        PlayOrderData nextPlayerData = sortedPlayOrderList[1];
-
-        int nextPlayerIndex = nextPlayerData.playerIndex;
-        string nextPlayerName = sortedCharacterList[nextPlayerIndex].character_name;
-        position = sortedCharacterList[nextPlayerIndex].character_position;
-
-        //Debug.Log("Next Player: " + nextPlayerName);
-        Debug.Log("next player: " + nextPlayerName + " at " + position);
-
-        // play order bar update
-        //sortedPlayOrderList.Insert(0, playOrderData);
-        processPlayOrderBar(sortedPlayOrderList);
-
-        // remove the current player from the order list
-        sortedPlayOrderList.RemoveAt(0);
-
-
-        // game state update
-        gameState = GameState.AwaitingInput;
-    }
-
-
-    void processPlayOrderBar(List<PlayOrderData> playOrderDataList)
-    {
-
-        combatReadinessList = new List<CombatReadinessData>();
-        PlayOrderData playOrderData = playOrderDataList[0];
-
-        //Debug.Log("playOderData:" + "index, " + playOrderData.playerIndex + " currentTime, " + playOrderData.lapTime + " speed, " + playOrderData.playerSpeed);
-
-        for (int i = 0; i < 8; i++)
-        {
-            //Debug.Log("i: " + i);
-            //Debug.Log("playOrderDataList count: " + playOrderDataList.Count);
-            for (int j = 0; j < playOrderDataList.Count; j++)
-            {
-
-                if (playOrderDataList[j].playerIndex == i)
-                {
-                    combatReadinessData = new CombatReadinessData();
-                    //Debug.Log("i, j: " + i + ", " + j);
-                    combatReadinessData.playerIndex = i;
-                    combatReadinessData.playerSpeed = playOrderDataList[j].playerSpeed;
-                    combatReadinessData.lapTime = playOrderDataList[j].lapTime;
-                    combatReadinessData.currentTime = playOrderData.lapTime;
-                    float pos = (playOrderData.lapTime * playOrderDataList[j].playerSpeed) % 702;
-
-                    combatReadinessData.currentPosition = (int)pos;
-
-                    combatReadinessData.heightPercentile = ((702.0f - pos) / 702.0f)*100;
-                    //playOrderBar.Enqueue(playerOrderBarData);
-
-                    combatReadinessList.Add(combatReadinessData);
-
-                    //Debug.Log("index: lapTime: " + i + " : " + playOrderDataList[j].lapTime);
-                    break;
-                }
-
-            }
-        }
-
-
-
-        //Debug.Log(playOrderBarList.Count);
-        //sortedPlayOrderDataList = playOrderDataList.OrderBy(player => player.lapTime)
-        //   .ThenByDescending(player => player.playerSpeed)
-        //   .ToList();
-        // var
-        sortedCombatReadinessList = combatReadinessList.OrderByDescending(player => player.currentPosition)
-        //sortedCombatReadinessList = combatReadinessList.OrderBy(player => player.playerIndex)
-                .ToList();
-
-        foreach(var p in sortedCombatReadinessList)
-        {
-            //Debug.Log($"index: {p.playerIndex}, lapTime: {p.lapTime}, currentTime: {p.currentTime}, currentPosition: {p.currentPosition}, heightPercentile: {p.heightPercentile}");
-        }
-
-        // move and position each number sprite
-        combatReadinessBar.processCombatReadinessbar(sortedCombatReadinessList);
-        //combatReadinessBar.Update(sortedCombatReadinessList);
-        
-    }
-
-
-    void printHealthData(string timePoint)
-    {
-        Debug.Log("Health " + timePoint + " : " + sortedCharacterList[0].character_health + " : " + sortedCharacterList[1].character_health + " : "
-        + sortedCharacterList[2].character_health + " : " + sortedCharacterList[3].character_health + " : " + sortedCharacterList[4].character_health
-        + " : " + sortedCharacterList[5].character_health + " : " + sortedCharacterList[6].character_health + " : " + sortedCharacterList[7].character_health);
-    }
-
-    void printAttackPowerData()
-    {
-        Debug.Log("Character AttackPower: " + sortedCharacterList[0].character_attack_power + " : " + sortedCharacterList[1].character_attack_power + " : "
-        + sortedCharacterList[2].character_attack_power + " : " + sortedCharacterList[3].character_attack_power + " : " + sortedCharacterList[4].character_attack_power
-        + " : " + sortedCharacterList[5].character_attack_power + " : " + sortedCharacterList[6].character_attack_power + " : " + sortedCharacterList[7].character_attack_power);
-
-    }
-
-    void printCharacterData()
-    {
-        for (int i = 0; i < sortedCharacterList.Count; i++)
-        {
-            currentActiveCharacterIndex = i;
-            Debug.Log("Index: " + ((int)sortedCharacterList[currentActiveCharacterIndex].character_position) + ", "
-            + "Name: " + sortedCharacterList[currentActiveCharacterIndex].character_name + ", "
-            + "isActive? " + sortedCharacterList[currentActiveCharacterIndex].is_character_alive + ", "
-            + "Speed: " + sortedCharacterList[currentActiveCharacterIndex].character_speed + ", "
-            + "Position: " + sortedCharacterList[currentActiveCharacterIndex].character_position + ", "
-            + "Health: " + sortedCharacterList[currentActiveCharacterIndex].character_health + ", "
-            + "AttackPower: " + sortedCharacterList[currentActiveCharacterIndex].character_attack_power);
-
-            //gameState = GameState.Playing;
-        }
-    }
-
-    void executePlayerCommand()
-    {
-
-    }
-
     void handleNoHealth()
     {
+        //printCharacterList(sortedCharacterList);
+
+        int i;
         // for each character
-        for (int i = 0; i < sortedCharacterList.Count; i++)
+        for (int j = 0; j < sortedCharacterList.Count; j++)
         {
+            i = sortedCharacterList[j].character_index;
             // if no Health score
             if (sortedCharacterList[i].character_health <= 0)
             {
@@ -549,13 +364,238 @@ public class TurnManager : MonoBehaviour
                 if(childName != "")
                 {
                     GameObject dest = GameObject.Find(childName);
-                    Destroy(dest);
+                    if(dest != null)
+                        {
+                            Destroy(dest);                            
+                        }
+
                     Debug.Log(dest + " destroyed");
                 }
                 }
             }
         }
     }
+    void removeDeadPlayer(List<PlayOrderData> _playOrderList, List<CharacterData> _characterList)
+    {
+        //Debug.Log("before: " + _playOrderList.Count);
+        //character.printCharacterData(_characterList);
+        foreach (var c in _characterList)
+        {
+            int indx = -1;
+            if (c.character_health <= 0 && c.is_character_alive == true)
+            { 
+                //i = (int)c.character_position;
+                indx = c.character_index;
+                _playOrderList.RemoveAll(_playOrderList => _playOrderList.playerIndex == indx);
+                c.is_character_alive = false;
+                Debug.Log("index removed: " + indx + " health: " + c.character_health);
+
+                handleNoHealth();
+            }
+        }
+
+        //Debug.Log("after: " + _playOrderList.Count);
+        //character.printCharacterData(_characterList);
+        updateLives();
+
+    }
+
+
+    void initiateTurn()
+    {
+        // remove the previous player from the play order list
+        sortedPlayOrderList.RemoveAt(0);
+
+        //handleNoHealth();
+        //Debug.Log("playOrderDataList count: " + sortedPlayOrderList.Count);
+        //printPlayOrderList(sortedPlayOrderList);
+        //printCharacterList(sortedCharacterList);
+        removeDeadPlayer(sortedPlayOrderList, sortedCharacterList);
+        //printAttackPowerData();
+        //printHealthScore();
+
+        // play order bar update
+        //sortedPlayOrderList.Insert(0, playOrderData);
+        processCombatReadiness(sortedPlayOrderList);
+
+        //currentPlayerIndex = playOrderIndex.Dequeue();
+        //PlayOrderData playOrderData = playOrderDataQue.Dequeue();
+        PlayOrderData playOrderData = sortedPlayOrderList[0];
+        //sortedPlayOrderList.RemoveAt(0);
+
+        currentPlayerIndex = playOrderData.playerIndex;
+        string currentPlayerName = sortedCharacterList[currentPlayerIndex].character_name;
+        Position position = sortedCharacterList[currentPlayerIndex].character_position;
+        Debug.Log("Current Player: " + currentPlayerName + " at " + position);
+
+
+        //Debug.Log("dequed data: " + "index, " + playOrderData.playerIndex + "  speed, " + playOrderData.playerSpeed + "  lap, " + playOrderData.lapTime);
+        /*
+        while (sortedCharacterList[currentPlayerIndex].character_health <= 0)
+        {
+            Debug.Log("skipping index: " + currentPlayerIndex + " because of no health score");
+            //currentPlayerIndex = playOrderIndex.Dequeue();
+            //playOrderData = playOrderDataQue.Dequeue();
+
+            playOrderData = sortedPlayOrderList[0];
+            sortedPlayOrderList.RemoveAt(0);
+
+            currentPlayerIndex = playOrderData.playerIndex;
+            currentPlayerName = sortedCharacterList[currentPlayerIndex].character_name;
+            position = sortedCharacterList[currentPlayerIndex].character_position;
+            Debug.Log("Revised Current Player: " + currentPlayerName + " at " + position);
+        }
+        */
+
+
+        // sortedPlayOrderDataListQue length
+        //Debug.Log("play order ramaining Que: " + playOrderDataListQue.Count);
+
+
+        if (currentPlayerIndex <= 3)
+        {
+            Debug.Log("Click on a character in the RIGHT side to attack.");
+        }
+        else
+        {
+            Debug.Log("Click on a character in the LEFT side to attack.");
+        }
+
+        //int nextPlayerIndex = playOrderIndex.Peek();
+        //PlayOrderData nextPlayerData = playOrderDataQue.Peek();
+        PlayOrderData nextPlayerData = sortedPlayOrderList[1];
+
+        int nextPlayerIndex = nextPlayerData.playerIndex;
+        string nextPlayerName = sortedCharacterList[nextPlayerIndex].character_name;
+        position = sortedCharacterList[nextPlayerIndex].character_position;
+
+        //Debug.Log("Next Player: " + nextPlayerName);
+        Debug.Log("next player: " + nextPlayerName + " at " + position);
+
+
+
+
+
+        // game state update
+        gameState = GameState.AwaitingInput;
+    }
+
+
+
+    void processCombatReadiness(List<PlayOrderData> playOrderDataList)
+    {
+        combatReadinessList = new List<CombatReadinessData>();
+        combatReadinessList.Clear();
+        PlayOrderData playOrderData = playOrderDataList[0];
+        //printPlayOrderList(playOrderDataList);
+
+        //Debug.Log("playOderData:" + "index, " + playOrderData.playerIndex + " currentTime, " + playOrderData.lapTime + " speed, " + playOrderData.playerSpeed);
+
+        for (int i = 0; i < NumCharacters; i++)
+        {
+            //Debug.Log("i: " + i);
+            //Debug.Log("playOrderDataList count: " + playOrderDataList.Count);
+            for (int j = 0; j < playOrderDataList.Count; j++)
+            {
+
+                if (playOrderDataList[j].playerIndex == i)
+                {
+                    combatReadinessData = new CombatReadinessData();
+                    //Debug.Log("i, j: " + i + ", " + j);
+                    combatReadinessData.playerIndex = i;
+                    combatReadinessData.playerSpeed = playOrderDataList[j].playerSpeed;
+                    combatReadinessData.lapTime = playOrderDataList[j].lapTime;
+                    combatReadinessData.currentTime = playOrderData.lapTime;
+                    float trackResetDistance = TrackLength + 1f;
+                    float pos = (playOrderData.lapTime * playOrderDataList[j].playerSpeed) % trackResetDistance;
+
+                    combatReadinessData.currentPosition = (int)pos;
+
+                    combatReadinessData.heightPercentile = ((trackResetDistance - pos) / trackResetDistance)*100;
+                    //playOrderBar.Enqueue(playerOrderBarData);
+
+                    combatReadinessList.Add(combatReadinessData);
+
+                    //Debug.Log("index: lapTime: " + i + " : " + playOrderDataList[j].lapTime);
+                    break;
+                }
+
+            }
+        }
+
+
+
+        //Debug.Log("Bar list count: " + combatReadinessList.Count);
+        //sortedPlayOrderDataList = playOrderDataList.OrderBy(player => player.lapTime)
+        //   .ThenByDescending(player => player.playerSpeed)
+        //   .ToList();
+        // var
+        //sortedCombatReadinessList = combatReadinessList.OrderBy(player => player.playerIndex)
+        sortedCombatReadinessList = combatReadinessList.OrderByDescending(player => player.currentPosition)
+                .ToList();
+
+
+
+        // move and position each number sprite
+        combatReadinessBar.processCombatReadinessBar(sortedCombatReadinessList);
+        //printCombatReadiness(sortedCombatReadinessList);
+        //combatReadinessBar.Update(sortedCombatReadinessList);
+        
+    }
+
+    public void printCombatReadiness(List<CombatReadinessData> combatReadinessList)
+    {
+        foreach(var p in combatReadinessList)
+        {
+            Debug.Log($"index: {p.playerIndex}, lapTime: {p.lapTime}, currentTime: {p.currentTime}, currentPosition: {p.currentPosition}, heightPercentile: {p.heightPercentile}");
+        }
+    }
+
+    void printHealthScore()
+    {
+        Debug.Log("Health: " + sortedCharacterList[0].character_health + " : " + sortedCharacterList[1].character_health + " : "
+        + sortedCharacterList[2].character_health + " : " + sortedCharacterList[3].character_health + " : " + sortedCharacterList[4].character_health
+        + " : " + sortedCharacterList[5].character_health + " : " + sortedCharacterList[6].character_health + " : " + sortedCharacterList[7].character_health);
+    }
+
+    void printHealthData(string timePoint)
+    {
+        Debug.Log("Health " + timePoint + " : " + sortedCharacterList[0].character_health + " : " + sortedCharacterList[1].character_health + " : "
+        + sortedCharacterList[2].character_health + " : " + sortedCharacterList[3].character_health + " : " + sortedCharacterList[4].character_health
+        + " : " + sortedCharacterList[5].character_health + " : " + sortedCharacterList[6].character_health + " : " + sortedCharacterList[7].character_health);
+    }
+
+    void printAttackPowerData()
+    {
+        Debug.Log("Character AttackPower: " + sortedCharacterList[0].character_attack_power + " : " + sortedCharacterList[1].character_attack_power + " : "
+        + sortedCharacterList[2].character_attack_power + " : " + sortedCharacterList[3].character_attack_power + " : " + sortedCharacterList[4].character_attack_power
+        + " : " + sortedCharacterList[5].character_attack_power + " : " + sortedCharacterList[6].character_attack_power + " : " + sortedCharacterList[7].character_attack_power);
+
+    }
+
+    void printCharacterData()
+    {
+        for (int i = 0; i < sortedCharacterList.Count; i++)
+        {
+            currentActiveCharacterIndex = i;
+            Debug.Log("Index: " + ((int)sortedCharacterList[currentActiveCharacterIndex].character_position) + ", "
+            + "Name: " + sortedCharacterList[currentActiveCharacterIndex].character_name + ", "
+            + "isActive? " + sortedCharacterList[currentActiveCharacterIndex].is_character_alive + ", "
+            + "Speed: " + sortedCharacterList[currentActiveCharacterIndex].character_speed + ", "
+            + "Position: " + sortedCharacterList[currentActiveCharacterIndex].character_position + ", "
+            + "Health: " + sortedCharacterList[currentActiveCharacterIndex].character_health + ", "
+            + "AttackPower: " + sortedCharacterList[currentActiveCharacterIndex].character_attack_power);
+
+            //gameState = GameState.Playing;
+        }
+    }
+
+    void executePlayerCommand()
+    {
+
+    }
+
+
 
     void handleAttack()
     {

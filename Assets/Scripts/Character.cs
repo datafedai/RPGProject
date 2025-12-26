@@ -30,6 +30,7 @@ public class Character : MonoBehaviour
 {
     [SerializeField] private TurnManager turnManager;
 
+    public const int NumCharacters = 8;
     private int characterIndex;
     private string characterName;
     private bool isAlive;
@@ -51,13 +52,13 @@ public class Character : MonoBehaviour
 
     }
 
-    void printCharacterData(List<CharacterData> characterDataList)
+    public void printCharacterData(List<CharacterData> characterDataList)
     {
         foreach (var eachCharacterEntry in characterDataList)
         {
             Debug.Log("Index: " + eachCharacterEntry.character_index + ", "
             + "Name: " + eachCharacterEntry.character_name + ", "
-            + "isActive? " + eachCharacterEntry.is_character_alive + ", "
+            + "isAlive? " + eachCharacterEntry.is_character_alive + ", "
             + "Speed: " + eachCharacterEntry.character_speed + ", "
             + "Position: " + eachCharacterEntry.character_position + ", "
             + "Health: " + eachCharacterEntry.character_health + ", "
@@ -71,7 +72,7 @@ public class Character : MonoBehaviour
     {
         List<int> speedValues = new List<int>(8);
 
-        for (int i = 0; i < 8; i++)
+        for (int i = 0; i < NumCharacters; i++)
         {
             speed = UnityEngine.Random.Range(minSpeed, maxSpeed);
             speedValues.Add(speed);
@@ -130,13 +131,13 @@ public class Character : MonoBehaviour
     void loadCharacterData()
     {
         //speedList = getSpeed(30, 70);
-        speedList = getUniqueRandomNumbers(10, 50);
+        speedList = getUniqueRandomNumbers(20, 80);
         speedList.Sort((x, y) => y.CompareTo(x));
         //printSpeedValues(speedList);
 
 
         //powerList = getAttackPower(30, 70);
-        powerList = getUniqueRandomNumbers(30, 70);
+        powerList = getUniqueRandomNumbers(10, 30);
         powerList.Sort((x, y) => x.CompareTo(y));
         //printPowerValues(powerList);
 
@@ -199,10 +200,10 @@ public class Character : MonoBehaviour
         }
 
         // sort by speed in descending order
-        characterDataList.Sort((x, y) => y.character_speed.CompareTo(x.character_speed));
+        characterDataList.Sort((x, y) => x.character_index.CompareTo(y.character_index));
         turnManager.sendSortedCharacterData(characterDataList);
 
-        printCharacterData(characterDataList);
+        //printCharacterData(characterDataList);
     }
 
 

@@ -8,23 +8,33 @@ using Unity.Collections; // Required for List
 
 public class CombatReadinessBar : MonoBehaviour
 {
+    [SerializeField] private TurnManager turnManager;
 
-    public void processCombatReadinessbar(List<CombatReadinessData> sortedCombatReadinessList)
+    public void processCombatReadinessBar(List<CombatReadinessData> sortedCombatReadinessList)
     {
         //Debug.Log("CRBar count: " + sortedCombatReadinessList.Count);
+        //turnManager.printCombatReadiness(sortedCombatReadinessList);
 
         int indx;
+        int z = -3;
+
         for (int k = 0; k < sortedCombatReadinessList.Count; k++)
         {
             //Debug.Log(sortedCombatReadinessList[k].heightPercentile);
             indx = sortedCombatReadinessList[k].playerIndex;
             //Debug.Log("indx: " + indx);
             string iconTag = indx.ToString();
+            float mov = 8*(sortedCombatReadinessList[k].heightPercentile) / 100;
+            
+            z = 2*k;
+            Vector3 newPosition = new Vector3(-9f, -4f, 0f) + new Vector3(0f, mov, z);
             GameObject icon = GameObject.FindWithTag(iconTag);
 
-            float mov = 8*(sortedCombatReadinessList[k].heightPercentile) / 100;
-            Vector3 newPosition = new Vector3(-9f, -4f, 0f) + new Vector3(0f, mov, k);
-            icon.transform.position = newPosition;
+            if(icon != null)
+            {
+                icon.transform.position = newPosition;                
+            }
+
         }
     }
 
@@ -96,9 +106,6 @@ public class CombatReadinessBar : MonoBehaviour
 
 
         }
-
-
-
 
     }
 

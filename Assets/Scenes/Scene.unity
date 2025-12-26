@@ -374,6 +374,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TurnManager
   characterPositions: 0
+  character: {fileID: 448328919}
   gameState: 0
   currentPlayerIndex: 0
   playOrderList: []
@@ -3213,6 +3214,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TurnManager
   characterPositions: 0
+  character: {fileID: 0}
   gameState: 0
   currentPlayerIndex: 0
   playOrderList: []
@@ -3239,6 +3241,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0657e844653a11f4f9162ce3d2640701, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ParentScript
+  turnManager: {fileID: 448328916}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
