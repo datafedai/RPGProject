@@ -8,7 +8,7 @@ using Unity.Collections; // Required for List
 
 public class CombatReadinessBar : MonoBehaviour
 {
-    [SerializeField] private TurnManager turnManager;
+    //[SerializeField] private TurnManager turnManager;
     const int combatReadinessBarMaxHeight = 8; // Max height of the combat readiness bar in Unity units.
 
     public void processCombatReadinessBar(List<CombatReadinessData> sortedCombatReadinessList)

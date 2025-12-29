@@ -354,6 +354,7 @@ GameObject:
   - component: {fileID: 448328916}
   - component: {fileID: 448328918}
   - component: {fileID: 448328917}
+  - component: {fileID: 448328921}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -381,14 +382,15 @@ MonoBehaviour:
   sortedPlayOrderList: []
   combatReadinessData:
     playerIndex: 0
+    currentPosition: 0
+    heightPercentile: 0
     playerSpeed: 0
     lapTime: 0
     currentTime: 0
-    currentPosition: 0
-    heightPercentile: 0
   combatReadinessList: []
   sortedCombatReadinessList: []
   combatReadinessBar: {fileID: 2131350448}
+  indx: 
 --- !u!114 &448328917
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -446,6 +448,18 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &448328921
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 448328915}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf760eeebd4141644b623cc4a3bd1693, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ProcessAttackAnimation
 --- !u!1 &475219193
 GameObject:
   m_ObjectHideFlags: 0
@@ -3221,14 +3235,15 @@ MonoBehaviour:
   sortedPlayOrderList: []
   combatReadinessData:
     playerIndex: 0
+    currentPosition: 0
+    heightPercentile: 0
     playerSpeed: 0
     lapTime: 0
     currentTime: 0
-    currentPosition: 0
-    heightPercentile: 0
   combatReadinessList: []
   sortedCombatReadinessList: []
   combatReadinessBar: {fileID: 2131350448}
+  indx: 
 --- !u!114 &2131350448
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3241,7 +3256,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0657e844653a11f4f9162ce3d2640701, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ParentScript
-  turnManager: {fileID: 448328916}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

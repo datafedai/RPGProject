@@ -58,13 +58,18 @@ public class CombatReadinessData
 
 }
 
+[Serializable]
+public class AttackAnimationData
+{
+    public GameObject characterGameObject;
+}
 
 
 public class TurnManager : MonoBehaviour
 {
     public const int NumCharacters = 8;
     public const int NumLaps = 100;
-    public const int TrackLength = 701; 
+    public const int TrackLength = 701;
     public Position characterPositions;
     [SerializeField] private Character character;
     public GameState gameState;
@@ -84,6 +89,33 @@ public class TurnManager : MonoBehaviour
     public List<CombatReadinessData> sortedCombatReadinessList;
     //public GameObject childObject;
     [SerializeField] private CombatReadinessBar combatReadinessBar;
+
+    public static TurnManager Instance { get; private set; }
+    //public List<AttackAnimationData> attackAnimationData;
+    //public event Action<List<AttackAnimationData>> AttackAnimation;
+    public event Action<GameObject, GameObject> AttackAnimation;
+
+    public List<int> indx;
+
+    private void Awake()
+    {
+        // Check if an instance already exists and it's not this one.
+        if (Instance != null && Instance != this)
+        {
+            // Destroy the duplicate instance.
+            Debug.Log("destroying..." + gameObject.name);
+            Destroy(gameObject);
+        }
+        else
+        {
+            // Assign this instance as the Singleton.
+            Instance = this;
+            Debug.Log("this is " + this);
+            // Optionally, prevent the Singleton from being destroyed on scene changes.
+            //DontDestroyOnLoad(gameObject);
+        }
+    }
+
 
 
     public int getcurrentPlayerIndex()
@@ -114,7 +146,7 @@ public class TurnManager : MonoBehaviour
         int player_speed;
         float lap_time;
 
-        
+
 
         // lap time on each loop of distance 701 of 6 loops
         // example of track distances: 701, 3457, 23
@@ -329,52 +361,52 @@ public class TurnManager : MonoBehaviour
 
                     // destroy player icon on CombatReadinessBar
                     //Debug.Log("dead character name: " + gameObject.name);
-                // destroy icon on CombatReadinessBar 
-                string characterName = sortedCharacterList[i].character_name;
-                string childName = "";
-                if(characterName == "Sword Man")
-                {
-                    childName = "zero"; 
-                }          
-                if(characterName == "Spear Soldier")
-                {
-                    childName = "one";
-                }
-                if(characterName == "Hammer Man")
-                {
-                    childName = "two";
-                }
-                if(characterName == "Brown Horse")
-                {
-                    childName = "three";
-                }
-                if(characterName == "Green Eyes")
-                {
-                    childName = "four";
-                }
-                if(characterName == "Black Horse")
-                {
-                    childName = "five";
-                }
-                if(characterName == "Sword Pirate")
-                {
-                    childName = "six";
-                }
-                if(characterName == "Green Sword")
-                {
-                    childName = "seven";
-                }
+                    // destroy icon on CombatReadinessBar 
+                    string characterName = sortedCharacterList[i].character_name;
+                    string childName = "";
+                    if (characterName == "Sword Man")
+                    {
+                        childName = "zero";
+                    }
+                    if (characterName == "Spear Soldier")
+                    {
+                        childName = "one";
+                    }
+                    if (characterName == "Hammer Man")
+                    {
+                        childName = "two";
+                    }
+                    if (characterName == "Brown Horse")
+                    {
+                        childName = "three";
+                    }
+                    if (characterName == "Green Eyes")
+                    {
+                        childName = "four";
+                    }
+                    if (characterName == "Black Horse")
+                    {
+                        childName = "five";
+                    }
+                    if (characterName == "Sword Pirate")
+                    {
+                        childName = "six";
+                    }
+                    if (characterName == "Green Sword")
+                    {
+                        childName = "seven";
+                    }
 
-                if(childName != "")
-                {
-                    GameObject dest = GameObject.Find(childName);
-                    if(dest != null)
+                    if (childName != "")
+                    {
+                        GameObject dest = GameObject.Find(childName);
+                        if (dest != null)
                         {
-                            Destroy(dest);                            
+                            Destroy(dest);
                         }
 
-                    Debug.Log(dest + " destroyed");
-                }
+                        Debug.Log(dest + " destroyed");
+                    }
                 }
             }
         }
@@ -387,7 +419,7 @@ public class TurnManager : MonoBehaviour
         {
             int indx = -1;
             if (c.character_health <= 0 && c.is_character_alive == true)
-            { 
+            {
                 //i = (int)c.character_position;
                 indx = c.character_index;
                 _playOrderList.RemoveAll(_playOrderList => _playOrderList.playerIndex == indx);
@@ -515,7 +547,7 @@ public class TurnManager : MonoBehaviour
 
                     combatReadinessData.currentPosition = (int)pos;
 
-                    combatReadinessData.heightPercentile = ((trackResetDistance - pos) / trackResetDistance)*100;
+                    combatReadinessData.heightPercentile = ((trackResetDistance - pos) / trackResetDistance) * 100;
                     //playOrderBar.Enqueue(playerOrderBarData);
 
                     combatReadinessList.Add(combatReadinessData);
@@ -544,12 +576,12 @@ public class TurnManager : MonoBehaviour
         combatReadinessBar.processCombatReadinessBar(sortedCombatReadinessList);
         //printCombatReadiness(sortedCombatReadinessList);
         //combatReadinessBar.Update(sortedCombatReadinessList);
-        
+
     }
 
     public void printCombatReadiness(List<CombatReadinessData> combatReadinessList)
     {
-        foreach(var p in combatReadinessList)
+        foreach (var p in combatReadinessList)
         {
             Debug.Log($"index: {p.playerIndex}, lapTime: {p.lapTime}, currentTime: {p.currentTime}, currentPosition: {p.currentPosition}, heightPercentile: {p.heightPercentile}");
         }
@@ -600,10 +632,16 @@ public class TurnManager : MonoBehaviour
     }
 
 
-
     void handleAttack()
     {
+        //indx = new List<int> { currentPlayerIndex, currentOponentIndex };
+        //attackAnimationData = getAttackAnimationData(indx, sortedCharacterList);
 
+        GameObject _gameObjectP = GameObject.Find(sortedCharacterList[currentPlayerIndex].character_name);
+        GameObject _gameObjectO = GameObject.Find(sortedCharacterList[currentOponentIndex].character_name);
+
+        Debug.Log("Invoking AttackAnimation");
+        AttackAnimation?.Invoke(_gameObjectP, _gameObjectO);
         //Debug.Log("before attack");
         //printCharacterData();
         //printHealthData("before attack");
