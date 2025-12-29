@@ -6,15 +6,15 @@ public class ProcessAttackAnimation : MonoBehaviour
 
     void OnEnable()
     {
-        //Debug.Log("in OnEnable in Canvas");
-        TurnManager.Instance.AttackAnimation += OnAttackAnimation;
+        //Debug.Log("in OnEnable in ProcessAttackAnimation");
+        //TurnManager.Instance.AttackAnimation += OnAttackAnimation;
     
     }
 
     void OnDiable()
     {
-        //Debug.Log("in OnEnable in Canvas");
-        TurnManager.Instance.AttackAnimation -= OnAttackAnimation;
+        //Debug.Log("in OnEnable in ProcessAttackAnimation");
+        //TurnManager.Instance.AttackAnimation -= OnAttackAnimation;
     
     }
 

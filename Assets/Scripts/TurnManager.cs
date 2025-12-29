@@ -71,6 +71,7 @@ public class TurnManager : MonoBehaviour
     public const int NumLaps = 100;
     public const int TrackLength = 701;
     public Position characterPositions;
+    public const int Speed = 5;
     [SerializeField] private Character character;
     public GameState gameState;
     private List<CharacterData> sortedCharacterList;
@@ -96,25 +97,9 @@ public class TurnManager : MonoBehaviour
     public event Action<GameObject, GameObject> AttackAnimation;
 
     public List<int> indx;
-
-    private void Awake()
-    {
-        // Check if an instance already exists and it's not this one.
-        if (Instance != null && Instance != this)
-        {
-            // Destroy the duplicate instance.
-            Debug.Log("destroying..." + gameObject.name);
-            Destroy(gameObject);
-        }
-        else
-        {
-            // Assign this instance as the Singleton.
-            Instance = this;
-            Debug.Log("this is " + this);
-            // Optionally, prevent the Singleton from being destroyed on scene changes.
-            //DontDestroyOnLoad(gameObject);
-        }
-    }
+    public GameObject _gameObjectP;
+    public GameObject _gameObjectO;
+    public Vector3 moveVector;
 
 
 
@@ -631,17 +616,46 @@ public class TurnManager : MonoBehaviour
 
     }
 
+    void handleAttackAnimation()
+    {
+        float attackProximityIndex = 0.9f;
+
+        // find player and oponent objects
+        _gameObjectP = GameObject.Find(sortedCharacterList[currentPlayerIndex].character_name);
+        _gameObjectO = GameObject.Find(sortedCharacterList[currentOponentIndex].character_name);
+
+        Debug.Log("Player Position: " + _gameObjectP.transform.position);
+        Debug.Log("Oponent Position: " + _gameObjectO.transform.position);
+
+        // calculate the vector from player position to oponent position
+        moveVector = (_gameObjectO.transform.position - _gameObjectP.transform.position)*attackProximityIndex;
+
+        // move player to attack
+        _gameObjectP.transform.position = _gameObjectP.transform.position + moveVector;
+
+        // Code here runs after the delay
+        Invoke("MovePlayerBack", 2f);
+    }
+
+    void MovePlayerBack()
+    {
+        Debug.Log("Function called after a delay.");
+        // move player back
+        _gameObjectP.transform.position = _gameObjectP.transform.position - moveVector;
+
+    }
 
     void handleAttack()
     {
         //indx = new List<int> { currentPlayerIndex, currentOponentIndex };
         //attackAnimationData = getAttackAnimationData(indx, sortedCharacterList);
+        //Debug.Log("Invoking AttackAnimation");
+        //AttackAnimation?.Invoke(_gameObjectP, _gameObjectO);
 
-        GameObject _gameObjectP = GameObject.Find(sortedCharacterList[currentPlayerIndex].character_name);
-        GameObject _gameObjectO = GameObject.Find(sortedCharacterList[currentOponentIndex].character_name);
+        // call handleAttackAnimation function to move player close to oponent
+        handleAttackAnimation();
 
-        Debug.Log("Invoking AttackAnimation");
-        AttackAnimation?.Invoke(_gameObjectP, _gameObjectO);
+
         //Debug.Log("before attack");
         //printCharacterData();
         //printHealthData("before attack");
