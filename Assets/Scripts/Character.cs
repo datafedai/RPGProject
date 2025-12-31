@@ -128,8 +128,9 @@ public class Character : MonoBehaviour
             Debug.Log("power values: " + powerValues[i]);
     }
 
-    void loadCharacterData()
+    public void loadCharacterData()
     {
+        Debug.Log("Loading character data...");
         //speedList = getSpeed(30, 70);
         speedList = getUniqueRandomNumbers(20, 80);
         speedList.Sort((x, y) => y.CompareTo(x));
@@ -210,7 +211,7 @@ public class Character : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        //Debug.Log("Characters script, Start executed.");
+        Debug.Log("Characters script, Start executed.");
         Debug.Log("GameState in Character.cs: " + turnManager.gameState);
         // initialize data
         isAlive = true;

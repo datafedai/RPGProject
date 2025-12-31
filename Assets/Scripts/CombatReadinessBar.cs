@@ -28,7 +28,7 @@ public class CombatReadinessBar : MonoBehaviour
             float mov = combatReadinessBarMaxHeight*(sortedCombatReadinessList[k].heightPercentile) / 100;
             
             z = 2*k; // Z-values are spaced out by 2 to avoid z-fighting bugs.
-            Vector3 newPosition = new Vector3(-9f, -4f, 0f) + new Vector3(0f, mov, z);
+            Vector3 newPosition = new Vector3(-8f, -4f, 0f) + new Vector3(0f, mov, z);
             GameObject icon = GameObject.FindWithTag(iconTag);
 
             if(icon != null)

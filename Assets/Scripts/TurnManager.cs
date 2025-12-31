@@ -91,7 +91,8 @@ public class TurnManager : MonoBehaviour
     //public GameObject childObject;
     [SerializeField] private CombatReadinessBar combatReadinessBar;
 
-    public static TurnManager Instance { get; private set; }
+    //public static TurnManager Instance { get; private set; }
+    [SerializeField] private Character characterScript;
     //public List<AttackAnimationData> attackAnimationData;
     //public event Action<List<AttackAnimationData>> AttackAnimation;
     public event Action<GameObject, GameObject> AttackAnimation;
@@ -100,8 +101,14 @@ public class TurnManager : MonoBehaviour
     public GameObject _gameObjectP;
     public GameObject _gameObjectO;
     public Vector3 moveVector;
+    private Animator anim;
+    //private bool isMyTurnTM;
 
 
+    void Awake()
+    {
+        anim = GetComponent<Animator>();
+    }
 
     public int getcurrentPlayerIndex()
     {
@@ -110,6 +117,7 @@ public class TurnManager : MonoBehaviour
 
     public void sendSortedCharacterData(List<CharacterData> characters)
     {
+        Debug.Log("Receiving character data in TurnManager");
         sortedCharacterList = characters;
         //dataReceived = true;
 
@@ -121,7 +129,7 @@ public class TurnManager : MonoBehaviour
         gameState = GameState.AwaitingInput;
 
         //Debug.Log("sendSortedCharacterDate successful.");
-        //Debug.Log("GameState in TurnManager.cs: " + gameState);
+        Debug.Log("GameState in TurnManager, sendSortedCharacterData: " + gameState);
     }
 
     void generatePlayOrder()
@@ -263,6 +271,8 @@ public class TurnManager : MonoBehaviour
 
     public void handleAwaitingInputPhase(string clickedEnemyName)
     {
+        anim.SetBool("isMyTurn", false);
+
         //Debug.Log("Player: " + sortedCharacterData[currentPlayerIndex].character_name);
         //printPlayOrder(playOrderDataList);
 
@@ -424,6 +434,7 @@ public class TurnManager : MonoBehaviour
 
     void initiateTurn()
     {
+
         // remove the previous player from the play order list
         sortedPlayOrderList.RemoveAt(0);
 
@@ -494,11 +505,11 @@ public class TurnManager : MonoBehaviour
         Debug.Log("next player: " + nextPlayerName + " at " + position);
 
 
-
-
-
         // game state update
         gameState = GameState.AwaitingInput;
+
+        anim.SetBool("isMyTurn", true);
+        //Debug.Log(animator.isMyTurn + " in initiate turn");
     }
 
 
@@ -630,19 +641,102 @@ public class TurnManager : MonoBehaviour
         // calculate the vector from player position to oponent position
         moveVector = (_gameObjectO.transform.position - _gameObjectP.transform.position)*attackProximityIndex;
 
+/*
         // move player to attack
-        _gameObjectP.transform.position = _gameObjectP.transform.position + moveVector;
+        _gameObjectP.transform.position = Vector3.Lerp(_gameObjectP.transform.position, _gameObjectP.transform.position + moveVector, 1f);
 
         // Code here runs after the delay
-        Invoke("MovePlayerBack", 2f);
+        Invoke("microTimer", 2f);
+*/
+
     }
 
-    void MovePlayerBack()
+  
+IEnumerator MoveToTarget()
     {
-        Debug.Log("Function called after a delay.");
-        // move player back
-        _gameObjectP.transform.position = _gameObjectP.transform.position - moveVector;
+        //Debug.Log("name: " + sortedCharacterList[currentPlayerIndex].character_name + ", speed: " + sortedCharacterList[currentPlayerIndex].character_speed);
+        float duration = 0.5f; // The total time the movement should take
+        duration = 25f/sortedCharacterList[currentPlayerIndex].character_speed;
+        //float attackProximityIndex = 0.9f;
 
+        // find player and oponent objects
+        _gameObjectP = GameObject.Find(sortedCharacterList[currentPlayerIndex].character_name);
+        _gameObjectO = GameObject.Find(sortedCharacterList[currentOponentIndex].character_name);
+              
+        // calculate the vector from player position to oponent position
+        moveVector = (_gameObjectO.transform.position - _gameObjectP.transform.position);
+        Vector3 normalizedMoveVector = moveVector.normalized;
+        moveVector = moveVector - normalizedMoveVector;
+        //moveVector = (_gameObjectO.transform.position - _gameObjectP.transform.position)*attackProximityIndex;        
+
+        Vector3 startPosition = _gameObjectP.transform.position;
+        Vector3 targetPosition = startPosition + moveVector;
+
+        float timeElapsed = 0;
+
+        //Debug.Log("speed: " + sortedCharacterList[currentPlayerIndex].character_speed);
+        while (timeElapsed < duration)
+        {
+            // Calculate the interpolation value (percentage of duration passed)
+            float t = timeElapsed / duration;
+
+            // Optional: apply easing (smooth start/end) using Mathf.SmoothStep
+            // t = Mathf.SmoothStep(0f, 1f, t); 
+
+            // Update position using Lerp
+            _gameObjectP.transform.position = Vector3.Lerp(startPosition, targetPosition, t);
+
+            // Increment the time elapsed by the time since the last frame
+            timeElapsed += Time.deltaTime;
+
+            yield return null; // Wait until the next frame
+        }
+
+        Debug.Log("speed: " + sortedCharacterList[currentPlayerIndex].character_speed);
+        // Ensure the object reaches the exact target position at the end
+        _gameObjectP.transform.position = targetPosition + new Vector3(0f, 0f, 3f);
+
+        // pause
+        //Invoke("microTimer", 2f);
+        //Debug.Log("Coroutine started! Waiting 3 seconds...");
+        yield return new WaitForSeconds(2); // Pauses here for 3 seconds
+        //Debug.Log("3 seconds passed! Coroutine finished.");
+
+        // MoveBack
+        startPosition = _gameObjectP.transform.position - new Vector3(0f, 0f, 3f);
+        targetPosition = startPosition - moveVector;
+
+        timeElapsed = 0;
+
+        while (timeElapsed < duration)
+        {
+            // Calculate the interpolation value (percentage of duration passed)
+            float t = timeElapsed / duration;
+
+            // Optional: apply easing (smooth start/end) using Mathf.SmoothStep
+            // t = Mathf.SmoothStep(0f, 1f, t); 
+
+            // Update position using Lerp
+            _gameObjectP.transform.position = Vector3.Lerp(startPosition, targetPosition, t);
+
+            // Increment the time elapsed by the time since the last frame
+            timeElapsed += Time.deltaTime;
+
+            yield return null; // Wait until the next frame
+        }
+
+        //Debug.Log("speed: " + sortedCharacterList[currentPlayerIndex].character_speed);
+        // Ensure the object reaches the exact target position at the end
+        _gameObjectP.transform.position = targetPosition;
+    }
+
+
+
+    IEnumerator Pause(int num)
+    {
+        Debug.Log("Coroutine started! Waiting 3 seconds...");
+        yield return new WaitForSeconds(num); // Pauses here for 3 seconds
+        Debug.Log("3 seconds passed! Coroutine finished.");
     }
 
     void handleAttack()
@@ -653,7 +747,9 @@ public class TurnManager : MonoBehaviour
         //AttackAnimation?.Invoke(_gameObjectP, _gameObjectO);
 
         // call handleAttackAnimation function to move player close to oponent
-        handleAttackAnimation();
+        //handleAttackAnimation();
+
+        StartCoroutine(MoveToTarget());
 
 
         //Debug.Log("before attack");
@@ -677,6 +773,8 @@ public class TurnManager : MonoBehaviour
         updateLives();
         //checkForWin();
         //Debug.Log(getWinner() + " won the game");
+
+        //isMyTurn = false;
     }
 
 
@@ -773,10 +871,12 @@ public class TurnManager : MonoBehaviour
                 break;
 
             case GameState.AttackOn:
+                //Debug.Log(isMyTurn);
                 handleAttack();
                 break;
 
             case GameState.InitiateTurn:
+                //Debug.Log(isMyTurn);
                 initiateTurn();
                 break;
 
@@ -792,19 +892,78 @@ public class TurnManager : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+
+        //gameState = GameState.GameOver;
+        gameState = GameState.DataNotReady;
         //Debug.Log("Manager script Start, executed.");
-        Debug.Log("GameState in TurnManager.cs: " + gameState);
+        Debug.Log("GameState in TurnManager Start: " + gameState);
 
         currentActiveCharacterIndex = 0;
         currentPlayerIndex = -1;
 
         //printCharacterData();
+        //animator = GetComponent<Animator>();
+        //isMyTurnTM = false;
+        //anim.SetBool("isMyTurn", false);
+        //Debug.Log(isMyTurn + " in Start");
+
     }
 
 
     // Update is called once per frame
     void Update()
     {
+        //Debug.Log(aanimator.isMyTurn + " in Update");
+        Debug.Log("GameState in TurnManager Update: " + gameState);
+
+        /*
+        if (gameState == GameState.GameOver)
+        {
+            Debug.Log("Quitting Game!");
+            return;
+
+
+            //UnityEditor.EditorApplication.isPlaying = false;
+        }
+        else if (gameState == GameState.DataNotReady)
+        {
+            Debug.Log("Character Data Not Ready Yet!");   
+            characterScript.loadCharacterData();         
+
+        }
+
+        else if (gameState == GameState.AwaitingInput)
+        {
+            Debug.Log("Waiting for player to choose oponent to attack.");
+
+        }
+
+
+        else if (gameState == GameState.AttackOn)
+        {
+            Debug.Log("Attacking oponent!");
+            handleAttack();            
+
+        }
+
+        else if (gameState == GameState.InitiateTurn)
+        {
+            Debug.Log("Moving on to the next player in line.");
+            initiateTurn();
+        }
+        else
+        {
+            Debug.Log("error?");
+            return;
+        }
+        */   
+
+
+
+
+
+
+        
         if (gameState == GameState.GameOver)
         {
             return;
@@ -816,6 +975,8 @@ public class TurnManager : MonoBehaviour
         {
             handleGameFlow();
         }
+        
+        
 
     }
 }
