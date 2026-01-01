@@ -34,7 +34,7 @@ public class ClickableSprite : MonoBehaviour
                 choice = friends;
             }
 
-            if (choice.Contains(gameObject.name)) //  && turnManager.gameState == GameState.AwaitingInput)
+            if (choice.Contains(gameObject.name) && turnManager.gameState == GameState.AwaitingInput)
             {
                 turnManager.handleAwaitingInputPhase(gameObject.name);
             }
