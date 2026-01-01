@@ -10,13 +10,16 @@ using System.Linq; // Required for LINQ
 [Serializable]
 public class CharacterData
 {
+    // Identification
     public int character_index;
     public string character_name;
-    public bool is_character_alive;
+    // Attributes
     public int character_speed;
     public int character_health;
     public int character_attack_power;
-    public Position character_position;
+    // Status
+    public bool is_character_alive;
+    public Position character_position; // North, East, South, West, Friendly/Enemy, denoted by enums 0-7
 }
 
 [Serializable]
@@ -202,6 +205,9 @@ public class Character : MonoBehaviour
 
         // sort by speed in descending order
         characterDataList.Sort((x, y) => x.character_index.CompareTo(y.character_index));
+
+        // send character data to Turnmanager
+        Debug.Log("Sending character data from Character to Turnmanager");
         turnManager.sendSortedCharacterData(characterDataList);
 
         //printCharacterData(characterDataList);

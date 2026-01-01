@@ -37,7 +37,7 @@ AnimationClip:
     - time: 0.7
       value: {fileID: 8965404559091589858, guid: ac238f528049c264ba620599eed15e9d, type: 3}
     attribute: m_Sprite
-    path: SwordmanAnim
+    path: 
     classID: 212
     script: {fileID: 0}
     flags: 2
@@ -49,7 +49,7 @@ AnimationClip:
   m_ClipBindingConstant:
     genericBindings:
     - serializedVersion: 2
-      path: 2754035587
+      path: 0
       attribute: 0
       script: {fileID: 0}
       typeID: 212

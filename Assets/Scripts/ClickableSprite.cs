@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 //using UnityEngine.UI;
 
 public class ClickableSprite : MonoBehaviour
@@ -8,14 +9,14 @@ public class ClickableSprite : MonoBehaviour
 
     bool validChoice;
     private HashSet<string> friends = new HashSet<string>
-        {        
+        {
           "Sword Man", "Spear Soldier", "Hammer Man", "Brown Horse"
         };
 
     private HashSet<string> enemies = new HashSet<string>
-        {        
+        {
           "Green Eyes", "Black Horse", "Sword Pirate", "Green Sword"
-        };     
+        };
 
     private HashSet<string> choice;
 
@@ -23,23 +24,26 @@ public class ClickableSprite : MonoBehaviour
     {
         // This function is called when the mouse button is pressed over the collider
         //Debug.Log(gameObject.name + " is selected to attack.");
-        if(turnManager.getcurrentPlayerIndex() <= 3)
-        {
-            choice = enemies;
-        }
-        else if(turnManager.getcurrentPlayerIndex() >= 4)
-        {
-            choice = friends;
-        }
 
-        if(choice.Contains(gameObject.name))
-        {
-            turnManager.handleAwaitingInputPhase(gameObject.name);            
-        }
-        else
-        {
-            Debug.Log("invalid choice. choose a right enemy");
-        }
+            if (turnManager.getcurrentPlayerIndex() <= 3)
+            {
+                choice = enemies;
+            }
+            else if (turnManager.getcurrentPlayerIndex() >= 4)
+            {
+                choice = friends;
+            }
+
+            if (choice.Contains(gameObject.name)) //  && turnManager.gameState == GameState.AwaitingInput)
+            {
+                turnManager.handleAwaitingInputPhase(gameObject.name);
+            }
+            else
+            {
+                Debug.Log("invalid choice. choose a right enemy");
+            }
+        
+
 
     }
 

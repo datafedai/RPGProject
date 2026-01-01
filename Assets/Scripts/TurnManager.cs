@@ -101,13 +101,13 @@ public class TurnManager : MonoBehaviour
     public GameObject _gameObjectP;
     public GameObject _gameObjectO;
     public Vector3 moveVector;
-    private Animator anim;
+    [SerializeField] List<Animator> characterAnimRefs;
     //private bool isMyTurnTM;
 
 
     void Awake()
     {
-        anim = GetComponent<Animator>();
+
     }
 
     public int getcurrentPlayerIndex()
@@ -196,8 +196,11 @@ public class TurnManager : MonoBehaviour
         // if turn is never assigned, assign the first turn
         if (currentPlayerIndex == -1)
         {
+            Debug.Log("First initiateturn");
             initiateTurn();
         }
+
+        Debug.Log("initiateturn again");
     }
 
 
@@ -271,7 +274,7 @@ public class TurnManager : MonoBehaviour
 
     public void handleAwaitingInputPhase(string clickedEnemyName)
     {
-        anim.SetBool("isMyTurn", false);
+        //anim.SetBool("isMyTurn", false);
 
         //Debug.Log("Player: " + sortedCharacterData[currentPlayerIndex].character_name);
         //printPlayOrder(playOrderDataList);
@@ -284,6 +287,7 @@ public class TurnManager : MonoBehaviour
             //Debug.Log("Friend Position:Enemy Position = " + (1 + currentPlayerIndex) + ":" + (1 + currentEnemyIndex));
 
             gameState = GameState.AttackOn;
+            Debug.Log(gameState + " in handleAwaitingInputPhase");
         }
         else
         {
@@ -507,8 +511,9 @@ public class TurnManager : MonoBehaviour
 
         // game state update
         gameState = GameState.AwaitingInput;
+        Debug.Log(gameState + " in initiateTurn");
 
-        anim.SetBool("isMyTurn", true);
+        //Sanim.SetBool("isMyTurn", true);
         //Debug.Log(animator.isMyTurn + " in initiate turn");
     }
 
@@ -692,7 +697,7 @@ IEnumerator MoveToTarget()
             yield return null; // Wait until the next frame
         }
 
-        Debug.Log("speed: " + sortedCharacterList[currentPlayerIndex].character_speed);
+        //Debug.Log("speed: " + sortedCharacterList[currentPlayerIndex].character_speed);
         // Ensure the object reaches the exact target position at the end
         _gameObjectP.transform.position = targetPosition + new Vector3(0f, 0f, 3f);
 
@@ -728,6 +733,10 @@ IEnumerator MoveToTarget()
         //Debug.Log("speed: " + sortedCharacterList[currentPlayerIndex].character_speed);
         // Ensure the object reaches the exact target position at the end
         _gameObjectP.transform.position = targetPosition;
+
+        // game state update
+        gameState = GameState.InitiateTurn;
+        //gameState = GameState.AwaitingInput;
     }
 
 
@@ -741,6 +750,8 @@ IEnumerator MoveToTarget()
 
     void handleAttack()
     {
+        Debug.Log(gameState + " in handdleAttack");
+        //Pause(3);
         //indx = new List<int> { currentPlayerIndex, currentOponentIndex };
         //attackAnimationData = getAttackAnimationData(indx, sortedCharacterList);
         //Debug.Log("Invoking AttackAnimation");
@@ -761,12 +772,16 @@ IEnumerator MoveToTarget()
 
         //Debug.Log("after attack");
         printHealthData("after attack");
+        //Pause(3);
         //printCharacterData();
 
         // destroy a character if no health
         handleNoHealth();
 
-        gameState = GameState.InitiateTurn;
+        //gameState = GameState.AttackOver;
+        //gameState = GameState.InitiateTurn;
+        gameState = GameState.AwaitingInput;
+        Debug.Log(gameState + " in handdleAttack");
 
         // update remaining lives
         // if no lives left on eather team, game is over
@@ -894,12 +909,20 @@ IEnumerator MoveToTarget()
     {
 
         //gameState = GameState.GameOver;
-        gameState = GameState.DataNotReady;
+        //gameState = GameState.DataNotReady;
         //Debug.Log("Manager script Start, executed.");
         Debug.Log("GameState in TurnManager Start: " + gameState);
 
         currentActiveCharacterIndex = 0;
         currentPlayerIndex = -1;
+
+        Debug.Log("CharacterAnimRefs Parameters:");
+        for (int i = 0; i < characterAnimRefs.Count; i++)
+        {
+            characterAnimRefs[i].SetBool("isMyTurn", false);
+            Debug.Log(characterAnimRefs[i].GetBool("isMyTurn"));
+        }
+        characterAnimRefs[0].SetBool("isMyTurn", true);
 
         //printCharacterData();
         //animator = GetComponent<Animator>();
@@ -914,7 +937,19 @@ IEnumerator MoveToTarget()
     void Update()
     {
         //Debug.Log(aanimator.isMyTurn + " in Update");
-        Debug.Log("GameState in TurnManager Update: " + gameState);
+        //Debug.Log("GameState in TurnManager Update: " + gameState);
+
+        if (gameState == GameState.GameOver)
+        {
+            return;
+
+            //Debug.Log("Quitting Game!");
+            //UnityEditor.EditorApplication.isPlaying = false;
+        }
+        else
+        {
+            handleGameFlow();
+        }
 
         /*
         if (gameState == GameState.GameOver)
@@ -957,24 +992,8 @@ IEnumerator MoveToTarget()
             return;
         }
         */   
-
-
-
-
-
-
         
-        if (gameState == GameState.GameOver)
-        {
-            return;
 
-            //Debug.Log("Quitting Game!");
-            //UnityEditor.EditorApplication.isPlaying = false;
-        }
-        else
-        {
-            handleGameFlow();
-        }
         
         
 

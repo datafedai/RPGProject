@@ -346,8 +346,9 @@ GameObject:
   m_Component:
   - component: {fileID: 117399998}
   - component: {fileID: 117399999}
+  - component: {fileID: 117400000}
   m_Layer: 0
-  m_Name: frame_0_delay-0.1s_0
+  m_Name: SwordmanAnim
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -426,6 +427,28 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!95 &117400000
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 117399997}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: bdce7632a66e4f94c9b53491e851f6df, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &145498063
 GameObject:
   m_ObjectHideFlags: 0
@@ -588,6 +611,7 @@ GameObject:
   m_Component:
   - component: {fileID: 165565908}
   - component: {fileID: 165565909}
+  - component: {fileID: 165565910}
   m_Layer: 0
   m_Name: SwordmanAnim
   m_TagString: Untagged
@@ -668,6 +692,28 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!95 &165565910
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 165565907}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: bdce7632a66e4f94c9b53491e851f6df, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1001 &195206208
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1011,10 +1057,16 @@ MonoBehaviour:
   combatReadinessList: []
   sortedCombatReadinessList: []
   combatReadinessBar: {fileID: 2131350448}
+  characterScript: {fileID: 448328919}
   indx: 
   _gameObjectP: {fileID: 0}
   _gameObjectO: {fileID: 0}
   moveVector: {x: 0, y: 0, z: 0}
+  characterAnimRefs:
+  - {fileID: 165565910}
+  - {fileID: 531072295}
+  - {fileID: 1348869943}
+  - {fileID: 117400000}
 --- !u!114 &448328917
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1501,8 +1553,9 @@ GameObject:
   m_Component:
   - component: {fileID: 531072293}
   - component: {fileID: 531072294}
+  - component: {fileID: 531072295}
   m_Layer: 0
-  m_Name: SpearSoldierAnim
+  m_Name: SwordmanAnim
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1581,6 +1634,28 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!95 &531072295
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 531072292}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: bdce7632a66e4f94c9b53491e851f6df, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1001 &531469311
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2884,8 +2959,9 @@ GameObject:
   m_Component:
   - component: {fileID: 1348869941}
   - component: {fileID: 1348869942}
+  - component: {fileID: 1348869943}
   m_Layer: 0
-  m_Name: frame_0_delay-0.1s_0
+  m_Name: SwordmanAnim
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2964,6 +3040,28 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!95 &1348869943
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1348869940}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: bdce7632a66e4f94c9b53491e851f6df, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!4 &1404158173 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4868515331449996, guid: 79639b84e20f0ea4694165c0d4554387, type: 3}
@@ -5199,7 +5297,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2131350444}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: abb7356ce207d49489f51f4713f8f92f, type: 3}
   m_Name: 
@@ -5220,10 +5318,12 @@ MonoBehaviour:
   combatReadinessList: []
   sortedCombatReadinessList: []
   combatReadinessBar: {fileID: 2131350448}
+  characterScript: {fileID: 448328919}
   indx: 
   _gameObjectP: {fileID: 0}
   _gameObjectO: {fileID: 0}
   moveVector: {x: 0, y: 0, z: 0}
+  characterAnimRefs: []
 --- !u!114 &2131350448
 MonoBehaviour:
   m_ObjectHideFlags: 0
