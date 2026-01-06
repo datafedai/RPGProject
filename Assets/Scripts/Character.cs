@@ -43,11 +43,12 @@ public class Character : MonoBehaviour
     private Position characterPosition;
 
     public List<CharacterData> characterDataList;
-    public List<string> characterNames;
+
     private List<int> speedList;
     private List<int> powerList;
     private List<int> randomNumList;
     public List<SpeedPower> speedPowerList;
+    public List<string> characterNames;
 
 
     void Die()
@@ -133,14 +134,11 @@ public class Character : MonoBehaviour
 
     public void loadCharacterData()
     {
-        Debug.Log("Loading character data...");
-        //speedList = getSpeed(30, 70);
+        //Debug.Log("loadingCharacterData starts");
         speedList = getUniqueRandomNumbers(20, 80);
         speedList.Sort((x, y) => y.CompareTo(x));
         //printSpeedValues(speedList);
 
-
-        //powerList = getAttackPower(30, 70);
         powerList = getUniqueRandomNumbers(10, 30);
         powerList.Sort((x, y) => x.CompareTo(y));
         //printPowerValues(powerList);
@@ -162,6 +160,7 @@ public class Character : MonoBehaviour
 
         if (characterNames != null)
         {
+            characterDataList.Clear();
             // loop each character of characterNames list
             for (int i = 0; i < characterNames.Count; i++)
             {
@@ -206,24 +205,45 @@ public class Character : MonoBehaviour
         // sort by speed in descending order
         characterDataList.Sort((x, y) => x.character_index.CompareTo(y.character_index));
 
-        // send character data to Turnmanager
-        Debug.Log("Sending character data from Character to Turnmanager");
-        turnManager.sendSortedCharacterData(characterDataList);
-
+        //Debug.Log("size of character data: " + characterDataList.Count);
         //printCharacterData(characterDataList);
+
+        // send character data to Turnmanager
+        //Debug.Log("Sending character data from Character to Turnmanager");
+        //turnManager.getCharacterData2(characterDataList);
+
+        //Debug.Log("loadingCharacterData ends");
     }
 
+    public List<CharacterData> getCharacterDataList()
+    {
+        //Debug.Log("1, size of characterDataList: " + characterDataList.Count);
+        if(characterDataList.Count == 0)
+        {
+            loadCharacterData();
+            //Debug.Log("2, size of characterDataList: " + characterDataList.Count);
+            return characterDataList;
+        }
+        else
+        {
+            //Debug.Log("3, size of characterDataList: " + characterDataList.Count);
+            return characterDataList;
+        }
+
+
+
+        
+    }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        Debug.Log("Characters script, Start executed.");
-        Debug.Log("GameState in Character.cs: " + turnManager.gameState);
+        //Debug.Log("Character, Start executed.");
+        //Debug.Log("GameState in Character.cs: " + turnManager.gameState);
         // initialize data
         isAlive = true;
         health = 100;
         //attackPower = 50;
-
         characterNames = new List<string>()
         {
           "Sword Man", "Spear Soldier", "Hammer Man", "Brown Horse",
@@ -231,7 +251,7 @@ public class Character : MonoBehaviour
         };
 
         // call MainFunction to populate data into characterDataList
-        loadCharacterData();
+        //loadCharacterData();
 
     }
 

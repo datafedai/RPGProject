@@ -22,6 +22,7 @@ public class ClickableSprite : MonoBehaviour
 
     void OnMouseDown()
     {
+        //Debug.Log("OnMouseDown starts");
         // This function is called when the mouse button is pressed over the collider
         //Debug.Log(gameObject.name + " is selected to attack.");
 
@@ -34,7 +35,8 @@ public class ClickableSprite : MonoBehaviour
                 choice = friends;
             }
 
-            if (choice.Contains(gameObject.name) && turnManager.gameState == GameState.AwaitingInput)
+            //if (choice.Contains(gameObject.name) && turnManager.gameState == GameState.AwaitingInput)
+            if (choice.Contains(gameObject.name) && turnManager.readyToClick == true)
             {
                 turnManager.handleAwaitingInputPhase(gameObject.name);
             }
@@ -43,13 +45,13 @@ public class ClickableSprite : MonoBehaviour
                 Debug.Log("invalid choice. choose a right enemy");
             }
         
-
+        //Debug.Log("OnMouseDown ends");
 
     }
 
     void Start()
     {
-        //Debug.Log("ClickableSprite script, Start executed.");
+        //Debug.Log("ClickableSprite, Start executed.");
     }
 
     // Update is called once per frame

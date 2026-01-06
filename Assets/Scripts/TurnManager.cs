@@ -27,10 +27,13 @@ public enum Position
 
 public enum GameState
 {
-    DataNotReady,
+
+    GettingCharacterData, //
+    //DataNotReady,
+    InitiatingTurn,
     AwaitingInput,
     AttackOn,
-    InitiateTurn,
+
     GameOver
 }
 
@@ -103,42 +106,61 @@ public class TurnManager : MonoBehaviour
     public Vector3 moveVector;
     [SerializeField] List<Animator> characterAnimRefs;
     //private bool isMyTurnTM;
+    public bool readyToClick = true;
 
 
-    void Awake()
-    {
-
-    }
 
     public int getcurrentPlayerIndex()
     {
         return currentPlayerIndex;
     }
 
-    public void sendSortedCharacterData(List<CharacterData> characters)
+
+    /// <summary>
+    /// characterData state related functions
+    /// </summary>
+    public void getCharacterData()
     {
-        Debug.Log("Receiving character data in TurnManager");
-        sortedCharacterList = characters;
+        //Debug.Log("getCharacterData starts");
+        //Debug.Log("Receiving character data in TurnManager");
+        
+        //if(character.getCharacterDataList() )
+        //sortedCharacterList.Clear();
+        sortedCharacterList = character.getCharacterDataList();
+        //Debug.Log("sorted character data list: " + sortedCharacterList.Count);
         //dataReceived = true;
 
         // print character data
         //printCharacterList(characters);
         // generatePlayOrder
-        generatePlayOrder();
+        //Debug.Log("Calling generatePlayOrder");
+        if(sortedCharacterList != null)
+        {
+            generatePlayOrder();            
+        }
+        else
+        {
+            Debug.Log("character data list is empty.");
+        }
 
-        gameState = GameState.AwaitingInput;
+
+        //gameState = GameState.AwaitingInput;
 
         //Debug.Log("sendSortedCharacterDate successful.");
-        Debug.Log("GameState in TurnManager, sendSortedCharacterData: " + gameState);
+        //Debug.Log("GameState in TurnManager, sendSortedCharacterData: " + gameState);
+        //Debug.Log("getCharacterData ends");
     }
+
+
 
     void generatePlayOrder()
     {
-        Debug.Log("Generating play order ...");
+        //Debug.Log("generatePlayOrder starts");
         int player_index;
         int player_speed;
         float lap_time;
 
+        playOrderList.Clear();
 
 
         // lap time on each loop of distance 701 of 6 loops
@@ -186,6 +208,9 @@ public class TurnManager : MonoBehaviour
 
         // output
         //printPlayOrder(sortedPlayOrderList);
+        //Debug.Log("sortedPlayOrderList: " + sortedPlayOrderList.Count);
+
+
 
         // take only indexes for playing turn order
         //generatePlayOrderIndex(sortedPlayOrderList);
@@ -194,147 +219,162 @@ public class TurnManager : MonoBehaviour
         //printSortedPlayOrderIndex();
 
         // if turn is never assigned, assign the first turn
+        /*
         if (currentPlayerIndex == -1)
         {
             Debug.Log("First initiateturn");
             initiateTurn();
         }
-
-        Debug.Log("initiateturn again");
-    }
-
-
-    void enqueSortedPlayOrderDataList(List<PlayOrderData> sortedPlayOrderDataList)
-    {
-        playOrderDataQue = new Queue<PlayOrderData>();
-
-        for (int i = 0; i < sortedPlayOrderDataList.Count; i++)
+        */
+        
+        if(sortedPlayOrderList.Count == NumCharacters * NumLaps)
         {
-            //Debug.Log("hello");
-            playOrderDataQue.Enqueue(sortedPlayOrderDataList[i]);
-        }
-
-        //Debug.Log("queued playOrderDataList length: " + playOrderDataListQue.Count);
-
-    }
-
-
-    void printSortedPlayOrder(List<PlayOrderData> sortedDataList)
-    {
-
-        foreach (var p in sortedDataList)
-        {
-            Debug.Log($"Index: {p.playerIndex}, Speed: {p.playerSpeed}, Lap Time: {p.lapTime}");
-        }
-    }
-
-
-
-    void printPlayOrder(List<PlayOrderData> dataList)
-    {
-        for (int i = 0; i < NumCharacters * NumLaps; i++)
-        {
-            Debug.Log("index: " + dataList[i].playerIndex + ", speed: " + dataList[i].playerSpeed + ", lap_time: " + dataList[i].lapTime);
-        }
-
-    }
-
-    public void generatePlayOrderIndex(List<PlayOrderData> sortedPlayOrderData)
-    {
-        for (int i = 0; i < sortedPlayOrderData.Count; i++)
-        {
-            //Debug.Log(sortedPlayOrderData[i].playerIndex);
-            playOrderIndex.Enqueue(sortedPlayOrderData[i].playerIndex);
-        }
-
-        //Debug.Log(playOrderIndex.Count);
-    }
-
-    void printSortedPlayOrderIndex()
-    {
-        for (int i = 0; i < playOrderIndex.Count; i++)
-        {
-            if (playOrderIndex.Count > 0)
-            {
-                // Dequeue removes and returns the element at the front
-                int currentPlayerIndex = playOrderIndex.Dequeue();
-                Debug.Log($"current player index dequeued and processed: {currentPlayerIndex}. Queue count: {playOrderIndex.Count}");
-
-                int nextPlayerIndex = playOrderIndex.Peek();
-                Debug.Log($"Next Player Index to be processed (peeked): {nextPlayerIndex}. Queue count: {playOrderIndex.Count}");
-            }
-            else
-            {
-                Debug.LogWarning("Player Index queue is empty. No index to process.");
-            }
-
-        }
-
-    }
-
-    public void handleAwaitingInputPhase(string clickedEnemyName)
-    {
-        //anim.SetBool("isMyTurn", false);
-
-        //Debug.Log("Player: " + sortedCharacterData[currentPlayerIndex].character_name);
-        //printPlayOrder(playOrderDataList);
-
-        Debug.Log(sortedCharacterList[currentPlayerIndex].character_name + " selected " + clickedEnemyName + " to attack.");
-        currentOponentIndex = indexSortedCharacterData(clickedEnemyName);
-
-        if (sortedCharacterList[currentOponentIndex].character_health > 0)
-        {
-            //Debug.Log("Friend Position:Enemy Position = " + (1 + currentPlayerIndex) + ":" + (1 + currentEnemyIndex));
-
-            gameState = GameState.AttackOn;
-            Debug.Log(gameState + " in handleAwaitingInputPhase");
+            //Debug.Log("sortedPlayOrderList: " + sortedPlayOrderList.Count);
+            gameState = GameState.InitiatingTurn;
         }
         else
         {
-            Debug.Log("The selected enemy is already dead. Choose another enemy.");
+            Debug.Log("regenerating character data.");
+            gameState = GameState.GettingCharacterData;
         }
+
+        //Debug.Log("generatePlayOrder ends");
     }
 
 
-    private int indexSortedCharacterData(string enemyName)
+
+
+    /// <summary>
+    /// initiatingturn state related functions
+    /// </summary>
+    void initiateTurn()
     {
-        for (int i = 0; i < sortedCharacterList.Count; i++)
+        //Debug.Log("initiateTutn starts");
+
+        // Cleans up dead characters from last turn
+        removeDeadPlayer(sortedPlayOrderList, sortedCharacterList); 
+        
+        // remove the previous player from the play order list
+        if(sortedPlayOrderList.Count > 0)
         {
-            //Debug.Log(enemyName + " : " + sortedCharacterData[i].character_name + " : " + sortedCharacterData[i].character_speed);
-            if (enemyName == sortedCharacterList[i].character_name)
+            sortedPlayOrderList.RemoveAt(0);            
+        }
+
+
+        //handleNoHealth();
+        //Debug.Log("playOrderDataList count: " + sortedPlayOrderList.Count);
+        //printPlayOrderList(sortedPlayOrderList);
+        //printCharacterList(sortedCharacterList);
+        
+        
+        //printAttackPowerData();
+        //printHealthScore();
+
+        // play order bar update
+        //sortedPlayOrderList.Insert(0, playOrderData);
+        processCombatReadiness(sortedPlayOrderList);
+
+        //currentPlayerIndex = playOrderIndex.Dequeue();
+        //PlayOrderData playOrderData = playOrderDataQue.Dequeue();
+        PlayOrderData playOrderData = sortedPlayOrderList[0];
+        //sortedPlayOrderList.RemoveAt(0);
+
+        currentPlayerIndex = playOrderData.playerIndex;
+        string currentPlayerName = sortedCharacterList[currentPlayerIndex].character_name;
+        Position position = sortedCharacterList[currentPlayerIndex].character_position;
+        Debug.Log("Current Player: " + currentPlayerName + " at " + position);
+        if(currentPlayerIndex < 4)
+        {
+            characterAnimRefs[currentPlayerIndex].SetBool("isMyTurn", true);            
+        }
+
+
+
+
+        //Debug.Log("dequed data: " + "index, " + playOrderData.playerIndex + "  speed, " + playOrderData.playerSpeed + "  lap, " + playOrderData.lapTime);
+        /*
+        while (sortedCharacterList[currentPlayerIndex].character_health <= 0)
+        {
+            Debug.Log("skipping index: " + currentPlayerIndex + " because of no health score");
+            //currentPlayerIndex = playOrderIndex.Dequeue();
+            //playOrderData = playOrderDataQue.Dequeue();
+
+            playOrderData = sortedPlayOrderList[0];
+            sortedPlayOrderList.RemoveAt(0);
+
+            currentPlayerIndex = playOrderData.playerIndex;
+            currentPlayerName = sortedCharacterList[currentPlayerIndex].character_name;
+            position = sortedCharacterList[currentPlayerIndex].character_position;
+            Debug.Log("Revised Current Player: " + currentPlayerName + " at " + position);
+        }
+        */
+
+
+        // sortedPlayOrderDataListQue length
+        //Debug.Log("play order ramaining Que: " + playOrderDataListQue.Count);
+
+
+        if (currentPlayerIndex <= 3)
+        {
+            Debug.Log("Click on a character in the RIGHT side to attack.");
+        }
+        else
+        {
+            Debug.Log("Click on a character in the LEFT side to attack.");
+        }
+
+        //int nextPlayerIndex = playOrderIndex.Peek();
+        //PlayOrderData nextPlayerData = playOrderDataQue.Peek();
+        PlayOrderData nextPlayerData = sortedPlayOrderList[1];
+
+        int nextPlayerIndex = nextPlayerData.playerIndex;
+        string nextPlayerName = sortedCharacterList[nextPlayerIndex].character_name;
+        position = sortedCharacterList[nextPlayerIndex].character_position;
+
+        //Debug.Log("Next Player: " + nextPlayerName);
+        Debug.Log("next player: " + nextPlayerName + " at " + position);
+
+
+        // game state update
+        gameState = GameState.AwaitingInput;
+        //Debug.Log(gameState + " in initiateTurn");
+
+        //Sanim.SetBool("isMyTurn", true);
+        //Debug.Log(animator.isMyTurn + " in initiate turn");
+        //Debug.Log("initiateTurn ends");
+    }
+
+
+    void removeDeadPlayer(List<PlayOrderData> _playOrderList, List<CharacterData> _characterList)
+    {
+        //Debug.Log("before: " + _playOrderList.Count);
+        //character.printCharacterData(_characterList);
+        foreach (var c in _characterList)
+        {
+            int indx = -1;
+            if (c.character_health <= 0 && c.is_character_alive == true)
             {
-                //Debug.Log("Clicked Enemy Index: " + i);
-                //currentEnemyIndex = i;
-                return i;
+                //i = (int)c.character_position;
+                indx = c.character_index;
+
+                // remove the dead character from the play order list
+                _playOrderList.RemoveAll(_playOrderList => _playOrderList.playerIndex == indx);
+                c.is_character_alive = false;
+                Debug.Log("index removed: " + indx + " health: " + c.character_health);
+
+                // destroy character object and icon object
+                destroyCharacterAndIcon();
             }
         }
 
-        return -1;
+        //Debug.Log("after: " + _playOrderList.Count);
+        //character.printCharacterData(_characterList);
+        updateLives();
+
     }
 
 
-    void printPlayOrderList(List<PlayOrderData> _playOrderList)
-    {
-        Debug.Log("Printing play order list data ....");
-        for (int i = 0; i < _playOrderList.Count; i++)
-        {
-            int _index = _playOrderList[i].playerIndex;
-            int _speed = _playOrderList[i].playerSpeed;
-            float _lap_time = _playOrderList[i].lapTime;
-
-            Debug.Log("index: " + _index + ", speed: " + _speed + ", lap time: " + _lap_time);
-        }
-    }
-
-    void printCharacterList(List<CharacterData> _characterList)
-    {
-        foreach (var p in _characterList)
-        {
-            Debug.Log($"index: {(int)p.character_position}, name: {p.character_name}, speed: {p.character_speed}, attack power: {p.character_attack_power}, health: {p.character_health}");
-        }
-    }
-
-    void handleNoHealth() //TODO: rename to more appropriate name for cleanup
+    void destroyCharacterAndIcon() //TODO: rename to more appropriate name for cleanup
     {
         //printCharacterList(sortedCharacterList);
 
@@ -410,117 +450,13 @@ public class TurnManager : MonoBehaviour
             }
         }
     }
-    void removeDeadPlayer(List<PlayOrderData> _playOrderList, List<CharacterData> _characterList)
+
+
+
+
+   void processCombatReadiness(List<PlayOrderData> playOrderDataList)
     {
-        //Debug.Log("before: " + _playOrderList.Count);
-        //character.printCharacterData(_characterList);
-        foreach (var c in _characterList)
-        {
-            int indx = -1;
-            if (c.character_health <= 0 && c.is_character_alive == true)
-            {
-                //i = (int)c.character_position;
-                indx = c.character_index;
-                _playOrderList.RemoveAll(_playOrderList => _playOrderList.playerIndex == indx);
-                c.is_character_alive = false;
-                Debug.Log("index removed: " + indx + " health: " + c.character_health);
-
-                handleNoHealth();
-            }
-        }
-
-        //Debug.Log("after: " + _playOrderList.Count);
-        //character.printCharacterData(_characterList);
-        updateLives();
-
-    }
-
-
-    void initiateTurn()
-    {
-
-        // remove the previous player from the play order list
-        sortedPlayOrderList.RemoveAt(0);
-
-        //handleNoHealth();
-        //Debug.Log("playOrderDataList count: " + sortedPlayOrderList.Count);
-        //printPlayOrderList(sortedPlayOrderList);
-        //printCharacterList(sortedCharacterList);
-        removeDeadPlayer(sortedPlayOrderList, sortedCharacterList); // Cleans up dead characters from last turn
-        //printAttackPowerData();
-        //printHealthScore();
-
-        // play order bar update
-        //sortedPlayOrderList.Insert(0, playOrderData);
-        processCombatReadiness(sortedPlayOrderList);
-
-        //currentPlayerIndex = playOrderIndex.Dequeue();
-        //PlayOrderData playOrderData = playOrderDataQue.Dequeue();
-        PlayOrderData playOrderData = sortedPlayOrderList[0];
-        //sortedPlayOrderList.RemoveAt(0);
-
-        currentPlayerIndex = playOrderData.playerIndex;
-        string currentPlayerName = sortedCharacterList[currentPlayerIndex].character_name;
-        Position position = sortedCharacterList[currentPlayerIndex].character_position;
-        Debug.Log("Current Player: " + currentPlayerName + " at " + position);
-
-
-        //Debug.Log("dequed data: " + "index, " + playOrderData.playerIndex + "  speed, " + playOrderData.playerSpeed + "  lap, " + playOrderData.lapTime);
-        /*
-        while (sortedCharacterList[currentPlayerIndex].character_health <= 0)
-        {
-            Debug.Log("skipping index: " + currentPlayerIndex + " because of no health score");
-            //currentPlayerIndex = playOrderIndex.Dequeue();
-            //playOrderData = playOrderDataQue.Dequeue();
-
-            playOrderData = sortedPlayOrderList[0];
-            sortedPlayOrderList.RemoveAt(0);
-
-            currentPlayerIndex = playOrderData.playerIndex;
-            currentPlayerName = sortedCharacterList[currentPlayerIndex].character_name;
-            position = sortedCharacterList[currentPlayerIndex].character_position;
-            Debug.Log("Revised Current Player: " + currentPlayerName + " at " + position);
-        }
-        */
-
-
-        // sortedPlayOrderDataListQue length
-        //Debug.Log("play order ramaining Que: " + playOrderDataListQue.Count);
-
-
-        if (currentPlayerIndex <= 3)
-        {
-            Debug.Log("Click on a character in the RIGHT side to attack.");
-        }
-        else
-        {
-            Debug.Log("Click on a character in the LEFT side to attack.");
-        }
-
-        //int nextPlayerIndex = playOrderIndex.Peek();
-        //PlayOrderData nextPlayerData = playOrderDataQue.Peek();
-        PlayOrderData nextPlayerData = sortedPlayOrderList[1];
-
-        int nextPlayerIndex = nextPlayerData.playerIndex;
-        string nextPlayerName = sortedCharacterList[nextPlayerIndex].character_name;
-        position = sortedCharacterList[nextPlayerIndex].character_position;
-
-        //Debug.Log("Next Player: " + nextPlayerName);
-        Debug.Log("next player: " + nextPlayerName + " at " + position);
-
-
-        // game state update
-        gameState = GameState.AwaitingInput;
-        Debug.Log(gameState + " in initiateTurn");
-
-        //Sanim.SetBool("isMyTurn", true);
-        //Debug.Log(animator.isMyTurn + " in initiate turn");
-    }
-
-
-
-    void processCombatReadiness(List<PlayOrderData> playOrderDataList)
-    {
+        //Debug.Log("processCombatReadiness starts");
         combatReadinessList = new List<CombatReadinessData>();
         combatReadinessList.Clear();
         PlayOrderData playOrderData = playOrderDataList[0];
@@ -577,8 +513,70 @@ public class TurnManager : MonoBehaviour
         combatReadinessBar.processCombatReadinessBar(sortedCombatReadinessList);
         //printCombatReadiness(sortedCombatReadinessList);
         //combatReadinessBar.Update(sortedCombatReadinessList);
+        readyToClick = true;
 
+        //Debug.Log("processCombatReadiness ends");
     }
+
+
+
+
+
+    /// <summary>
+    /// awaitingInput state related functions
+    /// </summary>
+    public void handleAwaitingInputPhase(string clickedEnemyName)
+    {
+        //Debug.Log("handleAwaitingInput starts");
+        //anim.SetBool("isMyTurn", false);
+        
+
+        //Debug.Log("Player: " + sortedCharacterData[currentPlayerIndex].character_name);
+        //printPlayOrder(playOrderDataList);
+
+        Debug.Log(sortedCharacterList[currentPlayerIndex].character_name + " selected " + clickedEnemyName + " to attack.");
+        currentOponentIndex = indexSortedCharacterData(clickedEnemyName);
+
+        if (sortedCharacterList[currentOponentIndex].character_health > 0)
+        {
+            //Debug.Log("Friend Position:Enemy Position = " + (1 + currentPlayerIndex) + ":" + (1 + currentEnemyIndex));
+
+            gameState = GameState.AttackOn;
+            readyToClick = false;
+            //Debug.Log(gameState + " in handleAwaitingInputPhase");
+        }
+        else
+        {
+            Debug.Log("The selected enemy is already dead. Choose another enemy.");
+            readyToClick = true;
+        }
+
+        //readyToClick = false;
+        //Debug.Log("handleAwaitingInput ends");
+    }
+
+
+    private int indexSortedCharacterData(string enemyName)
+    {
+        for (int i = 0; i < sortedCharacterList.Count; i++)
+        {
+            //Debug.Log(enemyName + " : " + sortedCharacterData[i].character_name + " : " + sortedCharacterData[i].character_speed);
+            if (enemyName == sortedCharacterList[i].character_name)
+            {
+                //Debug.Log("Clicked Enemy Index: " + i);
+                //currentEnemyIndex = i;
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
+
+
+
+
+ 
 
     public void printCombatReadiness(List<CombatReadinessData> combatReadinessList)
     {
@@ -659,6 +657,7 @@ public class TurnManager : MonoBehaviour
   
 IEnumerator MoveToTarget()
     {
+        Debug.Log("MoveToTarget starts");
         //Debug.Log("name: " + sortedCharacterList[currentPlayerIndex].character_name + ", speed: " + sortedCharacterList[currentPlayerIndex].character_speed);
         float duration = 0.5f; // The total time the movement should take
         duration = 25f/sortedCharacterList[currentPlayerIndex].character_speed;
@@ -735,8 +734,10 @@ IEnumerator MoveToTarget()
         _gameObjectP.transform.position = targetPosition;
 
         // game state update
-        gameState = GameState.InitiateTurn;
+        gameState = GameState.InitiatingTurn;
         //gameState = GameState.AwaitingInput;
+
+        Debug.Log("MoveToTarget ends");
     }
 
 
@@ -748,8 +749,20 @@ IEnumerator MoveToTarget()
         Debug.Log("3 seconds passed! Coroutine finished.");
     }
 
+
+    /// <summary>
+    ///  state related functions
+    /// </summary>
     void handleAttack()
     {
+        Debug.Log("handleAttack starts");
+        if(currentPlayerIndex < 4)
+        {
+            characterAnimRefs[currentPlayerIndex].SetBool("isMyTurn", false);            
+        }
+
+
+
         Debug.Log(gameState + " in handdleAttack");
         //Pause(3);
         //indx = new List<int> { currentPlayerIndex, currentOponentIndex };
@@ -776,7 +789,7 @@ IEnumerator MoveToTarget()
         //printCharacterData();
 
         // destroy a character if no health
-        handleNoHealth();
+        destroyCharacterAndIcon();
 
         //gameState = GameState.AttackOver;
         //gameState = GameState.InitiateTurn;
@@ -790,6 +803,7 @@ IEnumerator MoveToTarget()
         //Debug.Log(getWinner() + " won the game");
 
         //isMyTurn = false;
+        Debug.Log("handleAttack ends");
     }
 
 
@@ -878,8 +892,8 @@ IEnumerator MoveToTarget()
     {
         switch (gameState)
         {
-            case GameState.DataNotReady:
-                break;
+            //case GameState.DataNotReady:
+            //    break;
 
             case GameState.AwaitingInput:
                 //choosePlayer();
@@ -890,7 +904,7 @@ IEnumerator MoveToTarget()
                 handleAttack();
                 break;
 
-            case GameState.InitiateTurn:
+            case GameState.InitiatingTurn:
                 //Debug.Log(isMyTurn);
                 initiateTurn();
                 break;
@@ -911,18 +925,19 @@ IEnumerator MoveToTarget()
         //gameState = GameState.GameOver;
         //gameState = GameState.DataNotReady;
         //Debug.Log("Manager script Start, executed.");
-        Debug.Log("GameState in TurnManager Start: " + gameState);
+        //Debug.Log("TurnManager, Start executed");
+        //Debug.Log("GameState in TurnManager Start: " + gameState);
 
         currentActiveCharacterIndex = 0;
         currentPlayerIndex = -1;
 
-        Debug.Log("CharacterAnimRefs Parameters:");
+        //Debug.Log("CharacterAnimRefs Parameters:");
         for (int i = 0; i < characterAnimRefs.Count; i++)
         {
             characterAnimRefs[i].SetBool("isMyTurn", false);
-            Debug.Log(characterAnimRefs[i].GetBool("isMyTurn"));
+            //Debug.Log(characterAnimRefs[i].GetBool("isMyTurn"));
         }
-        characterAnimRefs[0].SetBool("isMyTurn", true);
+        //characterAnimRefs[2].SetBool("isMyTurn", true);
 
         //printCharacterData();
         //animator = GetComponent<Animator>();
@@ -948,10 +963,193 @@ IEnumerator MoveToTarget()
         }
         else
         {
-            handleGameFlow();
+            //handleGameFlow();
         }
 
-        /*
+        switch (gameState)
+        {
+            //case GameState.DataNotReady:
+            case GameState.GettingCharacterData:
+                //character.loadCharacterData();
+                getCharacterData();
+                break;
+
+            case GameState.InitiatingTurn:
+                //Debug.Log(isMyTurn);
+                initiateTurn();
+                break;
+
+            case GameState.AwaitingInput:
+                //choosePlayer();
+                break;
+
+            case GameState.AttackOn:
+                //Debug.Log(isMyTurn);
+                handleAttack();
+                break;
+
+
+            default:
+                break;
+        }
+
+    }
+}
+
+
+
+
+/*
+
+
+    void printPlayOrder(List<PlayOrderData> dataList)
+    {
+        for (int i = 0; i < NumCharacters * NumLaps; i++)
+        {
+            Debug.Log("index: " + dataList[i].playerIndex + ", speed: " + dataList[i].playerSpeed + ", lap_time: " + dataList[i].lapTime);
+        }
+
+    }
+
+
+    public void generatePlayOrderIndex(List<PlayOrderData> sortedPlayOrderData)
+    {
+        for (int i = 0; i < sortedPlayOrderData.Count; i++)
+        {
+            //Debug.Log(sortedPlayOrderData[i].playerIndex);
+            playOrderIndex.Enqueue(sortedPlayOrderData[i].playerIndex);
+        }
+
+        //Debug.Log(playOrderIndex.Count);
+    }
+
+    void printPlayOrderList(List<PlayOrderData> _playOrderList)
+    {
+        Debug.Log("Printing play order list data ....");
+        for (int i = 0; i < _playOrderList.Count; i++)
+        {
+            int _index = _playOrderList[i].playerIndex;
+            int _speed = _playOrderList[i].playerSpeed;
+            float _lap_time = _playOrderList[i].lapTime;
+
+            Debug.Log("index: " + _index + ", speed: " + _speed + ", lap time: " + _lap_time);
+        }
+    }
+
+    void printCharacterList(List<CharacterData> _characterList)
+    {
+        foreach (var p in _characterList)
+        {
+            Debug.Log($"index: {(int)p.character_position}, name: {p.character_name}, speed: {p.character_speed}, attack power: {p.character_attack_power}, health: {p.character_health}");
+        }
+    }
+
+
+    void printSortedPlayOrderIndex()
+    {
+        for (int i = 0; i < playOrderIndex.Count; i++)
+        {
+            if (playOrderIndex.Count > 0)
+            {
+                // Dequeue removes and returns the element at the front
+                int currentPlayerIndex = playOrderIndex.Dequeue();
+                Debug.Log($"current player index dequeued and processed: {currentPlayerIndex}. Queue count: {playOrderIndex.Count}");
+
+                int nextPlayerIndex = playOrderIndex.Peek();
+                Debug.Log($"Next Player Index to be processed (peeked): {nextPlayerIndex}. Queue count: {playOrderIndex.Count}");
+            }
+            else
+            {
+                Debug.LogWarning("Player Index queue is empty. No index to process.");
+            }
+
+        }
+
+    }
+
+    void enqueSortedPlayOrderDataList(List<PlayOrderData> sortedPlayOrderDataList)
+    {
+        playOrderDataQue = new Queue<PlayOrderData>();
+
+        for (int i = 0; i < sortedPlayOrderDataList.Count; i++)
+        {
+            //Debug.Log("hello");
+            playOrderDataQue.Enqueue(sortedPlayOrderDataList[i]);
+        }
+
+        //Debug.Log("queued playOrderDataList length: " + playOrderDataListQue.Count);
+
+    }
+
+
+    void printSortedPlayOrder(List<PlayOrderData> sortedDataList)
+    {
+
+        foreach (var p in sortedDataList)
+        {
+            Debug.Log($"Index: {p.playerIndex}, Speed: {p.playerSpeed}, Lap Time: {p.lapTime}");
+        }
+    }
+
+    public void sendSortedCharacterData(List<CharacterData> characters)
+    {
+        Debug.Log("sendSortedCharacterData starts");
+        //Debug.Log("Receiving character data in TurnManager");
+        sortedCharacterList = characters;
+        //dataReceived = true;
+
+        // print character data
+        printCharacterList(characters);
+        // generatePlayOrder
+        Debug.Log("Calling generatePlayOrder");
+        generatePlayOrder();
+
+        gameState = GameState.AwaitingInput;
+
+        //Debug.Log("sendSortedCharacterDate successful.");
+        //Debug.Log("GameState in TurnManager, sendSortedCharacterData: " + gameState);
+        Debug.Log("sendSortedCharacterData ends");
+    }
+
+
+
+    public void getCharacterData2(List<CharacterData> characters)
+    {
+        Debug.Log("getCharacterData starts");
+        //Debug.Log("Receiving character data in TurnManager");
+        sortedCharacterList = characters;
+        //dataReceived = true;
+
+        // print character data
+        //printCharacterList(characters);
+        // generatePlayOrder
+        Debug.Log("Calling generatePlayOrder");
+        generatePlayOrder();
+
+        gameState = GameState.AwaitingInput;
+
+        //Debug.Log("sendSortedCharacterDate successful.");
+        //Debug.Log("GameState in TurnManager, sendSortedCharacterData: " + gameState);
+        Debug.Log("getCharacterData ends");
+    }
+
+
+
+
+
+
+*/
+
+
+
+
+
+
+
+/*
+
+
+
         if (gameState == GameState.GameOver)
         {
             Debug.Log("Quitting Game!");
@@ -991,11 +1189,5 @@ IEnumerator MoveToTarget()
             Debug.Log("error?");
             return;
         }
-        */   
-        
 
-        
-        
-
-    }
-}
+*/

@@ -348,7 +348,7 @@ GameObject:
   - component: {fileID: 117399999}
   - component: {fileID: 117400000}
   m_Layer: 0
-  m_Name: SwordmanAnim
+  m_Name: BrownHorseAnim
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -613,7 +613,7 @@ GameObject:
   - component: {fileID: 165565909}
   - component: {fileID: 165565910}
   m_Layer: 0
-  m_Name: SwordmanAnim
+  m_Name: SwordManAnim
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1555,7 +1555,7 @@ GameObject:
   - component: {fileID: 531072294}
   - component: {fileID: 531072295}
   m_Layer: 0
-  m_Name: SwordmanAnim
+  m_Name: SpearSoldierAnim
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2961,7 +2961,7 @@ GameObject:
   - component: {fileID: 1348869942}
   - component: {fileID: 1348869943}
   m_Layer: 0
-  m_Name: SwordmanAnim
+  m_Name: HammerManAnim
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

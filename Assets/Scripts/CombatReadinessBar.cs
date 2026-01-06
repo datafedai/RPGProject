@@ -13,6 +13,7 @@ public class CombatReadinessBar : MonoBehaviour
 
     public void processCombatReadinessBar(List<CombatReadinessData> sortedCombatReadinessList)
     {
+        //Debug.Log("processCombatReadinessBar starts");
         //Debug.Log("CRBar count: " + sortedCombatReadinessList.Count);
         //turnManager.printCombatReadiness(sortedCombatReadinessList);
 
@@ -37,6 +38,8 @@ public class CombatReadinessBar : MonoBehaviour
             }
 
         }
+
+        //Debug.Log("processCombatReadinessBar ends");
     }
 
 }
