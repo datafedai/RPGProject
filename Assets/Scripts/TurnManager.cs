@@ -525,6 +525,16 @@ public class TurnManager : MonoBehaviour
 
         //gameState = GameState.AttackOver;
         //gameState = GameState.InitiateTurn;
+
+        if(currentPlayerIndex < 4)
+        {
+            characterAnimRefs[currentPlayerIndex].SetBool("attackOn", false);
+
+            // trigger player attack animation
+            characterAnimRefs[currentPlayerIndex].SetBool("attackOver", true);            
+        }
+
+
         gameState = GameState.AwaitingInput;
         Debug.Log(gameState + " in handdleAttack");
 
