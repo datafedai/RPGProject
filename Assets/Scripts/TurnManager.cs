@@ -485,8 +485,13 @@ public class TurnManager : MonoBehaviour
         Debug.Log("handleAttack starts");
         if(currentPlayerIndex < 4)
         {
-            characterAnimRefs[currentPlayerIndex].SetBool("isMyTurn", false);            
+            characterAnimRefs[currentPlayerIndex].SetBool("isMyTurn", false);
+
+            // trigger player attack animation
+            characterAnimRefs[currentPlayerIndex].SetBool("attackOn", true);            
         }
+
+
 
 
 
@@ -549,6 +554,10 @@ IEnumerator MoveToTarget()
         // find player and oponent objects
         _gameObjectP = GameObject.Find(sortedCharacterList[currentPlayerIndex].character_name);
         _gameObjectO = GameObject.Find(sortedCharacterList[currentOponentIndex].character_name);
+
+
+  
+
               
         // calculate the vector from player position to oponent position
         moveVector = (_gameObjectO.transform.position - _gameObjectP.transform.position);

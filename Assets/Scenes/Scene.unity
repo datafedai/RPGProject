@@ -1067,6 +1067,7 @@ MonoBehaviour:
   - {fileID: 531072295}
   - {fileID: 1348869943}
   - {fileID: 117400000}
+  readyToClick: 1
 --- !u!114 &448328917
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1107,8 +1108,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Character
   turnManager: {fileID: 448328916}
   characterDataList: []
-  characterNames: []
   speedPowerList: []
+  characterNames: []
 --- !u!4 &448328920
 Transform:
   m_ObjectHideFlags: 0
@@ -4878,12 +4879,12 @@ Transform:
   m_Children:
   - {fileID: 402999962}
   - {fileID: 2112256525}
+  - {fileID: 1844726709}
   - {fileID: 145498064}
-  - {fileID: 1152993656}
+  - {fileID: 873885780}
   - {fileID: 1410519758}
   - {fileID: 1560401234}
-  - {fileID: 873885780}
-  - {fileID: 1844726709}
+  - {fileID: 1152993656}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2083733732
@@ -5324,6 +5325,7 @@ MonoBehaviour:
   _gameObjectO: {fileID: 0}
   moveVector: {x: 0, y: 0, z: 0}
   characterAnimRefs: []
+  readyToClick: 1
 --- !u!114 &2131350448
 MonoBehaviour:
   m_ObjectHideFlags: 0
