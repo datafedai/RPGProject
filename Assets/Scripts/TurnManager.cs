@@ -485,6 +485,7 @@ public class TurnManager : MonoBehaviour
         Debug.Log("handleAttack starts");
         if(currentPlayerIndex < 4)
         {
+            characterAnimRefs[currentPlayerIndex].SetBool("attackOver", false);
             characterAnimRefs[currentPlayerIndex].SetBool("isMyTurn", false);
 
             // trigger player attack animation
@@ -525,7 +526,7 @@ public class TurnManager : MonoBehaviour
 
         //gameState = GameState.AttackOver;
         //gameState = GameState.InitiateTurn;
-
+/*
         if(currentPlayerIndex < 4)
         {
             characterAnimRefs[currentPlayerIndex].SetBool("attackOn", false);
@@ -533,7 +534,7 @@ public class TurnManager : MonoBehaviour
             // trigger player attack animation
             characterAnimRefs[currentPlayerIndex].SetBool("attackOver", true);            
         }
-
+*/
 
         gameState = GameState.AwaitingInput;
         Debug.Log(gameState + " in handdleAttack");
