@@ -252,7 +252,7 @@ public class TurnManager : MonoBehaviour
         //Debug.Log("initiateTutn starts");
 
         // Cleans up dead characters from last turn
-        removeDeadPlayer(sortedPlayOrderList, sortedCharacterList); 
+        //removeDeadPlayer(sortedPlayOrderList, sortedCharacterList); 
         
         // remove the previous player from the play order list
         if(sortedPlayOrderList.Count > 0)
@@ -345,111 +345,9 @@ public class TurnManager : MonoBehaviour
     }
 
 
-    void removeDeadPlayer(List<PlayOrderData> _playOrderList, List<CharacterData> _characterList)
-    {
-        //Debug.Log("before: " + _playOrderList.Count);
-        //character.printCharacterData(_characterList);
-        foreach (var c in _characterList)
-        {
-            int indx = -1;
-            if (c.character_health <= 0 && c.is_character_alive == true)
-            {
-                //i = (int)c.character_position;
-                indx = c.character_index;
-
-                // remove the dead character from the play order list
-                _playOrderList.RemoveAll(_playOrderList => _playOrderList.playerIndex == indx);
-                c.is_character_alive = false;
-                Debug.Log("index removed: " + indx + " health: " + c.character_health);
-
-                // destroy character object and icon object
-                destroyCharacterAndIcon();
-            }
-        }
-
-        //Debug.Log("after: " + _playOrderList.Count);
-        //character.printCharacterData(_characterList);
-        updateLives();
-
-    }
 
 
-    void destroyCharacterAndIcon() //TODO: rename to more appropriate name for cleanup
-    {
-        //printCharacterList(sortedCharacterList);
 
-        int i;
-        // for each character
-        for (int j = 0; j < sortedCharacterList.Count; j++)
-        {
-            i = sortedCharacterList[j].character_index;
-            // if no Health score
-            if (sortedCharacterList[i].character_health <= 0)
-            {
-                // get the character without Health score to fight
-                GameObject gameObject = GameObject.Find(sortedCharacterList[i].character_name);
-
-                // if not already destroyed
-                if (gameObject != null)
-                {
-                    // destroy player
-                    Destroy(gameObject);
-                    Debug.Log(sortedCharacterList[i].character_name + " died.");
-                    //buttonGreenEyes.gameObject.SetActive(false);
-
-
-                    // destroy player icon on CombatReadinessBar
-                    //Debug.Log("dead character name: " + gameObject.name);
-                    // destroy icon on CombatReadinessBar 
-                    string characterName = sortedCharacterList[i].character_name;
-                    string childName = "";
-                    if (characterName == "Sword Man")
-                    {
-                        childName = "zero";
-                    }
-                    if (characterName == "Spear Soldier")
-                    {
-                        childName = "one";
-                    }
-                    if (characterName == "Hammer Man")
-                    {
-                        childName = "two";
-                    }
-                    if (characterName == "Brown Horse")
-                    {
-                        childName = "three";
-                    }
-                    if (characterName == "Green Eyes")
-                    {
-                        childName = "four";
-                    }
-                    if (characterName == "Black Horse")
-                    {
-                        childName = "five";
-                    }
-                    if (characterName == "Sword Pirate")
-                    {
-                        childName = "six";
-                    }
-                    if (characterName == "Green Sword")
-                    {
-                        childName = "seven";
-                    }
-
-                    if (childName != "")
-                    {
-                        GameObject dest = GameObject.Find(childName);
-                        if (dest != null)
-                        {
-                            Destroy(dest);
-                        }
-
-                        Debug.Log(dest + " destroyed");
-                    }
-                }
-            }
-        }
-    }
 
 
 
@@ -578,86 +476,71 @@ public class TurnManager : MonoBehaviour
 
  
 
-    public void printCombatReadiness(List<CombatReadinessData> combatReadinessList)
+
+    /// <summary>
+    ///  attack related functions
+    /// </summary>
+    void handleAttack()
     {
-        foreach (var p in combatReadinessList)
+        Debug.Log("handleAttack starts");
+        if(currentPlayerIndex < 4)
         {
-            Debug.Log($"index: {p.playerIndex}, lapTime: {p.lapTime}, currentTime: {p.currentTime}, currentPosition: {p.currentPosition}, heightPercentile: {p.heightPercentile}");
+            characterAnimRefs[currentPlayerIndex].SetBool("isMyTurn", false);            
         }
+
+
+
+        Debug.Log(gameState + " in handdleAttack");
+        //Pause(3);
+        //indx = new List<int> { currentPlayerIndex, currentOponentIndex };
+        //attackAnimationData = getAttackAnimationData(indx, sortedCharacterList);
+        //Debug.Log("Invoking AttackAnimation");
+        //AttackAnimation?.Invoke(_gameObjectP, _gameObjectO);
+
+        // call handleAttackAnimation function to move player close to oponent
+        //handleAttackAnimation();
+
+        StartCoroutine(MoveToTarget());
+
+
+        //Debug.Log("before attack");
+        //printCharacterData();
+        //printHealthData("before attack");
+        printAttackPowerData();
+
+        updateHealth();
+
+        //Debug.Log("after attack");
+        printHealthData("after attack");
+        //Pause(3);
+        //printCharacterData();
+
+        // destroy a character if no health
+        //destroyCharacterAndIcon();
+
+        //gameState = GameState.AttackOver;
+        //gameState = GameState.InitiateTurn;
+        gameState = GameState.AwaitingInput;
+        Debug.Log(gameState + " in handdleAttack");
+
+        // update remaining lives
+        // if no lives left on eather team, game is over
+        updateLives();
+        //checkForWin();
+        //Debug.Log(getWinner() + " won the game");
+
+        //isMyTurn = false;
+        Debug.Log("handleAttack ends");
     }
 
-    void printHealthScore()
-    {
-        Debug.Log("Health: " + sortedCharacterList[0].character_health + " : " + sortedCharacterList[1].character_health + " : "
-        + sortedCharacterList[2].character_health + " : " + sortedCharacterList[3].character_health + " : " + sortedCharacterList[4].character_health
-        + " : " + sortedCharacterList[5].character_health + " : " + sortedCharacterList[6].character_health + " : " + sortedCharacterList[7].character_health);
-    }
 
-    void printHealthData(string timePoint)
-    {
-        Debug.Log("Health " + timePoint + " : " + sortedCharacterList[0].character_health + " : " + sortedCharacterList[1].character_health + " : "
-        + sortedCharacterList[2].character_health + " : " + sortedCharacterList[3].character_health + " : " + sortedCharacterList[4].character_health
-        + " : " + sortedCharacterList[5].character_health + " : " + sortedCharacterList[6].character_health + " : " + sortedCharacterList[7].character_health);
-    }
 
-    void printAttackPowerData()
-    {
-        Debug.Log("Character AttackPower: " + sortedCharacterList[0].character_attack_power + " : " + sortedCharacterList[1].character_attack_power + " : "
-        + sortedCharacterList[2].character_attack_power + " : " + sortedCharacterList[3].character_attack_power + " : " + sortedCharacterList[4].character_attack_power
-        + " : " + sortedCharacterList[5].character_attack_power + " : " + sortedCharacterList[6].character_attack_power + " : " + sortedCharacterList[7].character_attack_power);
 
-    }
-
-    void printCharacterData()
-    {
-        for (int i = 0; i < sortedCharacterList.Count; i++)
-        {
-            currentActiveCharacterIndex = i;
-            Debug.Log("Index: " + ((int)sortedCharacterList[currentActiveCharacterIndex].character_position) + ", "
-            + "Name: " + sortedCharacterList[currentActiveCharacterIndex].character_name + ", "
-            + "isActive? " + sortedCharacterList[currentActiveCharacterIndex].is_character_alive + ", "
-            + "Speed: " + sortedCharacterList[currentActiveCharacterIndex].character_speed + ", "
-            + "Position: " + sortedCharacterList[currentActiveCharacterIndex].character_position + ", "
-            + "Health: " + sortedCharacterList[currentActiveCharacterIndex].character_health + ", "
-            + "AttackPower: " + sortedCharacterList[currentActiveCharacterIndex].character_attack_power);
-
-            //gameState = GameState.Playing;
-        }
-    }
-
-    void executePlayerCommand()
-    {
-
-    }
-
-    void handleAttackAnimation()
-    {
-        float attackProximityIndex = 0.9f;
-
-        // find player and oponent objects
-        _gameObjectP = GameObject.Find(sortedCharacterList[currentPlayerIndex].character_name);
-        _gameObjectO = GameObject.Find(sortedCharacterList[currentOponentIndex].character_name);
-
-        Debug.Log("Player Position: " + _gameObjectP.transform.position);
-        Debug.Log("Oponent Position: " + _gameObjectO.transform.position);
-
-        // calculate the vector from player position to oponent position
-        moveVector = (_gameObjectO.transform.position - _gameObjectP.transform.position)*attackProximityIndex;
-
-/*
-        // move player to attack
-        _gameObjectP.transform.position = Vector3.Lerp(_gameObjectP.transform.position, _gameObjectP.transform.position + moveVector, 1f);
-
-        // Code here runs after the delay
-        Invoke("microTimer", 2f);
-*/
-
-    }
 
   
 IEnumerator MoveToTarget()
     {
-        Debug.Log("MoveToTarget starts");
+        //Debug.Log("MoveToTarget starts");
         //Debug.Log("name: " + sortedCharacterList[currentPlayerIndex].character_name + ", speed: " + sortedCharacterList[currentPlayerIndex].character_speed);
         float duration = 0.5f; // The total time the movement should take
         duration = 25f/sortedCharacterList[currentPlayerIndex].character_speed;
@@ -700,11 +583,17 @@ IEnumerator MoveToTarget()
         // Ensure the object reaches the exact target position at the end
         _gameObjectP.transform.position = targetPosition + new Vector3(0f, 0f, 3f);
 
-        // pause
-        //Invoke("microTimer", 2f);
-        //Debug.Log("Coroutine started! Waiting 3 seconds...");
-        yield return new WaitForSeconds(2); // Pauses here for 3 seconds
-        //Debug.Log("3 seconds passed! Coroutine finished.");
+
+        //Debug.Log("Coroutine started! Waiting 2 seconds...");
+        //pause for a second
+        yield return new WaitForSeconds(1); 
+        //and update health and destroy the oponent if applicable
+        updateHealth();
+        updateLives();
+        removeDeadPlayer();
+        //pause another second before move back
+        yield return new WaitForSeconds(1); // Pauses here for 2 seconds
+
 
         // MoveBack
         startPosition = _gameObjectP.transform.position - new Vector3(0f, 0f, 3f);
@@ -737,75 +626,126 @@ IEnumerator MoveToTarget()
         gameState = GameState.InitiatingTurn;
         //gameState = GameState.AwaitingInput;
 
-        Debug.Log("MoveToTarget ends");
+        //Debug.Log("MoveToTarget ends");
+    }
+
+    //void removeDeadPlayer(List<PlayOrderData> _playOrderList, List<CharacterData> _characterList)
+    void removeDeadPlayer()
+    {
+        List<PlayOrderData> _playOrderList = sortedPlayOrderList; 
+        List<CharacterData> _characterList = sortedCharacterList; 
+
+    
+        //Debug.Log("before: " + _playOrderList.Count);
+        //character.printCharacterData(_characterList);
+        foreach (var c in _characterList)
+        {
+            int indx = -1;
+            if (c.character_health <= 0 && c.is_character_alive == true)
+            {
+                //i = (int)c.character_position;
+                indx = c.character_index;
+
+                // remove the dead character from the play order list
+                _playOrderList.RemoveAll(_playOrderList => _playOrderList.playerIndex == indx);
+                c.is_character_alive = false;
+                Debug.Log("index removed: " + indx + " health: " + c.character_health);
+
+                // destroy character object and icon object
+                destroyCharacterAndIcon();
+            }
+        }
+
+        //Debug.Log("after: " + _playOrderList.Count);
+        //character.printCharacterData(_characterList);
+        updateLives();
+
     }
 
 
 
-    IEnumerator Pause(int num)
+    void destroyCharacterAndIcon() //TODO: rename to more appropriate name for cleanup
     {
-        Debug.Log("Coroutine started! Waiting 3 seconds...");
-        yield return new WaitForSeconds(num); // Pauses here for 3 seconds
-        Debug.Log("3 seconds passed! Coroutine finished.");
+        //printCharacterList(sortedCharacterList);
+
+        int i;
+        // for each character
+        for (int j = 0; j < sortedCharacterList.Count; j++)
+        {
+            i = sortedCharacterList[j].character_index;
+            // if no Health score
+            if (sortedCharacterList[i].character_health <= 0)
+            {
+                // get the character without Health score to fight
+                GameObject gameObject = GameObject.Find(sortedCharacterList[i].character_name);
+
+                // if not already destroyed
+                if (gameObject != null)
+                {
+                    // destroy player
+                    Destroy(gameObject);
+                    Debug.Log(sortedCharacterList[i].character_name + " died.");
+                    //buttonGreenEyes.gameObject.SetActive(false);
+
+
+                    // destroy player icon on CombatReadinessBar
+                    //Debug.Log("dead character name: " + gameObject.name);
+                    // destroy icon on CombatReadinessBar 
+                    string characterName = sortedCharacterList[i].character_name;
+                    string childName = "";
+                    if (characterName == "Sword Man")
+                    {
+                        childName = "zero";
+                    }
+                    if (characterName == "Spear Soldier")
+                    {
+                        childName = "one";
+                    }
+                    if (characterName == "Hammer Man")
+                    {
+                        childName = "two";
+                    }
+                    if (characterName == "Brown Horse")
+                    {
+                        childName = "three";
+                    }
+                    if (characterName == "Green Eyes")
+                    {
+                        childName = "four";
+                    }
+                    if (characterName == "Black Horse")
+                    {
+                        childName = "five";
+                    }
+                    if (characterName == "Sword Pirate")
+                    {
+                        childName = "six";
+                    }
+                    if (characterName == "Green Sword")
+                    {
+                        childName = "seven";
+                    }
+
+                    if (childName != "")
+                    {
+                        GameObject dest = GameObject.Find(childName);
+                        if (dest != null)
+                        {
+                            Destroy(dest);
+                        }
+
+                        Debug.Log(dest + " destroyed");
+                    }
+                }
+            }
+        }
     }
 
 
     /// <summary>
-    ///  state related functions
+    ///  stats and print functions
     /// </summary>
-    void handleAttack()
-    {
-        Debug.Log("handleAttack starts");
-        if(currentPlayerIndex < 4)
-        {
-            characterAnimRefs[currentPlayerIndex].SetBool("isMyTurn", false);            
-        }
-
-
-
-        Debug.Log(gameState + " in handdleAttack");
-        //Pause(3);
-        //indx = new List<int> { currentPlayerIndex, currentOponentIndex };
-        //attackAnimationData = getAttackAnimationData(indx, sortedCharacterList);
-        //Debug.Log("Invoking AttackAnimation");
-        //AttackAnimation?.Invoke(_gameObjectP, _gameObjectO);
-
-        // call handleAttackAnimation function to move player close to oponent
-        //handleAttackAnimation();
-
-        StartCoroutine(MoveToTarget());
-
-
-        //Debug.Log("before attack");
-        //printCharacterData();
-        //printHealthData("before attack");
-        printAttackPowerData();
-
-        updateHealth();
-
-        //Debug.Log("after attack");
-        printHealthData("after attack");
-        //Pause(3);
-        //printCharacterData();
-
-        // destroy a character if no health
-        destroyCharacterAndIcon();
-
-        //gameState = GameState.AttackOver;
-        //gameState = GameState.InitiateTurn;
-        gameState = GameState.AwaitingInput;
-        Debug.Log(gameState + " in handdleAttack");
-
-        // update remaining lives
-        // if no lives left on eather team, game is over
-        updateLives();
-        //checkForWin();
-        //Debug.Log(getWinner() + " won the game");
-
-        //isMyTurn = false;
-        Debug.Log("handleAttack ends");
-    }
-
+    /// 
 
     private void announceWin()
     {
@@ -888,32 +828,23 @@ IEnumerator MoveToTarget()
     }
 
 
-    void handleGameFlow()
+
+
+
+    void printHealthData(string timePoint)
     {
-        switch (gameState)
-        {
-            //case GameState.DataNotReady:
-            //    break;
-
-            case GameState.AwaitingInput:
-                //choosePlayer();
-                break;
-
-            case GameState.AttackOn:
-                //Debug.Log(isMyTurn);
-                handleAttack();
-                break;
-
-            case GameState.InitiatingTurn:
-                //Debug.Log(isMyTurn);
-                initiateTurn();
-                break;
-
-            default:
-                break;
-        }
+        Debug.Log("Health " + timePoint + " : " + sortedCharacterList[0].character_health + " : " + sortedCharacterList[1].character_health + " : "
+        + sortedCharacterList[2].character_health + " : " + sortedCharacterList[3].character_health + " : " + sortedCharacterList[4].character_health
+        + " : " + sortedCharacterList[5].character_health + " : " + sortedCharacterList[6].character_health + " : " + sortedCharacterList[7].character_health);
     }
 
+    void printAttackPowerData()
+    {
+        Debug.Log("Character AttackPower: " + sortedCharacterList[0].character_attack_power + " : " + sortedCharacterList[1].character_attack_power + " : "
+        + sortedCharacterList[2].character_attack_power + " : " + sortedCharacterList[3].character_attack_power + " : " + sortedCharacterList[4].character_attack_power
+        + " : " + sortedCharacterList[5].character_attack_power + " : " + sortedCharacterList[6].character_attack_power + " : " + sortedCharacterList[7].character_attack_power);
+
+    }
 
 
 
@@ -1000,6 +931,112 @@ IEnumerator MoveToTarget()
 
 
 /*
+
+
+
+
+
+    void handleGameFlow()
+    {
+        switch (gameState)
+        {
+            //case GameState.DataNotReady:
+            //    break;
+
+            case GameState.AwaitingInput:
+                //choosePlayer();
+                break;
+
+            case GameState.AttackOn:
+                //Debug.Log(isMyTurn);
+                handleAttack();
+                break;
+
+            case GameState.InitiatingTurn:
+                //Debug.Log(isMyTurn);
+                initiateTurn();
+                break;
+
+            default:
+                break;
+        }
+    }
+
+
+
+
+    IEnumerator Pause(int num)
+    {
+        Debug.Log("Coroutine started! Waiting 3 seconds...");
+        yield return new WaitForSeconds(num); // Pauses here for 3 seconds
+        Debug.Log("3 seconds passed! Coroutine finished.");
+    }
+
+
+
+
+
+    void handleAttackAnimation()
+    {
+        float attackProximityIndex = 0.9f;
+
+        // find player and oponent objects
+        _gameObjectP = GameObject.Find(sortedCharacterList[currentPlayerIndex].character_name);
+        _gameObjectO = GameObject.Find(sortedCharacterList[currentOponentIndex].character_name);
+
+        Debug.Log("Player Position: " + _gameObjectP.transform.position);
+        Debug.Log("Oponent Position: " + _gameObjectO.transform.position);
+
+        // calculate the vector from player position to oponent position
+        moveVector = (_gameObjectO.transform.position - _gameObjectP.transform.position)*attackProximityIndex;
+
+
+        // move player to attack
+        //_gameObjectP.transform.position = Vector3.Lerp(_gameObjectP.transform.position, _gameObjectP.transform.position + moveVector, 1f);
+
+        // Code here runs after the delay
+        //Invoke("microTimer", 2f);
+
+
+    }
+
+
+
+    void printCharacterData()
+    {
+        for (int i = 0; i < sortedCharacterList.Count; i++)
+        {
+            currentActiveCharacterIndex = i;
+            Debug.Log("Index: " + ((int)sortedCharacterList[currentActiveCharacterIndex].character_position) + ", "
+            + "Name: " + sortedCharacterList[currentActiveCharacterIndex].character_name + ", "
+            + "isActive? " + sortedCharacterList[currentActiveCharacterIndex].is_character_alive + ", "
+            + "Speed: " + sortedCharacterList[currentActiveCharacterIndex].character_speed + ", "
+            + "Position: " + sortedCharacterList[currentActiveCharacterIndex].character_position + ", "
+            + "Health: " + sortedCharacterList[currentActiveCharacterIndex].character_health + ", "
+            + "AttackPower: " + sortedCharacterList[currentActiveCharacterIndex].character_attack_power);
+
+            //gameState = GameState.Playing;
+        }
+    }
+
+
+
+    public void printCombatReadiness(List<CombatReadinessData> combatReadinessList)
+    {
+        foreach (var p in combatReadinessList)
+        {
+            Debug.Log($"index: {p.playerIndex}, lapTime: {p.lapTime}, currentTime: {p.currentTime}, currentPosition: {p.currentPosition}, heightPercentile: {p.heightPercentile}");
+        }
+    }
+
+    void printHealthScore()
+    {
+        Debug.Log("Health: " + sortedCharacterList[0].character_health + " : " + sortedCharacterList[1].character_health + " : "
+        + sortedCharacterList[2].character_health + " : " + sortedCharacterList[3].character_health + " : " + sortedCharacterList[4].character_health
+        + " : " + sortedCharacterList[5].character_health + " : " + sortedCharacterList[6].character_health + " : " + sortedCharacterList[7].character_health);
+    }
+
+
 
 
     void printPlayOrder(List<PlayOrderData> dataList)
