@@ -283,9 +283,17 @@ public class TurnManager : MonoBehaviour
         string currentPlayerName = sortedCharacterList[currentPlayerIndex].character_name;
         Position position = sortedCharacterList[currentPlayerIndex].character_position;
         Debug.Log("Current Player: " + currentPlayerName + " at " + position);
+
+
+        // animation:
+        // idle => ready_loop
         if(currentPlayerIndex < 4)
         {
-            characterAnimRefs[currentPlayerIndex].SetBool("isMyTurn", true);            
+            characterAnimRefs[currentPlayerIndex].SetBool("isMyTurn", true); 
+            //characterAnimRefs[currentPlayerIndex].SetBool("attackReady", false);
+            //characterAnimRefs[currentPlayerIndex].SetBool("attackOn", false);
+            //characterAnimRefs[currentPlayerIndex].SetBool("attackOver", false);
+            Debug.Log("ready_loop");              
         }
 
 
@@ -483,15 +491,22 @@ public class TurnManager : MonoBehaviour
     void handleAttack()
     {
         Debug.Log("handleAttack starts");
+        
+        // animation:
+        // ready_loop => ready_os
+        Pause(1);
         if(currentPlayerIndex < 4)
         {
-            characterAnimRefs[currentPlayerIndex].SetBool("attackOver", false);
+            //characterAnimRefs[currentPlayerIndex].SetBool("attackOver", false);
             characterAnimRefs[currentPlayerIndex].SetBool("isMyTurn", false);
 
             // trigger player attack animation
-            characterAnimRefs[currentPlayerIndex].SetBool("attackOn", true);            
+            characterAnimRefs[currentPlayerIndex].SetBool("attackReady", true);   
+            //characterAnimRefs[currentPlayerIndex].SetBool("attackOn", false);
+            //characterAnimRefs[currentPlayerIndex].SetBool("attackOver", false);
+            Debug.Log("attack_ready_os");            
         }
-
+        Pause(1);
 
 
 
@@ -536,6 +551,20 @@ public class TurnManager : MonoBehaviour
         }
 */
 
+
+        // animation:
+        // attack_on => attack_over
+        if(currentPlayerIndex < 4)
+        {
+            // trigger player attack animation
+            //characterAnimRefs[currentPlayerIndex].SetBool("isMyTurn", false); 
+            //characterAnimRefs[currentPlayerIndex].SetBool("attackReady", false);
+            characterAnimRefs[currentPlayerIndex].SetBool("attackOn", false);   
+            characterAnimRefs[currentPlayerIndex].SetBool("attackOver", true);   
+            Debug.Log("attack_over");          
+        }
+
+
         gameState = GameState.AwaitingInput;
         Debug.Log(gameState + " in handdleAttack");
 
@@ -551,7 +580,12 @@ public class TurnManager : MonoBehaviour
 
 
 
-
+    IEnumerator Pause(int num)
+    {
+        Debug.Log("Coroutine started! Waiting 3 seconds...");
+        yield return new WaitForSeconds(num); // Pauses here for 3 seconds
+        Debug.Log("3 seconds passed! Coroutine finished.");
+    }
 
   
 IEnumerator MoveToTarget()
@@ -567,8 +601,17 @@ IEnumerator MoveToTarget()
         _gameObjectO = GameObject.Find(sortedCharacterList[currentOponentIndex].character_name);
 
 
-  
-
+        // animation:
+        // attack_os => attack_on
+        if(currentPlayerIndex < 4)
+        {
+            // trigger player attack animation
+            //characterAnimRefs[currentPlayerIndex].SetBool("isMyTurn", false); 
+            characterAnimRefs[currentPlayerIndex].SetBool("attackReady", false);
+            characterAnimRefs[currentPlayerIndex].SetBool("attackOn", true);
+            //characterAnimRefs[currentPlayerIndex].SetBool("attackOver", false);
+            Debug.Log("attack_on");         
+        }
               
         // calculate the vector from player position to oponent position
         moveVector = (_gameObjectO.transform.position - _gameObjectP.transform.position);
@@ -584,6 +627,10 @@ IEnumerator MoveToTarget()
         //Debug.Log("speed: " + sortedCharacterList[currentPlayerIndex].character_speed);
         while (timeElapsed < duration)
         {
+
+
+
+
             // Calculate the interpolation value (percentage of duration passed)
             float t = timeElapsed / duration;
 
@@ -641,6 +688,10 @@ IEnumerator MoveToTarget()
         //Debug.Log("speed: " + sortedCharacterList[currentPlayerIndex].character_speed);
         // Ensure the object reaches the exact target position at the end
         _gameObjectP.transform.position = targetPosition;
+
+
+
+
 
         // game state update
         gameState = GameState.InitiatingTurn;
@@ -886,6 +937,9 @@ IEnumerator MoveToTarget()
         for (int i = 0; i < characterAnimRefs.Count; i++)
         {
             characterAnimRefs[i].SetBool("isMyTurn", false);
+            characterAnimRefs[i].SetBool("attackReady", false);
+            characterAnimRefs[i].SetBool("attackOn", false);
+            characterAnimRefs[i].SetBool("attackOver", false);
             //Debug.Log(characterAnimRefs[i].GetBool("isMyTurn"));
         }
         //characterAnimRefs[2].SetBool("isMyTurn", true);
