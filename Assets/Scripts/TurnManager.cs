@@ -25,6 +25,7 @@ public enum Position
     Enemy_West
 }
 
+
 public enum GameState
 {
 
@@ -105,8 +106,8 @@ public class TurnManager : MonoBehaviour
     public GameObject _gameObjectO;
     public Vector3 moveVector;
     [SerializeField] List<Animator> characterAnimRefs;
-    //private bool isMyTurnTM;
     public bool readyToClick = true;
+
 
 
 
@@ -286,17 +287,37 @@ public class TurnManager : MonoBehaviour
 
 
         // animation:
-        // idle => ready_loop
+        // idle => ready_os
         if(currentPlayerIndex < 4)
         {
-            characterAnimRefs[currentPlayerIndex].SetBool("isMyTurn", true); 
-            //characterAnimRefs[currentPlayerIndex].SetBool("attackReady", false);
-            //characterAnimRefs[currentPlayerIndex].SetBool("attackOn", false);
-            //characterAnimRefs[currentPlayerIndex].SetBool("attackOver", false);
-            Debug.Log("ready_loop");              
+            //characterAnimRefs[currentPlayerIndex].SetBool("idle", true); 
+            characterAnimRefs[currentPlayerIndex].SetBool("readyOS", true);
+            //characterAnimRefs[currentPlayerIndex].SetBool("readyLOOP", false);
+            //characterAnimRefs[currentPlayerIndex].SetBool("dashOS", false);
+            //characterAnimRefs[currentPlayerIndex].SetBool("dashLOOP", false);
+            //characterAnimRefs[currentPlayerIndex].SetBool("attack", false);
+            //characterAnimRefs[currentPlayerIndex].SetBool("backdashOS", false);
+            //characterAnimRefs[currentPlayerIndex].SetBool("backdashLOOP", false);
+            Debug.Log("ready_os"); 
+            Debug.Log("current player: " + currentPlayerIndex);             
         }
 
-
+        Pause(3);
+        // animation:
+        // ready_os => ready_loop
+        if(currentPlayerIndex < 4)
+        {
+            //characterAnimRefs[currentPlayerIndex].SetBool("idle", true); 
+            //characterAnimRefs[currentPlayerIndex].SetBool("readyOS", false);
+            //characterAnimRefs[currentPlayerIndex].SetBool("readyLOOP", true);
+            //characterAnimRefs[currentPlayerIndex].SetBool("dashOS", false);
+            //characterAnimRefs[currentPlayerIndex].SetBool("dashLOOP", false);
+            //characterAnimRefs[currentPlayerIndex].SetBool("attack", false);
+            //characterAnimRefs[currentPlayerIndex].SetBool("backdashOS", false);
+            //characterAnimRefs[currentPlayerIndex].SetBool("backdashLOOP", false);
+            Debug.Log("ready_loop");    
+            Debug.Log("current player: " + currentPlayerIndex);             
+        }
 
 
         //Debug.Log("dequed data: " + "index, " + playOrderData.playerIndex + "  speed, " + playOrderData.playerSpeed + "  lap, " + playOrderData.lapTime);
@@ -450,6 +471,22 @@ public class TurnManager : MonoBehaviour
             gameState = GameState.AttackOn;
             readyToClick = false;
             //Debug.Log(gameState + " in handleAwaitingInputPhase");
+
+
+        if(currentPlayerIndex < 4)
+        {
+            //characterAnimRefs[currentPlayerIndex].SetBool("idle", false); 
+            //characterAnimRefs[currentPlayerIndex].SetBool("readyOS", false);
+            characterAnimRefs[currentPlayerIndex].SetBool("readyLOOP", false);
+            characterAnimRefs[currentPlayerIndex].SetBool("dashOS", true);
+            //characterAnimRefs[currentPlayerIndex].SetBool("dashLOOP", false);
+            //characterAnimRefs[currentPlayerIndex].SetBool("attack", false);
+            //characterAnimRefs[currentPlayerIndex].SetBool("backdashOS", false);
+            //characterAnimRefs[currentPlayerIndex].SetBool("backdashLOOP", false);
+            Debug.Log("dash_os");              
+        }
+
+
         }
         else
         {
@@ -493,23 +530,37 @@ public class TurnManager : MonoBehaviour
         Debug.Log("handleAttack starts");
         
         // animation:
-        // ready_loop => ready_os
-        Pause(1);
+        // ready_loop => dash_os
         if(currentPlayerIndex < 4)
         {
-            //characterAnimRefs[currentPlayerIndex].SetBool("attackOver", false);
-            characterAnimRefs[currentPlayerIndex].SetBool("isMyTurn", false);
-
-            // trigger player attack animation
-            characterAnimRefs[currentPlayerIndex].SetBool("attackReady", true);   
-            //characterAnimRefs[currentPlayerIndex].SetBool("attackOn", false);
-            //characterAnimRefs[currentPlayerIndex].SetBool("attackOver", false);
-            Debug.Log("attack_ready_os");            
+            //characterAnimRefs[currentPlayerIndex].SetBool("idle", false); 
+            //characterAnimRefs[currentPlayerIndex].SetBool("readyOS", false);
+            //characterAnimRefs[currentPlayerIndex].SetBool("readyLOOP", false);
+            //characterAnimRefs[currentPlayerIndex].SetBool("dashOS", true);
+            //characterAnimRefs[currentPlayerIndex].SetBool("dashLOOP", false);
+            //characterAnimRefs[currentPlayerIndex].SetBool("attack", false);
+            //characterAnimRefs[currentPlayerIndex].SetBool("backdashOS", false);
+            //characterAnimRefs[currentPlayerIndex].SetBool("backdashLOOP", false);
+            Debug.Log("dash_os");              
         }
-        Pause(1);
 
+        Pause(3);
 
-
+        // animation:
+        // dash_os => dash_loop
+        if(currentPlayerIndex < 4)
+        {
+            //characterAnimRefs[currentPlayerIndex].SetBool("idle", false); 
+            //characterAnimRefs[currentPlayerIndex].SetBool("readyOS", false);
+            //characterAnimRefs[currentPlayerIndex].SetBool("readyLOOP", false);
+            //characterAnimRefs[currentPlayerIndex].SetBool("dashOS", false);
+            //characterAnimRefs[currentPlayerIndex].SetBool("dashLOOP", true);
+            //characterAnimRefs[currentPlayerIndex].SetBool("attack", false);
+            //characterAnimRefs[currentPlayerIndex].SetBool("backdashOS", false);
+            //characterAnimRefs[currentPlayerIndex].SetBool("backdashLOOP", false);
+            Debug.Log("dash_loop");              
+        }
+           
 
         Debug.Log(gameState + " in handdleAttack");
         //Pause(3);
@@ -552,17 +603,24 @@ public class TurnManager : MonoBehaviour
 */
 
 
+
+        Pause(3);
         // animation:
-        // attack_on => attack_over
+        // backdash_loop =>idle
         if(currentPlayerIndex < 4)
         {
-            // trigger player attack animation
-            //characterAnimRefs[currentPlayerIndex].SetBool("isMyTurn", false); 
-            //characterAnimRefs[currentPlayerIndex].SetBool("attackReady", false);
-            characterAnimRefs[currentPlayerIndex].SetBool("attackOn", false);   
-            characterAnimRefs[currentPlayerIndex].SetBool("attackOver", true);   
-            Debug.Log("attack_over");          
+            //characterAnimRefs[currentPlayerIndex].SetBool("idle", true); 
+            //characterAnimRefs[currentPlayerIndex].SetBool("readyOS", false);
+            //characterAnimRefs[currentPlayerIndex].SetBool("readyLOOP", false);
+            //characterAnimRefs[currentPlayerIndex].SetBool("dashOS", false);
+            //characterAnimRefs[currentPlayerIndex].SetBool("dashLOOP", false);
+            //characterAnimRefs[currentPlayerIndex].SetBool("attack", false);
+            //characterAnimRefs[currentPlayerIndex].SetBool("backdashOS", false);
+            //characterAnimRefs[currentPlayerIndex].SetBool("backdashLOOP", false);
+            Debug.Log("idle");              
         }
+
+
 
 
         gameState = GameState.AwaitingInput;
@@ -606,10 +664,14 @@ IEnumerator MoveToTarget()
         if(currentPlayerIndex < 4)
         {
             // trigger player attack animation
-            //characterAnimRefs[currentPlayerIndex].SetBool("isMyTurn", false); 
-            characterAnimRefs[currentPlayerIndex].SetBool("attackReady", false);
-            characterAnimRefs[currentPlayerIndex].SetBool("attackOn", true);
-            //characterAnimRefs[currentPlayerIndex].SetBool("attackOver", false);
+            //characterAnimRefs[currentPlayerIndex].SetBool("idle", false); 
+            //characterAnimRefs[currentPlayerIndex].SetBool("readyOS", false);
+            //characterAnimRefs[currentPlayerIndex].SetBool("readyLOOP", false);
+            //characterAnimRefs[currentPlayerIndex].SetBool("dashOS", false);
+            //characterAnimRefs[currentPlayerIndex].SetBool("dashLOOP", true);
+            //characterAnimRefs[currentPlayerIndex].SetBool("attack", false);
+            //characterAnimRefs[currentPlayerIndex].SetBool("backdashOS", false);
+            //characterAnimRefs[currentPlayerIndex].SetBool("backdashLOOP", false);
             Debug.Log("attack_on");         
         }
               
@@ -646,6 +708,24 @@ IEnumerator MoveToTarget()
             yield return null; // Wait until the next frame
         }
 
+        // animation:
+        // dash_loop => attack
+        if(currentPlayerIndex < 4)
+        {
+            //characterAnimRefs[currentPlayerIndex].SetBool("idle", false); 
+            //characterAnimRefs[currentPlayerIndex].SetBool("readyOS", false);
+            //characterAnimRefs[currentPlayerIndex].SetBool("readyLOOP", false);
+            //characterAnimRefs[currentPlayerIndex].SetBool("dashOS", true);
+            characterAnimRefs[currentPlayerIndex].SetBool("dashLOOP", false);
+            characterAnimRefs[currentPlayerIndex].SetBool("attackOS", true);
+            //characterAnimRefs[currentPlayerIndex].SetBool("backdashOS", false);
+            //characterAnimRefs[currentPlayerIndex].SetBool("backdashLOOP", false);
+            Debug.Log("attack");              
+        }
+
+        Pause(3);
+
+
         //Debug.Log("speed: " + sortedCharacterList[currentPlayerIndex].character_speed);
         // Ensure the object reaches the exact target position at the end
         _gameObjectP.transform.position = targetPosition + new Vector3(0f, 0f, 3f);
@@ -668,6 +748,39 @@ IEnumerator MoveToTarget()
 
         timeElapsed = 0;
 
+
+        // animation:
+        // attack => backdash_os
+        if(currentPlayerIndex < 4)
+        {
+            //characterAnimRefs[currentPlayerIndex].SetBool("idle", false); 
+            //characterAnimRefs[currentPlayerIndex].SetBool("readyOS", false);
+            //characterAnimRefs[currentPlayerIndex].SetBool("readyLOOP", false);
+            //characterAnimRefs[currentPlayerIndex].SetBool("dashOS", false);
+            //characterAnimRefs[currentPlayerIndex].SetBool("dashLOOP", false);
+            //characterAnimRefs[currentPlayerIndex].SetBool("attack", false);
+            //characterAnimRefs[currentPlayerIndex].SetBool("backdashOS", true);
+            //characterAnimRefs[currentPlayerIndex].SetBool("backdashLOOP", false);
+            Debug.Log("backdash_os");              
+        }
+
+        Pause(3);
+
+        // animation:
+        // backdash_os => backdash_loop
+        if(currentPlayerIndex < 4)
+        {
+            //characterAnimRefs[currentPlayerIndex].SetBool("idle", false); 
+            //characterAnimRefs[currentPlayerIndex].SetBool("readyOS", false);
+            //characterAnimRefs[currentPlayerIndex].SetBool("readyLOOP", false);
+            //characterAnimRefs[currentPlayerIndex].SetBool("dashOS", false);
+            //characterAnimRefs[currentPlayerIndex].SetBool("dashLOOP", false);
+            //characterAnimRefs[currentPlayerIndex].SetBool("attack", false);
+            //characterAnimRefs[currentPlayerIndex].SetBool("backdashOS", false);
+            //characterAnimRefs[currentPlayerIndex].SetBool("backdashLOOP", true);
+            Debug.Log("backdash_loop");              
+        }
+
         while (timeElapsed < duration)
         {
             // Calculate the interpolation value (percentage of duration passed)
@@ -689,7 +802,18 @@ IEnumerator MoveToTarget()
         // Ensure the object reaches the exact target position at the end
         _gameObjectP.transform.position = targetPosition;
 
-
+        if(currentPlayerIndex < 4)
+        {
+            //characterAnimRefs[currentPlayerIndex].SetBool("idle", true); 
+            //characterAnimRefs[currentPlayerIndex].SetBool("readyOS", false);
+            //characterAnimRefs[currentPlayerIndex].SetBool("readyLOOP", false);
+            //characterAnimRefs[currentPlayerIndex].SetBool("dashOS", false);
+            characterAnimRefs[currentPlayerIndex].SetBool("dashLOOP", false);
+            //characterAnimRefs[currentPlayerIndex].SetBool("attack", false);
+            //characterAnimRefs[currentPlayerIndex].SetBool("backdashOS", false);
+            characterAnimRefs[currentPlayerIndex].SetBool("backdashLOOP", false);
+            Debug.Log("backdash_loop");              
+        }
 
 
 
@@ -936,10 +1060,14 @@ IEnumerator MoveToTarget()
         //Debug.Log("CharacterAnimRefs Parameters:");
         for (int i = 0; i < characterAnimRefs.Count; i++)
         {
-            characterAnimRefs[i].SetBool("isMyTurn", false);
-            characterAnimRefs[i].SetBool("attackReady", false);
-            characterAnimRefs[i].SetBool("attackOn", false);
-            characterAnimRefs[i].SetBool("attackOver", false);
+            characterAnimRefs[i].SetBool("idle", false); 
+            characterAnimRefs[i].SetBool("readyOS", false);
+            characterAnimRefs[i].SetBool("readyLOOP", false);
+            characterAnimRefs[i].SetBool("dashOS", false);
+            characterAnimRefs[i].SetBool("dashLOOP", false);
+            characterAnimRefs[i].SetBool("attackOS", false);
+            characterAnimRefs[i].SetBool("backdashOS", false);
+            characterAnimRefs[i].SetBool("backdashLOOP", false);
             //Debug.Log(characterAnimRefs[i].GetBool("isMyTurn"));
         }
         //characterAnimRefs[2].SetBool("isMyTurn", true);

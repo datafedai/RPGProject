@@ -347,6 +347,7 @@ GameObject:
   - component: {fileID: 117399998}
   - component: {fileID: 117399999}
   - component: {fileID: 117400000}
+  - component: {fileID: 117400001}
   m_Layer: 0
   m_Name: BrownHorseAnim
   m_TagString: Untagged
@@ -449,6 +450,24 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &117400001
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 117399997}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0cbf33cdb9090e546855bc4eb265005c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AnimEvent
+  turnManager: {fileID: 448328916}
+  characterAnimRefs:
+  - {fileID: 165565910}
+  - {fileID: 531072295}
+  - {fileID: 1348869943}
+  - {fileID: 117400000}
 --- !u!1 &145498063
 GameObject:
   m_ObjectHideFlags: 0
@@ -612,6 +631,7 @@ GameObject:
   - component: {fileID: 165565908}
   - component: {fileID: 165565909}
   - component: {fileID: 165565910}
+  - component: {fileID: 165565911}
   m_Layer: 0
   m_Name: SwordManAnim
   m_TagString: Untagged
@@ -714,6 +734,24 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &165565911
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 165565907}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0cbf33cdb9090e546855bc4eb265005c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AnimEvent
+  turnManager: {fileID: 448328916}
+  characterAnimRefs:
+  - {fileID: 165565910}
+  - {fileID: 531072295}
+  - {fileID: 1348869943}
+  - {fileID: 117400000}
 --- !u!1001 &195206208
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1555,6 +1593,7 @@ GameObject:
   - component: {fileID: 531072293}
   - component: {fileID: 531072294}
   - component: {fileID: 531072295}
+  - component: {fileID: 531072296}
   m_Layer: 0
   m_Name: SpearSoldierAnim
   m_TagString: Untagged
@@ -1657,6 +1696,24 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &531072296
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 531072292}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0cbf33cdb9090e546855bc4eb265005c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AnimEvent
+  turnManager: {fileID: 448328916}
+  characterAnimRefs:
+  - {fileID: 165565910}
+  - {fileID: 531072295}
+  - {fileID: 1348869943}
+  - {fileID: 117400000}
 --- !u!1001 &531469311
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2961,6 +3018,7 @@ GameObject:
   - component: {fileID: 1348869941}
   - component: {fileID: 1348869942}
   - component: {fileID: 1348869943}
+  - component: {fileID: 1348869944}
   m_Layer: 0
   m_Name: HammerManAnim
   m_TagString: Untagged
@@ -3063,6 +3121,24 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &1348869944
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1348869940}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0cbf33cdb9090e546855bc4eb265005c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AnimEvent
+  turnManager: {fileID: 448328916}
+  characterAnimRefs:
+  - {fileID: 165565910}
+  - {fileID: 531072295}
+  - {fileID: 1348869943}
+  - {fileID: 117400000}
 --- !u!4 &1404158173 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4868515331449996, guid: 79639b84e20f0ea4694165c0d4554387, type: 3}
