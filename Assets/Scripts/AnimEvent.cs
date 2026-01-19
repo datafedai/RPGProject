@@ -20,13 +20,6 @@ public class AnimEvent : MonoBehaviour
     private int index;
 
 
-    public void PrintEventMessage(string message)
-    {
-        Debug.Log("Event triggered: " + message);
-    }
-
-
-
     void HandleAnim_Idle_LOOP(int characterToAnimate)
     {
         
