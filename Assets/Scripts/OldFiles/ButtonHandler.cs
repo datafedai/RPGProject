@@ -17,7 +17,7 @@ public class ButtonHandler : MonoBehaviour
         string clickedButtonName = EventSystem.current.currentSelectedGameObject.tag;
         //Debug.Log("Clicked enemy name: " + clickedButtonName);
 
-        turnManager.handleAwaitingInputPhase(clickedButtonName);
+        //turnManager.handleAwaitingInputPhase(clickedButtonName);
         Debug.Log("Clicked " + clickedButtonName);
         
     }

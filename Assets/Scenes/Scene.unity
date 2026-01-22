@@ -1081,7 +1081,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TurnManager
   characterPositions: 0
   character: {fileID: 448328919}
+  moveToEnemy: {fileID: 0}
   gameState: 0
+  animPlayerIndex: 0
   currentPlayerIndex: 0
   playOrderList: []
   sortedPlayOrderList: []
@@ -1099,13 +1101,14 @@ MonoBehaviour:
   indx: 
   _gameObjectP: {fileID: 0}
   _gameObjectO: {fileID: 0}
-  moveVector: {x: 0, y: 0, z: 0}
   characterAnimRefs:
   - {fileID: 165565910}
   - {fileID: 531072295}
   - {fileID: 1348869943}
   - {fileID: 117400000}
   readyToClick: 1
+  playerPosition: {x: 0, y: 0, z: 0}
+  enemyPosition: {x: 0, y: 0, z: 0}
 --- !u!114 &448328917
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5381,7 +5384,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TurnManager
   characterPositions: 0
   character: {fileID: 0}
+  moveToEnemy: {fileID: 0}
   gameState: 0
+  animPlayerIndex: 0
   currentPlayerIndex: 0
   playOrderList: []
   sortedPlayOrderList: []
@@ -5399,9 +5404,10 @@ MonoBehaviour:
   indx: 
   _gameObjectP: {fileID: 0}
   _gameObjectO: {fileID: 0}
-  moveVector: {x: 0, y: 0, z: 0}
   characterAnimRefs: []
   readyToClick: 1
+  playerPosition: {x: 0, y: 0, z: 0}
+  enemyPosition: {x: 0, y: 0, z: 0}
 --- !u!114 &2131350448
 MonoBehaviour:
   m_ObjectHideFlags: 0

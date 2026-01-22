@@ -35,10 +35,12 @@ public class ClickableSprite : MonoBehaviour
                 choice = friends;
             }
 
-            //if (choice.Contains(gameObject.name) && turnManager.gameState == GameState.AwaitingInput)
-            if (choice.Contains(gameObject.name) && turnManager.readyToClick == true)
+            if (choice.Contains(gameObject.name) && turnManager.gameState == GameState.AwaitingInput)
+            //if (choice.Contains(gameObject.name) && turnManager.readyToClick == true)
             {
-                turnManager.handleAwaitingInputPhase(gameObject.name);
+                //turnManager.handleAwaitingInputPhase(gameObject.name);
+                Debug.Log("Clicked " + gameObject.name);
+                turnManager.handleInput(gameObject.name);
             }
             else
             {

@@ -28,10 +28,12 @@ public class AnimEvent : MonoBehaviour
     void HandleAnim_Ready_OS(int characterToAnimate)
     {
         index = turnManager.getcurrentPlayerIndex();
+
         characterAnimRefs[index].SetBool("readyOS", false);
         characterAnimRefs[index].SetBool("readyLOOP", true);      
-        Debug.Log("setting readyLOOP true for " + index );
 
+        turnManager.gameState = GameState.AwaitingInput;
+        //Debug.Log("setting readyLOOP true for " + index );
     }
 
     void HandleAnim_Ready_LOOP(int characterToAnimate)
@@ -39,12 +41,18 @@ public class AnimEvent : MonoBehaviour
   
     }
 
+    void OnReady()
+    {
+        Debug.Log("OnReady function starts");        
+    }
+
     void HandleAnim_Dash_OS(int characterToAnimate)
     {
-        //int i = turnManager.getcurrentPlayerIndex();
         characterAnimRefs[index].SetBool("dashOS", false);
-        characterAnimRefs[index].SetBool("dashLOOP", true);      
-        Debug.Log("setting dashLOOP true for " + index );
+        characterAnimRefs[index].SetBool("dashLOOP", true);   
+        turnManager.gameState = GameState.OnDash;
+    
+        //Debug.Log("setting dashLOOP true for " + index );
     }
 
     void HandleAnim_Dash_LOOP(int characterToAnimate)
@@ -52,34 +60,51 @@ public class AnimEvent : MonoBehaviour
         
     }
 
+    void OnDash()
+    {
+        Debug.Log("OnDash function starts");
+    }
+
+
+
     void HandleAnim_Attack_OS(int characterToAnimate)
     {
-        //int i = turnManager.getcurrentPlayerIndex();
         characterAnimRefs[index].SetBool("attackOS", false);
-        characterAnimRefs[index].SetBool("backdashOS", true);      
-        Debug.Log("setting backdashOS true for " + index );
-        
+        turnManager.gameState = GameState.AttackOver;
+     
+        //Debug.Log("setting attackOS false for " + index );  
+    }
+
+    void OnAttack()
+    {
+        Debug.Log("OnAttack function starts");
     }
 
     void HandleAnim_Backdash_OS(int characterToAnimate)
     {
-        //int i = turnManager.getcurrentPlayerIndex();
         characterAnimRefs[index].SetBool("backdashOS", false);
         characterAnimRefs[index].SetBool("backdashLOOP", true);      
-        Debug.Log("setting backdashLOOP true for " + index );
+        turnManager.gameState = GameState.OnBackdash;
+
+        //Debug.Log("setting backdashLOOP true for " + index );
     }
 
     void HandleAnim_Backdash_LOOP(int characterToAnimate)
     {
-        characterAnimRefs[index].SetBool("backdashLOOP", false);      
-        Debug.Log("setting backdashLOOP false for " + index );
+
     }
+
+    void OnBackdash()
+    {
+        Debug.Log("OnBackdash function starts");
+    }
+
 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        Debug.Log("AninEvent script started");
+        //Debug.Log("AninEvent script started");
     }
 
     // Update is called once per frame
