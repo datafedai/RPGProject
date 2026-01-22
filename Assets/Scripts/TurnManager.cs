@@ -161,7 +161,7 @@ public class TurnManager : MonoBehaviour
 
     void generatePlayOrder()
     {
-        Debug.Log("generatePlayOrder starts");
+        //Debug.Log("generatePlayOrder starts");
         int player_index;
         int player_speed;
         float lap_time;
@@ -289,13 +289,6 @@ public class TurnManager : MonoBehaviour
         string currentPlayerName = sortedCharacterList[currentPlayerIndex].character_name;
         Position position = sortedCharacterList[currentPlayerIndex].character_position;
         Debug.Log("Current Player: " + currentPlayerName + " at " + position);
-
-
-
-
-        // OnReady code here
-
-
 
 
         if (currentPlayerIndex <= 3)
@@ -434,8 +427,6 @@ public class TurnManager : MonoBehaviour
 
 
 
-
-
     void printHealthScore()
     {
         Debug.Log("Health: " + sortedCharacterList[0].character_health + " : " + sortedCharacterList[1].character_health + " : "
@@ -448,15 +439,12 @@ public class TurnManager : MonoBehaviour
 
 
 
-
-
-
     /// <summary>
     /// awaitingInput state related functions
     /// </summary>
     public void handleInput(string clickedEnemyName)
     {
-        Debug.Log("handleAwaitingInput starts");
+        //Debug.Log("handleAwaitingInput starts");
         //anim.SetBool("isMyTurn", false);
 
 
@@ -556,7 +544,7 @@ public class TurnManager : MonoBehaviour
     /// </summary>
     void handleFinishedAttack()
     {
-        Debug.Log("handleFinishedAttack starts");
+        //Debug.Log("handleFinishedAttack starts");
 
         // animation:
         // dash_loop => attack
@@ -580,7 +568,7 @@ public class TurnManager : MonoBehaviour
 
     void updateStats()
     {
-        Debug.Log("updateStats starts");
+        //Debug.Log("updateStats starts");
 
         updateHealth();
         removeDeadPlayer(); // updateLives() executed in there
@@ -591,7 +579,7 @@ public class TurnManager : MonoBehaviour
 
         // update remaining lives
         // if no lives left on eather team, game is over
-        //updateLives();
+        updateLives();
 
         // animation:
         // backdash_os => backdash_loop
@@ -611,8 +599,6 @@ public class TurnManager : MonoBehaviour
         {
             gameState = GameState.OnBackdash;            
         }
-
-
     }
 
 
@@ -625,7 +611,6 @@ public class TurnManager : MonoBehaviour
     {
         List<PlayOrderData> _playOrderList = sortedPlayOrderList;
         List<CharacterData> _characterList = sortedCharacterList;
-
 
         //Debug.Log("before: " + _playOrderList.Count);
         //character.printCharacterData(_characterList);
@@ -646,11 +631,9 @@ public class TurnManager : MonoBehaviour
                 destroyCharacterAndIcon();
             }
         }
-
         //Debug.Log("after: " + _playOrderList.Count);
         //character.printCharacterData(_characterList);
-        updateLives();
-
+        //updateLives();
     }
 
 
@@ -943,22 +926,16 @@ public class TurnManager : MonoBehaviour
 
         else if (gameState == GameState.OnDash)
         {
-            //getMovePositions();
-
             float speed = 5f;
             float step = speed * Time.deltaTime;
+
             _gameObjectP.transform.position = Vector3.MoveTowards(_gameObjectP.transform.position, playerPosition + moveVector, step);
 
             if (_gameObjectP.transform.position == playerPosition + moveVector)
             {
-
                 //Debug.Log("ready to attack");
                 gameState = GameState.OnAttack;
             }
-            //_gameObjectP.transform.position = Vector3.MoveTowards(_gameObjectP.transform.position, targetPosition, step);
-
-
-
         }
         else if (gameState == GameState.OnAttack && attackhandled == false)
         {
@@ -972,19 +949,12 @@ public class TurnManager : MonoBehaviour
         }
         else if (gameState == GameState.OnBackdash && backToPosition == false)
         {
-            //handleBackdash();
-            // MoveBack
-            //moveVector = new Vector3(9f, -1f, 0f);
-            //float duration = 100f / sortedCharacterList[currentPlayerIndex].character_speed;
-            //Vector3 startPosition = _gameObjectO.transform.position;
             Vector3 targetPosition = playerPosition;
 
             //Debug.Log("moveback start: " + startPosition);
-            Debug.Log("current pos: " + _gameObjectP.transform.position);
-            Debug.Log("moveback target: " + playerPosition);
-            Debug.Log("move vector: " + moveVector);
-
-
+            //Debug.Log("current pos: " + _gameObjectP.transform.position);
+            //Debug.Log("moveback target: " + playerPosition);
+            //Debug.Log("move vector: " + moveVector);
 
             float speed = 5f;
             // Calculate the interpolation value (percentage of duration passed)
@@ -993,8 +963,6 @@ public class TurnManager : MonoBehaviour
             // Optional: apply easing (smooth start/end) using Mathf.SmoothStep
             // t = Mathf.SmoothStep(0f, 1f, t); 
 
-            // Update position using Lerp
-            //_gameObjectP.transform.position = Vector3.Lerp(startPosition, targetPosition, t);
             // Move the object a step closer to the target position
             _gameObjectP.transform.position = Vector3.MoveTowards(_gameObjectP.transform.position, playerPosition, step);
 
@@ -1014,7 +982,7 @@ public class TurnManager : MonoBehaviour
                     characterAnimRefs[currentPlayerIndex].SetBool("backdashLOOP", false);
                     //Debug.Log("backdashOS true");
                 }
-                Debug.Log("player is back.");
+                Debug.Log("Player is back to idle.");
                 backToPosition = true;
 
                 // remove the previous player from the play order list
@@ -1031,20 +999,8 @@ public class TurnManager : MonoBehaviour
                         Debug.Log("Game Over! Bye.");
                     }
                 }
-
             }
-
-            // Increment the time elapsed by the time since the last frame
-
-
-            //yield return null; // Wait until the next frame
-
-
-            //Debug.Log("speed: " + sortedCharacterList[currentPlayerIndex].character_speed);
-            // Ensure the object reaches the exact target position at the end
-            //_gameObjectP.transform.position = targetPosition;
         }
-
     }
 }
 
