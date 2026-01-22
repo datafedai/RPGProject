@@ -100,6 +100,8 @@ public class TurnManager : MonoBehaviour
     //public List<int> indx;
     public GameObject _gameObjectP;
     public GameObject _gameObjectO;
+    public float speed;
+    public const float speedAdjuster = 0.1f;
 
     [SerializeField] List<Animator> characterAnimRefs;
 
@@ -108,12 +110,12 @@ public class TurnManager : MonoBehaviour
     public Vector3 enemyPosition;
     public float timeElapsed;
 
-    public bool readyOS;
-    public bool readyToClick;
-    public bool dashOS;
-    public bool attackhandled;
-    public bool healthUpdated;
-    public bool backToPosition;
+    public bool isPlayerReady;
+    public bool readyToClickEnemy;
+    public bool dashFinished;
+    public bool attackFinished;
+    public bool healthAlreadyUpdated;
+    public bool backdashFinished;
 
 
     public int getcurrentPlayerIndex()
@@ -288,7 +290,8 @@ public class TurnManager : MonoBehaviour
         animPlayerIndex = currentPlayerIndex;
         string currentPlayerName = sortedCharacterList[currentPlayerIndex].character_name;
         Position position = sortedCharacterList[currentPlayerIndex].character_position;
-        Debug.Log("Current Player: " + currentPlayerName + " at " + position);
+        Debug.Log("Current Player: " + currentPlayerName + " at " + currentPlayerIndex);
+        Debug.Log(currentPlayerName + " Speed: " + speed);
 
 
         if (currentPlayerIndex <= 3)
@@ -387,7 +390,7 @@ public class TurnManager : MonoBehaviour
         //printCombatReadiness(sortedCombatReadinessList);
         //combatReadinessBar.Update(sortedCombatReadinessList);
         gameState = GameState.OnReady;
-        readyToClick = true;
+        readyToClickEnemy = true;
 
         //Debug.Log("processCombatReadiness ends");
     }
@@ -422,7 +425,7 @@ public class TurnManager : MonoBehaviour
             gameState = GameState.AwaitingInput;            
         }
 
-        readyOS = true;
+        //isPlayerReady = true;
     }
 
 
@@ -457,14 +460,14 @@ public class TurnManager : MonoBehaviour
         if (sortedCharacterList[currentOponentIndex].character_health > 0)
         {
             //Debug.Log("Friend Position:Enemy Position = " + (1 + currentPlayerIndex) + ":" + (1 + currentEnemyIndex));
-            getMovePositions();
+            getMoveData();
 
             if (currentPlayerIndex < 4)
             {
                 //characterAnimRefs[currentPlayerIndex].SetBool("idle", false);
                 //characterAnimRefs[currentPlayerIndex].SetBool("readyOS", true);
-            characterAnimRefs[currentPlayerIndex].SetBool("readyLOOP", false);
-            characterAnimRefs[currentPlayerIndex].SetBool("dashOS", true);
+                characterAnimRefs[currentPlayerIndex].SetBool("readyLOOP", false);
+                characterAnimRefs[currentPlayerIndex].SetBool("dashOS", true);
                 //characterAnimRefs[currentPlayerIndex].SetBool("dashLOOP", false);
                 //characterAnimRefs[currentPlayerIndex].SetBool("attack", false);
                 //characterAnimRefs[currentPlayerIndex].SetBool("backdashOS", false);
@@ -477,12 +480,12 @@ public class TurnManager : MonoBehaviour
                 //Debug.Log(gameState + " in handleAwaitingInputPhase");                
             }
 
-            readyToClick = false;
+            readyToClickEnemy = false;
         }
         else
         {
             Debug.Log("The selected enemy is already dead. Choose another enemy.");
-            readyToClick = true;
+            readyToClickEnemy = true;
         }
 
         //readyToClick = false;
@@ -513,7 +516,7 @@ public class TurnManager : MonoBehaviour
             gameState = GameState.OnDash;           
         }
 
-        dashOS = true;    
+        //dashOS = true;    
     }
 
     private int indexSortedCharacterData(string enemyName)
@@ -816,11 +819,15 @@ public class TurnManager : MonoBehaviour
     }
 
 
-    void getMovePositions()
+    void getMoveData()
     {
         // find player and oponent objects
         _gameObjectP = GameObject.Find(sortedCharacterList[currentPlayerIndex].character_name);
         _gameObjectO = GameObject.Find(sortedCharacterList[currentOponentIndex].character_name);
+
+        // player speed
+        speed = sortedCharacterList[currentPlayerIndex].character_speed;
+        //Debug.Log(sortedCharacterList[currentPlayerIndex].character_name + " speed: " + speed);
 
         // calculate the vector from player position to oponent position    
         playerPosition = _gameObjectP.transform.position;
@@ -853,12 +860,12 @@ public class TurnManager : MonoBehaviour
 
     void resetBools()
     {
-        readyOS = false;
-        readyToClick = false;
-        dashOS = false;
-        attackhandled = false;
-        healthUpdated = false;
-        backToPosition = false;
+        isPlayerReady = false;
+        readyToClickEnemy = false;
+        dashFinished = false;
+        attackFinished = false;   // To make sure attack is handled only once in Update()
+        healthAlreadyUpdated = false;
+        backdashFinished = false;
     }
 
 
@@ -871,7 +878,7 @@ public class TurnManager : MonoBehaviour
 
         currentPlayerIndex = -1;
         animPlayerIndex = 0;
-        //readyToClick = false;
+        speed = 10f;
 
         //Debug.Log("CharacterAnimRefs Parameters:");
         for (int i = 0; i < characterAnimRefs.Count; i++)
@@ -914,20 +921,20 @@ public class TurnManager : MonoBehaviour
         {
             initiateTurn();
         }
-        else if (gameState == GameState.OnReady && readyOS == false)
+        else if (gameState == GameState.OnReady && isPlayerReady == false)
         {
             turnOnReadyOS();
-            //gameState = GameState.AwaitingInput;
+            isPlayerReady = true;
         }
         else if (gameState == GameState.AwaitingInput)
         {
             //turnOnDashOS();
         }
 
-        else if (gameState == GameState.OnDash)
+        else if (gameState == GameState.OnDash && dashFinished == false)
         {
-            float speed = 5f;
-            float step = speed * Time.deltaTime;
+            //float speed = 5f;
+            float step = speed * Time.deltaTime * speedAdjuster;
 
             _gameObjectP.transform.position = Vector3.MoveTowards(_gameObjectP.transform.position, playerPosition + moveVector, step);
 
@@ -935,19 +942,20 @@ public class TurnManager : MonoBehaviour
             {
                 //Debug.Log("ready to attack");
                 gameState = GameState.OnAttack;
+                dashFinished = true;
             }
         }
-        else if (gameState == GameState.OnAttack && attackhandled == false)
+        else if (gameState == GameState.OnAttack && attackFinished == false)
         {
             handleFinishedAttack();
-            attackhandled = true;
+            attackFinished = true;
         }
-        else if (gameState == GameState.AttackOver && healthUpdated == false)
+        else if (gameState == GameState.AttackOver && healthAlreadyUpdated == false)
         {
             updateStats();
-            healthUpdated = true;
+            healthAlreadyUpdated = true;
         }
-        else if (gameState == GameState.OnBackdash && backToPosition == false)
+        else if (gameState == GameState.OnBackdash && backdashFinished == false)
         {
             Vector3 targetPosition = playerPosition;
 
@@ -956,9 +964,9 @@ public class TurnManager : MonoBehaviour
             //Debug.Log("moveback target: " + playerPosition);
             //Debug.Log("move vector: " + moveVector);
 
-            float speed = 5f;
+            //float speed = 5f;
             // Calculate the interpolation value (percentage of duration passed)
-            float step = speed * Time.deltaTime;
+            float step = speed * Time.deltaTime * speedAdjuster;
 
             // Optional: apply easing (smooth start/end) using Mathf.SmoothStep
             // t = Mathf.SmoothStep(0f, 1f, t); 
@@ -983,7 +991,7 @@ public class TurnManager : MonoBehaviour
                     //Debug.Log("backdashOS true");
                 }
                 Debug.Log("Player is back to idle.");
-                backToPosition = true;
+                backdashFinished = true;
 
                 // remove the previous player from the play order list
                 if (sortedPlayOrderList.Count > 0)
