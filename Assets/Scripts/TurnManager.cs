@@ -101,7 +101,7 @@ public class TurnManager : MonoBehaviour
     public GameObject _gameObjectP;
     public GameObject _gameObjectO;
     public float speed;
-    public const float speedAdjuster = 0.1f;
+    public float speedAdjuster;
 
     [SerializeField] List<Animator> characterAnimRefs;
 
@@ -409,7 +409,7 @@ public class TurnManager : MonoBehaviour
         // idle => ready_os
         if (currentPlayerIndex < 4)
         {
-            characterAnimRefs[currentPlayerIndex].SetBool("idle", false);
+            characterAnimRefs[currentPlayerIndex].SetBool("idleLOOP", false);
             characterAnimRefs[currentPlayerIndex].SetBool("readyOS", true);
             //characterAnimRefs[currentPlayerIndex].SetBool("readyLOOP", false);
             //characterAnimRefs[currentPlayerIndex].SetBool("dashOS", false);
@@ -860,12 +860,12 @@ public class TurnManager : MonoBehaviour
 
     void resetBools()
     {
-        isPlayerReady = false;
-        readyToClickEnemy = false;
-        dashFinished = false;
-        attackFinished = false;   // To make sure attack is handled only once in Update()
-        healthAlreadyUpdated = false;
-        backdashFinished = false;
+        isPlayerReady = false;      // To make sure that turnOnReadyOS() is executed only once in Update()
+        readyToClickEnemy = false;  // To make sure that choosing enemy is acceptable only when ready
+        //dashFinished = false;     
+        attackFinished = false;   // To make sure that handleFinishedAttack() is exucuted only once in Update()
+        healthAlreadyUpdated = false;   // To make sure that updateStats() is executed only once in Update()
+        //backdashFinished = false;
     }
 
 
@@ -883,7 +883,7 @@ public class TurnManager : MonoBehaviour
         //Debug.Log("CharacterAnimRefs Parameters:");
         for (int i = 0; i < characterAnimRefs.Count; i++)
         {
-            characterAnimRefs[i].SetBool("idle", false);
+            characterAnimRefs[i].SetBool("idleLOOP", true);
             characterAnimRefs[i].SetBool("readyOS", false);
             characterAnimRefs[i].SetBool("readyLOOP", false);
             characterAnimRefs[i].SetBool("dashOS", false);
@@ -931,18 +931,19 @@ public class TurnManager : MonoBehaviour
             //turnOnDashOS();
         }
 
-        else if (gameState == GameState.OnDash && dashFinished == false)
+        else if (gameState == GameState.OnDash)
         {
-            //float speed = 5f;
+            // Optional: apply easing (smooth start/end) using Mathf.SmoothStep
+            speedAdjuster = 0.1f;
             float step = speed * Time.deltaTime * speedAdjuster;
-
+            
             _gameObjectP.transform.position = Vector3.MoveTowards(_gameObjectP.transform.position, playerPosition + moveVector, step);
 
             if (_gameObjectP.transform.position == playerPosition + moveVector)
             {
                 //Debug.Log("ready to attack");
                 gameState = GameState.OnAttack;
-                dashFinished = true;
+                //dashFinished = true;
             }
         }
         else if (gameState == GameState.OnAttack && attackFinished == false)
@@ -955,7 +956,7 @@ public class TurnManager : MonoBehaviour
             updateStats();
             healthAlreadyUpdated = true;
         }
-        else if (gameState == GameState.OnBackdash && backdashFinished == false)
+        else if (gameState == GameState.OnBackdash)
         {
             Vector3 targetPosition = playerPosition;
 
@@ -964,23 +965,21 @@ public class TurnManager : MonoBehaviour
             //Debug.Log("moveback target: " + playerPosition);
             //Debug.Log("move vector: " + moveVector);
 
-            //float speed = 5f;
             // Calculate the interpolation value (percentage of duration passed)
+            // Optional: apply easing (smooth start/end) using Mathf.SmoothStep
+            speedAdjuster = 0.1f;
             float step = speed * Time.deltaTime * speedAdjuster;
 
-            // Optional: apply easing (smooth start/end) using Mathf.SmoothStep
-            // t = Mathf.SmoothStep(0f, 1f, t); 
-
-            // Move the object a step closer to the target position
+            // Move the object a step closer to the target position on every update
             _gameObjectP.transform.position = Vector3.MoveTowards(_gameObjectP.transform.position, playerPosition, step);
 
             if (_gameObjectP.transform.position == playerPosition)
             {
-                // animation:
-                // backdash_os => backdash_loop
+                // animation: back to the original position
+                // backdash_loop => idle_loop
                 if (animPlayerIndex < 4)
                 {
-                    //characterAnimRefs[currentPlayerIndex].SetBool("idle", true);
+                    characterAnimRefs[currentPlayerIndex].SetBool("idleLOOP", true);
                     //characterAnimRefs[currentPlayerIndex].SetBool("readyOS", false);
                     //characterAnimRefs[currentPlayerIndex].SetBool("readyLOOP", false);
                     //characterAnimRefs[currentPlayerIndex].SetBool("dashOS", false);
@@ -991,9 +990,12 @@ public class TurnManager : MonoBehaviour
                     //Debug.Log("backdashOS true");
                 }
                 Debug.Log("Player is back to idle.");
-                backdashFinished = true;
+                //backdashFinished = true;
 
+                // if there still is any player in the queue, 
                 // remove the previous player from the play order list
+                // and update lives
+                // if not game over, then initiate the next turn
                 if (sortedPlayOrderList.Count > 0)
                 {
                     sortedPlayOrderList.RemoveAt(0);

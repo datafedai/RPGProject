@@ -113,6 +113,9 @@ AnimatorStateTransition:
   m_PrefabAsset: {fileID: 0}
   m_Name: 
   m_Conditions:
+  - m_ConditionMode: 2
+    m_ConditionEvent: readyOS
+    m_EventTreshold: 0
   - m_ConditionMode: 1
     m_ConditionEvent: readyLOOP
     m_EventTreshold: 0
@@ -243,6 +246,9 @@ AnimatorStateTransition:
   m_PrefabAsset: {fileID: 0}
   m_Name: 
   m_Conditions:
+  - m_ConditionMode: 2
+    m_ConditionEvent: idleLOOP
+    m_EventTreshold: 0
   - m_ConditionMode: 1
     m_ConditionEvent: readyOS
     m_EventTreshold: 0
@@ -339,6 +345,12 @@ AnimatorController:
   m_Name: Sword Man
   serializedVersion: 5
   m_AnimatorParameters:
+  - m_Name: idleLOOP
+    m_Type: 4
+    m_DefaultFloat: 0
+    m_DefaultInt: 0
+    m_DefaultBool: 1
+    m_Controller: {fileID: 9100000}
   - m_Name: readyOS
     m_Type: 4
     m_DefaultFloat: 0
@@ -363,6 +375,12 @@ AnimatorController:
     m_DefaultInt: 0
     m_DefaultBool: 0
     m_Controller: {fileID: 9100000}
+  - m_Name: attackOS
+    m_Type: 4
+    m_DefaultFloat: 0
+    m_DefaultInt: 0
+    m_DefaultBool: 0
+    m_Controller: {fileID: 9100000}
   - m_Name: backdashOS
     m_Type: 4
     m_DefaultFloat: 0
@@ -370,18 +388,6 @@ AnimatorController:
     m_DefaultBool: 0
     m_Controller: {fileID: 9100000}
   - m_Name: backdashLOOP
-    m_Type: 4
-    m_DefaultFloat: 0
-    m_DefaultInt: 0
-    m_DefaultBool: 0
-    m_Controller: {fileID: 9100000}
-  - m_Name: idle
-    m_Type: 4
-    m_DefaultFloat: 0
-    m_DefaultInt: 0
-    m_DefaultBool: 0
-    m_Controller: {fileID: 9100000}
-  - m_Name: attackOS
     m_Type: 4
     m_DefaultFloat: 0
     m_DefaultInt: 0
@@ -487,6 +493,9 @@ AnimatorStateTransition:
   m_PrefabAsset: {fileID: 0}
   m_Name: 
   m_Conditions:
+  - m_ConditionMode: 2
+    m_ConditionEvent: dashOS
+    m_EventTreshold: 0
   - m_ConditionMode: 1
     m_ConditionEvent: dashLOOP
     m_EventTreshold: 0
@@ -541,6 +550,9 @@ AnimatorStateTransition:
   m_Conditions:
   - m_ConditionMode: 2
     m_ConditionEvent: backdashLOOP
+    m_EventTreshold: 0
+  - m_ConditionMode: 1
+    m_ConditionEvent: idleLOOP
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 6844230607302060348}
@@ -669,6 +681,9 @@ AnimatorStateTransition:
   m_PrefabAsset: {fileID: 0}
   m_Name: 
   m_Conditions:
+  - m_ConditionMode: 2
+    m_ConditionEvent: backdashOS
+    m_EventTreshold: 0
   - m_ConditionMode: 1
     m_ConditionEvent: backdashLOOP
     m_EventTreshold: 0
@@ -748,6 +763,9 @@ AnimatorStateTransition:
   m_PrefabAsset: {fileID: 0}
   m_Name: 
   m_Conditions:
+  - m_ConditionMode: 2
+    m_ConditionEvent: dashLOOP
+    m_EventTreshold: 0
   - m_ConditionMode: 1
     m_ConditionEvent: attackOS
     m_EventTreshold: 0
@@ -773,6 +791,9 @@ AnimatorStateTransition:
   m_PrefabAsset: {fileID: 0}
   m_Name: 
   m_Conditions:
+  - m_ConditionMode: 2
+    m_ConditionEvent: attackOS
+    m_EventTreshold: 0
   - m_ConditionMode: 1
     m_ConditionEvent: backdashOS
     m_EventTreshold: 0
