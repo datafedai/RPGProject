@@ -51,10 +51,68 @@ public class Character : MonoBehaviour
     public List<string> characterNames;
 
 
-    void Die()
+    private void OnEnable()
     {
-
+        turnManager.OnCharacterTurnStarted += DisplayPlayerData;
+        turnManager.OnPlayerSelectedEnemyToAttack += EnemySelected;
+        turnManager.OnCharacterDashFinished += DashFinished;
+        turnManager.OnCharacterBackdashFinished += BackToIdle;
     }
+
+    private void OnDisable()
+    {
+        turnManager.OnCharacterTurnStarted -= DisplayPlayerData;
+        turnManager.OnPlayerSelectedEnemyToAttack -= EnemySelected;
+        turnManager.OnCharacterDashFinished -= DashFinished;
+        turnManager.OnCharacterBackdashFinished -= BackToIdle;
+    }
+
+
+    void DisplayPlayerData(int currentPlayerIndex)
+    {
+        Debug.Log("//////////////////////////////////////////////////////////////////////////////////////////////////////////////////");
+        Debug.Log("in Character.cs, printing new player data:");
+        printPlayerData(currentPlayerIndex);
+        Debug.Log("//////////////////////////////////////////////////////////////////////////////////////////////////////////////////");
+    }
+
+    void EnemySelected(int index, string enemyName)
+    {
+        Debug.Log("//////////////////////////////////////////////////////////////////////////////////////////////////////////////////");
+        Debug.Log("in TurnManager, " + enemyName + " at " + index + " is selected in ClickableSprite.cs");
+        Debug.Log("//////////////////////////////////////////////////////////////////////////////////////////////////////////////////");
+    }
+
+    void DashFinished(string enemyName)
+    {
+        Debug.Log("//////////////////////////////////////////////////////////////////////////////////////////////////////////////////");
+        Debug.Log("Player reached " + enemyName + " and is ready to attack");
+        Debug.Log("//////////////////////////////////////////////////////////////////////////////////////////////////////////////////");
+    }
+
+    void BackToIdle(string playerName)
+    {
+        Debug.Log("//////////////////////////////////////////////////////////////////////////////////////////////////////////////////");
+        Debug.Log(playerName + " is back to idle");
+        Debug.Log("//////////////////////////////////////////////////////////////////////////////////////////////////////////////////");
+    }
+    public void printPlayerData(int index)
+    {
+        foreach (var eachCharacterEntry in characterDataList)
+        {
+            if (eachCharacterEntry.character_index == index)
+            {
+                Debug.Log("Index: " + eachCharacterEntry.character_index + ", "
+                + "Name: " + eachCharacterEntry.character_name + ", "
+                + "isAlive? " + eachCharacterEntry.is_character_alive + ", "
+                + "Speed: " + eachCharacterEntry.character_speed + ", "
+                + "Position: " + eachCharacterEntry.character_position + ", "
+                + "Health: " + eachCharacterEntry.character_health + ", "
+                + "AttackPower: " + eachCharacterEntry.character_attack_power);
+            }
+        }
+    }
+
 
     public void printCharacterData(List<CharacterData> characterDataList)
     {
@@ -144,7 +202,7 @@ public class Character : MonoBehaviour
         //printPowerValues(powerList);
 
         // combine random speed(descending) and random power(ascending) 
-        for(int k = 0; k < 8; k++)
+        for (int k = 0; k < 8; k++)
         {
             speedPowerList.Add(new SpeedPower
             {
@@ -172,7 +230,7 @@ public class Character : MonoBehaviour
                 //attackPower = UnityEngine.Random.Range(30, 100);
                 //attackPower = powerList[i];
                 speed = shuffledSpeedPowerList[i].speed;
-                attackPower = shuffledSpeedPowerList[i].power; 
+                attackPower = shuffledSpeedPowerList[i].power;
 
                 characterPosition = (Position)(i); // saved as Friend_North, Friend_East, ...
 
@@ -218,7 +276,7 @@ public class Character : MonoBehaviour
     public List<CharacterData> getCharacterDataList()
     {
         //Debug.Log("1, size of characterDataList: " + characterDataList.Count);
-        if(characterDataList.Count == 0)
+        if (characterDataList.Count == 0)
         {
             loadCharacterData();
             //Debug.Log("2, size of characterDataList: " + characterDataList.Count);
@@ -232,7 +290,7 @@ public class Character : MonoBehaviour
 
 
 
-        
+
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created

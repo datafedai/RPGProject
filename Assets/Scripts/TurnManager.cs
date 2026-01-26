@@ -10,6 +10,7 @@ using UnityEngine.UI;
 using System.Linq;
 using UnityEngine.Rendering;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 
 
 
@@ -74,10 +75,16 @@ public class AttackAnimationData
 
 public class TurnManager : MonoBehaviour
 {
+    public event Action<int> OnCharacterTurnStarted; // event declaration for initiate turn 
+    public event Action<int, string> OnPlayerSelectedEnemyToAttack; // event declaration for enemy selected to attack
+    public event Action<string> OnCharacterDashFinished;    // event for end of dash
+    public event Action<string> OnCharacterBackdashFinished;    // event for whole attack completion
+    [SerializeField] private Character character;
+    [SerializeField] private ClickableSprite clickableSprite;
     public const int NumCharacters = 8;
     public const int NumLaps = 100;
     public const int TrackLength = 701;
-    [SerializeField] private Character character;
+
     public GameState gameState;
     private List<CharacterData> sortedCharacterList;
     public int animPlayerIndex;
@@ -116,6 +123,10 @@ public class TurnManager : MonoBehaviour
     public bool attackFinished;
     public bool healthAlreadyUpdated;
     public bool backdashFinished;
+
+
+
+
 
 
     public int getcurrentPlayerIndex()
@@ -283,15 +294,18 @@ public class TurnManager : MonoBehaviour
 
         //currentPlayerIndex = playOrderIndex.Dequeue();
         //PlayOrderData playOrderData = playOrderDataQue.Dequeue();
-        PlayOrderData playOrderData = sortedPlayOrderList[0];
-        //sortedPlayOrderList.RemoveAt(0);
 
+        // a new player
+        PlayOrderData playOrderData = sortedPlayOrderList[0];
         currentPlayerIndex = playOrderData.playerIndex;
         animPlayerIndex = currentPlayerIndex;
         string currentPlayerName = sortedCharacterList[currentPlayerIndex].character_name;
         Position position = sortedCharacterList[currentPlayerIndex].character_position;
         Debug.Log("Current Player: " + currentPlayerName + " at " + currentPlayerIndex);
-        Debug.Log(currentPlayerName + " Speed: " + speed);
+        Debug.Log(currentPlayerName + " Speed: " + playOrderData.playerSpeed);
+
+        // invoke event for a new player
+        //OnCharacterTurnStarted?.Invoke(currentPlayerIndex);
 
 
         if (currentPlayerIndex <= 3)
@@ -402,9 +416,14 @@ public class TurnManager : MonoBehaviour
     /// OnReady state related functions
     /// </summary>
 
-    void turnOnReadyOS()
+    void getPlayerReady()
     {
         //Debug.Log("turnOnReadyOs starts");
+
+        // invoke event for a new player
+        OnCharacterTurnStarted?.Invoke(currentPlayerIndex);
+
+
         // animation:
         // idle => ready_os
         if (currentPlayerIndex < 4)
@@ -457,6 +476,9 @@ public class TurnManager : MonoBehaviour
         Debug.Log(sortedCharacterList[currentPlayerIndex].character_name + " selected " + clickedEnemyName + " to attack.");
         currentOponentIndex = indexSortedCharacterData(clickedEnemyName);
 
+        // invoke event 
+        OnPlayerSelectedEnemyToAttack?.Invoke(currentOponentIndex, clickedEnemyName);
+
         if (sortedCharacterList[currentOponentIndex].character_health > 0)
         {
             //Debug.Log("Friend Position:Enemy Position = " + (1 + currentPlayerIndex) + ":" + (1 + currentEnemyIndex));
@@ -492,32 +514,7 @@ public class TurnManager : MonoBehaviour
         //Debug.Log("handleAwaitingInput ends");
     }
 
-    void turnOnDashOS()
-    {
-        //Debug.Log("turnOnDashOs starts");
-        // animation:
-        // ready_loop => dash_os
-        if (currentPlayerIndex < 4)
-        {
-            //characterAnimRefs[currentPlayerIndex].SetBool("idle", false);
-            //characterAnimRefs[currentPlayerIndex].SetBool("readyOS", true);
-            characterAnimRefs[currentPlayerIndex].SetBool("readyLOOP", false);
-            characterAnimRefs[currentPlayerIndex].SetBool("dashOS", true);
-            //characterAnimRefs[currentPlayerIndex].SetBool("dashLOOP", false);
-            //characterAnimRefs[currentPlayerIndex].SetBool("attack", false);
-            //characterAnimRefs[currentPlayerIndex].SetBool("backdashOS", false);
-            //characterAnimRefs[currentPlayerIndex].SetBool("backdashLOOP", false);
-            //Debug.Log("ready_os");
-            //Debug.Log("current player: " + currentPlayerIndex);
-        }
-        else // character index: 4,5,6,7
-        {
-            //gameState = GameState.AwaitingInput; 
-            gameState = GameState.OnDash;           
-        }
 
-        //dashOS = true;    
-    }
 
     private int indexSortedCharacterData(string enemyName)
     {
@@ -548,6 +545,9 @@ public class TurnManager : MonoBehaviour
     void handleFinishedAttack()
     {
         //Debug.Log("handleFinishedAttack starts");
+
+        // invoke event
+        OnCharacterDashFinished?.Invoke(sortedCharacterList[currentOponentIndex].character_name);
 
         // animation:
         // dash_loop => attack
@@ -827,7 +827,7 @@ public class TurnManager : MonoBehaviour
 
         // player speed
         speed = sortedCharacterList[currentPlayerIndex].character_speed;
-        //Debug.Log(sortedCharacterList[currentPlayerIndex].character_name + " speed: " + speed);
+        //Debug.Log(sortedCharacterList[currentPlayerIndex].character_name + " speed:: " + speed);
 
         // calculate the vector from player position to oponent position    
         playerPosition = _gameObjectP.transform.position;
@@ -875,6 +875,7 @@ public class TurnManager : MonoBehaviour
         //Debug.Log("Manager script Start, executed.");
         //Debug.Log("TurnManager, Start executed");
         //Debug.Log("GameState in TurnManager Start: " + gameState);
+        //clickableSprite.OnPlayerSelectedEnemyToAttack += EnemySelected;
 
         currentPlayerIndex = -1;
         animPlayerIndex = 0;
@@ -923,7 +924,7 @@ public class TurnManager : MonoBehaviour
         }
         else if (gameState == GameState.OnReady && isPlayerReady == false)
         {
-            turnOnReadyOS();
+            getPlayerReady();
             isPlayerReady = true;
         }
         else if (gameState == GameState.AwaitingInput)
@@ -990,6 +991,7 @@ public class TurnManager : MonoBehaviour
                     //Debug.Log("backdashOS true");
                 }
                 Debug.Log("Player is back to idle.");
+                OnCharacterBackdashFinished?.Invoke(sortedCharacterList[currentPlayerIndex].character_name);
                 //backdashFinished = true;
 
                 // if there still is any player in the queue, 
@@ -1037,7 +1039,32 @@ public class TurnManager : MonoBehaviour
 
 
 
+    void turnOnDashOS()
+    {
+        //Debug.Log("turnOnDashOs starts");
+        // animation:
+        // ready_loop => dash_os
+        if (currentPlayerIndex < 4)
+        {
+            //characterAnimRefs[currentPlayerIndex].SetBool("idle", false);
+            //characterAnimRefs[currentPlayerIndex].SetBool("readyOS", true);
+            characterAnimRefs[currentPlayerIndex].SetBool("readyLOOP", false);
+            characterAnimRefs[currentPlayerIndex].SetBool("dashOS", true);
+            //characterAnimRefs[currentPlayerIndex].SetBool("dashLOOP", false);
+            //characterAnimRefs[currentPlayerIndex].SetBool("attack", false);
+            //characterAnimRefs[currentPlayerIndex].SetBool("backdashOS", false);
+            //characterAnimRefs[currentPlayerIndex].SetBool("backdashLOOP", false);
+            //Debug.Log("ready_os");
+            //Debug.Log("current player: " + currentPlayerIndex);
+        }
+        else // character index: 4,5,6,7
+        {
+            //gameState = GameState.AwaitingInput; 
+            gameState = GameState.OnDash;           
+        }
 
+        //dashOS = true;    
+    }
 
 
     void printPlayOrderList(List<PlayOrderData> _playOrderList)
