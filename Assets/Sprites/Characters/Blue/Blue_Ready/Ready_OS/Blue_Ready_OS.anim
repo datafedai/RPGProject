@@ -89,7 +89,7 @@ AnimationClip:
   m_HasMotionFloatCurves: 0
   m_Events:
   - time: 0.6
-    functionName: HandleAnim_Ready_OS
+    functionName: HandleAnim_Ready_LOOP
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0

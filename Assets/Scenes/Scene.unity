@@ -350,7 +350,7 @@ GameObject:
   - component: {fileID: 117400001}
   m_Layer: 0
   m_Name: BrownHorseAnim
-  m_TagString: Untagged
+  m_TagString: Brown Horse
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -468,6 +468,7 @@ MonoBehaviour:
   - {fileID: 531072295}
   - {fileID: 1348869943}
   - {fileID: 117400000}
+  character: {fileID: 448328919}
 --- !u!1 &145498063
 GameObject:
   m_ObjectHideFlags: 0
@@ -634,7 +635,7 @@ GameObject:
   - component: {fileID: 165565911}
   m_Layer: 0
   m_Name: SwordManAnim
-  m_TagString: Untagged
+  m_TagString: Sword Man
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -752,6 +753,7 @@ MonoBehaviour:
   - {fileID: 531072295}
   - {fileID: 1348869943}
   - {fileID: 117400000}
+  character: {fileID: 448328919}
 --- !u!1001 &195206208
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1605,7 +1607,7 @@ GameObject:
   - component: {fileID: 531072296}
   m_Layer: 0
   m_Name: SpearSoldierAnim
-  m_TagString: Untagged
+  m_TagString: Spear Soldier
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1723,6 +1725,7 @@ MonoBehaviour:
   - {fileID: 531072295}
   - {fileID: 1348869943}
   - {fileID: 117400000}
+  character: {fileID: 448328919}
 --- !u!1001 &531469311
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3030,7 +3033,7 @@ GameObject:
   - component: {fileID: 1348869944}
   m_Layer: 0
   m_Name: HammerManAnim
-  m_TagString: Untagged
+  m_TagString: Hammer Man
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3148,6 +3151,7 @@ MonoBehaviour:
   - {fileID: 531072295}
   - {fileID: 1348869943}
   - {fileID: 117400000}
+  character: {fileID: 448328919}
 --- !u!4 &1404158173 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4868515331449996, guid: 79639b84e20f0ea4694165c0d4554387, type: 3}

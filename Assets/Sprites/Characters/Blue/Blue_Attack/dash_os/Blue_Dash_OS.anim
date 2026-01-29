@@ -74,7 +74,7 @@ AnimationClip:
   m_HasMotionFloatCurves: 0
   m_Events:
   - time: 0.1
-    functionName: HandleAnim_Dash_OS
+    functionName: HandleAnim_Dash_LOOP
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0

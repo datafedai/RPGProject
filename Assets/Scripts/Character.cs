@@ -53,18 +53,14 @@ public class Character : MonoBehaviour
 
     private void OnEnable()
     {
-        turnManager.OnCharacterTurnStarted += DisplayPlayerData;
-        turnManager.OnPlayerSelectedEnemyToAttack += EnemySelected;
-        turnManager.OnCharacterDashFinished += DashFinished;
-        turnManager.OnCharacterBackdashFinished += BackToIdle;
+        //turnManager.OnCharacterTurnStarted += DisplayPlayerData;
+
     }
 
     private void OnDisable()
     {
-        turnManager.OnCharacterTurnStarted -= DisplayPlayerData;
-        turnManager.OnPlayerSelectedEnemyToAttack -= EnemySelected;
-        turnManager.OnCharacterDashFinished -= DashFinished;
-        turnManager.OnCharacterBackdashFinished -= BackToIdle;
+        //turnManager.OnCharacterTurnStarted -= DisplayPlayerData;
+
     }
 
 

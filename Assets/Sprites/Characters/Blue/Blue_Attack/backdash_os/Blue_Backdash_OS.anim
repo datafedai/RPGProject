@@ -74,7 +74,7 @@ AnimationClip:
   m_HasMotionFloatCurves: 0
   m_Events:
   - time: 0.5
-    functionName: HandleAnim_Backdash_OS
+    functionName: HandleAnim_Backdash_LOOP
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0

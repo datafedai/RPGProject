@@ -76,9 +76,10 @@ public class AttackAnimationData
 public class TurnManager : MonoBehaviour
 {
     public event Action<int> OnCharacterTurnStarted; // event declaration for initiate turn 
-    public event Action<int, string> OnPlayerSelectedEnemyToAttack; // event declaration for enemy selected to attack
-    public event Action<string> OnCharacterDashFinished;    // event for end of dash
-    public event Action<string> OnCharacterBackdashFinished;    // event for whole attack completion
+    public event Action<int> OnPlayerSelectedEnemyToAttack; // event declaration for enemy selected to attack
+    public event Action<int> OnCharacterDashFinished;    // event for end of dash
+    public event Action<int> OnStatsUpdatedAfterAttack; // event for stats update after attack
+    public event Action<int> OnCharacterBackdashFinished;    // event for whole attack completion
     [SerializeField] private Character character;
     [SerializeField] private ClickableSprite clickableSprite;
     public const int NumCharacters = 8;
@@ -265,6 +266,8 @@ public class TurnManager : MonoBehaviour
         //Debug.Log("initiateTutn starts");
 
         resetBools();
+        resetAnimRefs();
+
         //Debug.Log("sortedPlayOrderList: " + sortedPlayOrderList.Count);
         //printPlayOrderList(sortedPlayOrderList);
 
@@ -421,15 +424,18 @@ public class TurnManager : MonoBehaviour
         //Debug.Log("turnOnReadyOs starts");
 
         // invoke event for a new player
-        OnCharacterTurnStarted?.Invoke(currentPlayerIndex);
+        //OnCharacterTurnStarted?.Invoke(currentPlayerIndex);
 
 
         // animation:
         // idle => ready_os
         if (currentPlayerIndex < 4)
         {
-            characterAnimRefs[currentPlayerIndex].SetBool("idleLOOP", false);
-            characterAnimRefs[currentPlayerIndex].SetBool("readyOS", true);
+            // invoke event for a new player
+            OnCharacterTurnStarted?.Invoke(currentPlayerIndex);
+
+        //characterAnimRefs[currentPlayerIndex].SetBool("idleLOOP", false);
+        //characterAnimRefs[currentPlayerIndex].SetBool("readyOS", true);
             //characterAnimRefs[currentPlayerIndex].SetBool("readyLOOP", false);
             //characterAnimRefs[currentPlayerIndex].SetBool("dashOS", false);
             //characterAnimRefs[currentPlayerIndex].SetBool("dashLOOP", false);
@@ -477,7 +483,7 @@ public class TurnManager : MonoBehaviour
         currentOponentIndex = indexSortedCharacterData(clickedEnemyName);
 
         // invoke event 
-        OnPlayerSelectedEnemyToAttack?.Invoke(currentOponentIndex, clickedEnemyName);
+        //OnPlayerSelectedEnemyToAttack?.Invoke(currentOponentIndex, clickedEnemyName);
 
         if (sortedCharacterList[currentOponentIndex].character_health > 0)
         {
@@ -486,10 +492,13 @@ public class TurnManager : MonoBehaviour
 
             if (currentPlayerIndex < 4)
             {
+                // invoke event 
+                OnPlayerSelectedEnemyToAttack?.Invoke(currentPlayerIndex);
+
                 //characterAnimRefs[currentPlayerIndex].SetBool("idle", false);
                 //characterAnimRefs[currentPlayerIndex].SetBool("readyOS", true);
-                characterAnimRefs[currentPlayerIndex].SetBool("readyLOOP", false);
-                characterAnimRefs[currentPlayerIndex].SetBool("dashOS", true);
+            //characterAnimRefs[currentPlayerIndex].SetBool("readyLOOP", false);
+            //characterAnimRefs[currentPlayerIndex].SetBool("dashOS", true);
                 //characterAnimRefs[currentPlayerIndex].SetBool("dashLOOP", false);
                 //characterAnimRefs[currentPlayerIndex].SetBool("attack", false);
                 //characterAnimRefs[currentPlayerIndex].SetBool("backdashOS", false);
@@ -546,19 +555,19 @@ public class TurnManager : MonoBehaviour
     {
         //Debug.Log("handleFinishedAttack starts");
 
-        // invoke event
-        OnCharacterDashFinished?.Invoke(sortedCharacterList[currentOponentIndex].character_name);
-
         // animation:
         // dash_loop => attack
         if (animPlayerIndex < 4)
         {
+            // invoke event
+            OnCharacterDashFinished?.Invoke(currentPlayerIndex);
+            
             //characterAnimRefs[currentPlayerIndex].SetBool("idle", false); 
             //characterAnimRefs[currentPlayerIndex].SetBool("readyOS", false);
             //characterAnimRefs[currentPlayerIndex].SetBool("readyLOOP", false);
             //characterAnimRefs[currentPlayerIndex].SetBool("dashOS", true);
-            characterAnimRefs[animPlayerIndex].SetBool("dashLOOP", false);
-            characterAnimRefs[animPlayerIndex].SetBool("attackOS", true);
+        //characterAnimRefs[animPlayerIndex].SetBool("dashLOOP", false);
+        //characterAnimRefs[animPlayerIndex].SetBool("attackOS", true);
             //characterAnimRefs[currentPlayerIndex].SetBool("backdashOS", false);
             //characterAnimRefs[currentPlayerIndex].SetBool("backdashLOOP", false);
             //Debug.Log("attack, dashLOOP false, attackOS true");
@@ -584,17 +593,21 @@ public class TurnManager : MonoBehaviour
         // if no lives left on eather team, game is over
         updateLives();
 
+
         // animation:
         // backdash_os => backdash_loop
         if (animPlayerIndex < 4)
         {
+            // event invoke
+            OnStatsUpdatedAfterAttack?.Invoke(currentPlayerIndex);
+
             //characterAnimRefs[currentPlayerIndex].SetBool("idle", false); 
             //characterAnimRefs[currentPlayerIndex].SetBool("readyOS", false);
             //characterAnimRefs[currentPlayerIndex].SetBool("readyLOOP", false);
             //characterAnimRefs[currentPlayerIndex].SetBool("dashOS", false);
             //characterAnimRefs[currentPlayerIndex].SetBool("dashLOOP", false);
             //characterAnimRefs[currentPlayerIndex].SetBool("attackOS", false);
-            characterAnimRefs[animPlayerIndex].SetBool("backdashOS", true);
+        //characterAnimRefs[animPlayerIndex].SetBool("backdashOS", true);
             //characterAnimRefs[currentPlayerIndex].SetBool("backdashLOOP", true);
             //Debug.Log("backdashOS true");
         }
@@ -846,8 +859,8 @@ public class TurnManager : MonoBehaviour
         {
             //characterAnimRefs[currentPlayerIndex].SetBool("idle", false); 
             //characterAnimRefs[currentPlayerIndex].SetBool("readyOS", true);
-            characterAnimRefs[currentPlayerIndex].SetBool("readyLOOP", false);
-            characterAnimRefs[currentPlayerIndex].SetBool("dashOS", true);
+        //characterAnimRefs[currentPlayerIndex].SetBool("readyLOOP", false);
+        //characterAnimRefs[currentPlayerIndex].SetBool("dashOS", true);
             //characterAnimRefs[currentPlayerIndex].SetBool("dashLOOP", false);
             //characterAnimRefs[currentPlayerIndex].SetBool("attack", false);
             //characterAnimRefs[currentPlayerIndex].SetBool("backdashOS", false);
@@ -858,7 +871,7 @@ public class TurnManager : MonoBehaviour
     }
 
 
-    void resetBools()
+    public void resetBools()
     {
         isPlayerReady = false;      // To make sure that turnOnReadyOS() is executed only once in Update()
         readyToClickEnemy = false;  // To make sure that choosing enemy is acceptable only when ready
@@ -868,6 +881,22 @@ public class TurnManager : MonoBehaviour
         //backdashFinished = false;
     }
 
+    public void resetAnimRefs()
+    {
+        for (int i = 0; i < characterAnimRefs.Count; i++)
+        {
+            characterAnimRefs[i].SetBool("idleLOOP", true);
+            characterAnimRefs[i].SetBool("readyOS", false);
+            characterAnimRefs[i].SetBool("readyLOOP", false);
+            characterAnimRefs[i].SetBool("dashOS", false);
+            characterAnimRefs[i].SetBool("dashLOOP", false);
+            characterAnimRefs[i].SetBool("attackOS", false);
+            characterAnimRefs[i].SetBool("backdashOS", false);
+            characterAnimRefs[i].SetBool("backdashLOOP", false);
+            //Debug.Log(characterAnimRefs[i].GetBool("isMyTurn"));
+        }        
+    }
+    
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -882,18 +911,8 @@ public class TurnManager : MonoBehaviour
         speed = 10f;
 
         //Debug.Log("CharacterAnimRefs Parameters:");
-        for (int i = 0; i < characterAnimRefs.Count; i++)
-        {
-            characterAnimRefs[i].SetBool("idleLOOP", true);
-            characterAnimRefs[i].SetBool("readyOS", false);
-            characterAnimRefs[i].SetBool("readyLOOP", false);
-            characterAnimRefs[i].SetBool("dashOS", false);
-            characterAnimRefs[i].SetBool("dashLOOP", false);
-            characterAnimRefs[i].SetBool("attackOS", false);
-            characterAnimRefs[i].SetBool("backdashOS", false);
-            characterAnimRefs[i].SetBool("backdashLOOP", false);
-            //Debug.Log(characterAnimRefs[i].GetBool("isMyTurn"));
-        }
+        resetAnimRefs();
+
 
         timeElapsed = 0;
 
@@ -924,12 +943,12 @@ public class TurnManager : MonoBehaviour
         }
         else if (gameState == GameState.OnReady && isPlayerReady == false)
         {
-            getPlayerReady();
+            getPlayerReady();   // event invoke 
             isPlayerReady = true;
         }
         else if (gameState == GameState.AwaitingInput)
         {
-            //turnOnDashOS();
+            // event invoke in handleInput();
         }
 
         else if (gameState == GameState.OnDash)
@@ -949,7 +968,7 @@ public class TurnManager : MonoBehaviour
         }
         else if (gameState == GameState.OnAttack && attackFinished == false)
         {
-            handleFinishedAttack();
+            handleFinishedAttack(); // event invoke
             attackFinished = true;
         }
         else if (gameState == GameState.AttackOver && healthAlreadyUpdated == false)
@@ -980,18 +999,19 @@ public class TurnManager : MonoBehaviour
                 // backdash_loop => idle_loop
                 if (animPlayerIndex < 4)
                 {
-                    characterAnimRefs[currentPlayerIndex].SetBool("idleLOOP", true);
+                //characterAnimRefs[currentPlayerIndex].SetBool("idleLOOP", true);
                     //characterAnimRefs[currentPlayerIndex].SetBool("readyOS", false);
                     //characterAnimRefs[currentPlayerIndex].SetBool("readyLOOP", false);
                     //characterAnimRefs[currentPlayerIndex].SetBool("dashOS", false);
                     //characterAnimRefs[currentPlayerIndex].SetBool("dashLOOP", false);
                     //characterAnimRefs[currentPlayerIndex].SetBool("attack", false);
                     //characterAnimRefs[animPlayerIndex].SetBool("backdashOS", true);
-                    characterAnimRefs[currentPlayerIndex].SetBool("backdashLOOP", false);
+                //characterAnimRefs[currentPlayerIndex].SetBool("backdashLOOP", false);
                     //Debug.Log("backdashOS true");
+                    OnCharacterBackdashFinished?.Invoke(currentPlayerIndex);
                 }
                 Debug.Log("Player is back to idle.");
-                OnCharacterBackdashFinished?.Invoke(sortedCharacterList[currentPlayerIndex].character_name);
+
                 //backdashFinished = true;
 
                 // if there still is any player in the queue, 
