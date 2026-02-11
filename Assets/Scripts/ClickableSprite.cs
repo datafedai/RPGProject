@@ -10,6 +10,7 @@ using Unity.VisualScripting;
 public class ClickableSprite : MonoBehaviour
 {
     [SerializeField] private TurnManager turnManager;
+    [SerializeField] private CombatReadinessBar comabtReadinessBar;
     //public event Action<int> OnPlayerSelectedEnemyToAttack; // event declaration for enemy selected to attack
 
     bool validChoice;
@@ -49,7 +50,7 @@ public class ClickableSprite : MonoBehaviour
         //Debug.Log("OnMouseDown starts");
         // This function is called when the mouse button is pressed over the collider
         //Debug.Log(gameObject.name + " is selected to attack.");
-        int idx = turnManager.getcurrentPlayerIndex();
+        int idx = turnManager.GetcurrentPlayerIndex();
 
         if (idx <= 3)
         {
@@ -60,7 +61,7 @@ public class ClickableSprite : MonoBehaviour
             choice = friends;
         }
 
-        if (choice.Contains(gameObject.name) && turnManager.gameState == GameState.AwaitingInput)
+        if (choice.Contains(gameObject.name) && turnManager.gameState == GameState.AwaitingInput && comabtReadinessBar.IsCombatReadinessBarUpdated())
         //if (choice.Contains(gameObject.name) && turnManager.readyToClick == true)
         {
             //turnManager.handleAwaitingInputPhase(gameObject.name);

@@ -1,17 +1,127 @@
-using UnityEngine;
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq.Expressions;
+using JetBrains.Annotations;
+using Unity.VisualScripting;
+using UnityEditor.Rendering;
+using UnityEngine;
+using UnityEngine.UI;
+using System.Linq;
 using UnityEngine.Rendering;
-using UnityEngine.UIElements;
+using System.Reflection;
 using System.Runtime.CompilerServices;
-using Unity.Collections; // Required for List
+
+
+[Serializable]
+public class CombatReadinessData
+{
+    // Important data needed for combat readiness bar
+    public int playerIndex;
+    public float currentPosition;
+    public float heightPercentile;
+
+    // Additional data for calculations
+    public int playerSpeed;
+    public float lapTime;
+    public float currentTime;
+
+}
+
 
 public class CombatReadinessBar : MonoBehaviour
 {
-    //[SerializeField] private TurnManager turnManager;
+    [SerializeField] private TurnManager turnManager;
+    public CombatReadinessData combatReadinessData;
+    public List<CombatReadinessData> combatReadinessList;
+    public List<CombatReadinessData> sortedCombatReadinessList;
+    private bool isCombatReadinessBarUpdated = false;
     const int combatReadinessBarMaxHeight = 8; // Max height of the combat readiness bar in Unity units.
+    public const int NumCharacters = 8;
+    public const int NumLaps = 100;
+    public const int TrackLength = 701;
 
-    public void processCombatReadinessBar(List<CombatReadinessData> sortedCombatReadinessList)
+
+
+    private void OnEnable()
+    {   
+        turnManager.OnPlayOrderCalculated += ProcessCombatReadiness;     
+    }
+
+    private void OnDisable()
+    {
+        turnManager.OnPlayOrderCalculated -= ProcessCombatReadiness; 
+    }
+
+
+
+    private void ProcessCombatReadiness(List<PlayOrderData> playOrderDataList)
+    {
+        Debug.Log("processCombatReadiness starts");
+        combatReadinessList = new List<CombatReadinessData>();
+        combatReadinessList.Clear();
+        PlayOrderData playOrderData = playOrderDataList[0];
+        //printPlayOrderList(playOrderDataList);
+
+        //Debug.Log("playOderData:" + "index, " + playOrderData.playerIndex + " currentTime, " + playOrderData.lapTime + " speed, " + playOrderData.playerSpeed);
+
+        for (int i = 0; i < NumCharacters; i++)
+        {
+            //Debug.Log("i: " + i);
+            //Debug.Log("playOrderDataList count: " + playOrderDataList.Count);
+            for (int j = 0; j < playOrderDataList.Count; j++)
+            {
+
+                if (playOrderDataList[j].playerIndex == i)
+                {
+                    combatReadinessData = new CombatReadinessData();
+                    //Debug.Log("i, j: " + i + ", " + j);
+                    combatReadinessData.playerIndex = i;
+                    combatReadinessData.playerSpeed = playOrderDataList[j].playerSpeed;
+                    combatReadinessData.lapTime = playOrderDataList[j].lapTime;
+                    combatReadinessData.currentTime = playOrderData.lapTime;
+                    float trackResetDistance = TrackLength + 1f;
+                    float pos = (playOrderData.lapTime * playOrderDataList[j].playerSpeed) % trackResetDistance;
+
+                    combatReadinessData.currentPosition = (int)pos;
+
+                    combatReadinessData.heightPercentile = ((trackResetDistance - pos) / trackResetDistance) * 100;
+                    //playOrderBar.Enqueue(playerOrderBarData);
+
+                    combatReadinessList.Add(combatReadinessData);
+
+                    //Debug.Log("index: lapTime: " + i + " : " + playOrderDataList[j].lapTime);
+                    break;
+                }
+
+            }
+        }
+
+
+
+        //Debug.Log("Bar list count: " + combatReadinessList.Count);
+        //sortedPlayOrderDataList = playOrderDataList.OrderBy(player => player.lapTime)
+        //   .ThenByDescending(player => player.playerSpeed)
+        //   .ToList();
+        // var
+        //sortedCombatReadinessList = combatReadinessList.OrderBy(player => player.playerIndex)
+        sortedCombatReadinessList = combatReadinessList.OrderByDescending(player => player.currentPosition)
+                .ToList();
+
+
+
+        // move and position each number sprite
+        ProcessCombatReadinessBar(sortedCombatReadinessList);
+        //printCombatReadiness(sortedCombatReadinessList);
+        //combatReadinessBar.Update(sortedCombatReadinessList);
+        turnManager.gameState = GameState.OnReady;
+        turnManager.readyToClickEnemy = true;
+
+        //Debug.Log("processCombatReadiness ends");
+    }
+
+
+    private void ProcessCombatReadinessBar(List<CombatReadinessData> sortedCombatReadinessList)
     {
         //Debug.Log("processCombatReadinessBar starts");
         //Debug.Log("CRBar count: " + sortedCombatReadinessList.Count);
@@ -39,7 +149,22 @@ public class CombatReadinessBar : MonoBehaviour
 
         }
 
+        isCombatReadinessBarUpdated = true;
+
         //Debug.Log("processCombatReadinessBar ends");
     }
 
+    public bool IsCombatReadinessBarUpdated()
+    {
+        if(isCombatReadinessBarUpdated == true)
+        {
+            isCombatReadinessBarUpdated = false;
+
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
 }

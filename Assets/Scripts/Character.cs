@@ -7,6 +7,19 @@ using System.Runtime.CompilerServices; // Required for List
 using System.Linq; // Required for LINQ
 
 
+public enum Position
+{
+    Friend_North,
+    Friend_East,
+    Friend_South,
+    Friend_West,
+    Enemy_North,
+    Enemy_East,
+    Enemy_South,
+    Enemy_West
+}
+
+
 [Serializable]
 public class CharacterData
 {

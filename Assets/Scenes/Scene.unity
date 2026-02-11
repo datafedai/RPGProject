@@ -336,6 +336,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ClickableSprite
   turnManager: {fileID: 448328916}
+  comabtReadinessBar: {fileID: 2131350448}
 --- !u!1 &117399997
 GameObject:
   m_ObjectHideFlags: 0
@@ -563,6 +564,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ClickableSprite
   turnManager: {fileID: 448328916}
+  comabtReadinessBar: {fileID: 0}
 --- !u!212 &145498067
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -973,6 +975,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ClickableSprite
   turnManager: {fileID: 448328916}
+  comabtReadinessBar: {fileID: 0}
 --- !u!212 &402999961
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -1062,6 +1065,7 @@ GameObject:
   - component: {fileID: 448328917}
   - component: {fileID: 448328921}
   - component: {fileID: 448328922}
+  - component: {fileID: 448328923}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -1081,11 +1085,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: abb7356ce207d49489f51f4713f8f92f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TurnManager
+  turnOrderCalculator: {fileID: 448328923}
   character: {fileID: 448328919}
   clickableSprite: {fileID: 448328917}
   gameState: 0
   animPlayerIndex: 0
-  currentPlayerIndex: 0
   playOrderList: []
   sortedPlayOrderList: []
   combatReadinessData:
@@ -1130,6 +1134,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ClickableSprite
   turnManager: {fileID: 448328916}
+  comabtReadinessBar: {fileID: 0}
 --- !u!114 &448328918
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1208,6 +1213,22 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &448328923
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 448328915}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c9d1673971d0884797f5e2d3e395b8c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TurnOrderCalculator
+  combatReadinessBar: {fileID: 2131350448}
+  turnManager: {fileID: 448328916}
+  playOrderList: []
+  character: {fileID: 448328919}
 --- !u!1 &475219193
 GameObject:
   m_ObjectHideFlags: 0
@@ -1240,6 +1261,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ClickableSprite
   turnManager: {fileID: 448328916}
+  comabtReadinessBar: {fileID: 2131350448}
 --- !u!61 &475219195
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -2001,6 +2023,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ClickableSprite
   turnManager: {fileID: 448328916}
+  comabtReadinessBar: {fileID: 2131350448}
 --- !u!61 &732835946
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -2299,6 +2322,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ClickableSprite
   turnManager: {fileID: 448328916}
+  comabtReadinessBar: {fileID: 0}
 --- !u!61 &873885782
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -2858,6 +2882,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ClickableSprite
   turnManager: {fileID: 448328916}
+  comabtReadinessBar: {fileID: 0}
 --- !u!212 &1152993659
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -3205,6 +3230,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ClickableSprite
   turnManager: {fileID: 448328916}
+  comabtReadinessBar: {fileID: 0}
 --- !u!61 &1410519760
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -3444,6 +3470,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ClickableSprite
   turnManager: {fileID: 448328916}
+  comabtReadinessBar: {fileID: 2131350448}
 --- !u!61 &1461337840
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -3716,6 +3743,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ClickableSprite
   turnManager: {fileID: 448328916}
+  comabtReadinessBar: {fileID: 2131350448}
 --- !u!1 &1560401233
 GameObject:
   m_ObjectHideFlags: 0
@@ -3764,6 +3792,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ClickableSprite
   turnManager: {fileID: 448328916}
+  comabtReadinessBar: {fileID: 0}
 --- !u!61 &1560401236
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -4011,6 +4040,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ClickableSprite
   turnManager: {fileID: 448328916}
+  comabtReadinessBar: {fileID: 2131350448}
 --- !u!212 &1717221752
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -4282,6 +4312,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ClickableSprite
   turnManager: {fileID: 448328916}
+  comabtReadinessBar: {fileID: 0}
 --- !u!212 &1844726712
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -4937,6 +4968,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ClickableSprite
   turnManager: {fileID: 448328916}
+  comabtReadinessBar: {fileID: 2131350448}
 --- !u!1 &2068570321
 GameObject:
   m_ObjectHideFlags: 0
@@ -5128,6 +5160,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ClickableSprite
   turnManager: {fileID: 448328916}
+  comabtReadinessBar: {fileID: 2131350448}
 --- !u!1 &2112256524
 GameObject:
   m_ObjectHideFlags: 0
@@ -5222,6 +5255,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ClickableSprite
   turnManager: {fileID: 448328916}
+  comabtReadinessBar: {fileID: 0}
 --- !u!212 &2112256528
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -5392,11 +5426,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: abb7356ce207d49489f51f4713f8f92f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TurnManager
-  character: {fileID: 0}
-  clickableSprite: {fileID: 0}
+  turnOrderCalculator: {fileID: 448328923}
+  character: {fileID: 448328919}
+  clickableSprite: {fileID: 448328917}
   gameState: 0
   animPlayerIndex: 0
-  currentPlayerIndex: 0
   playOrderList: []
   sortedPlayOrderList: []
   combatReadinessData:
@@ -5436,6 +5470,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0657e844653a11f4f9162ce3d2640701, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ParentScript
+  turnManager: {fileID: 448328916}
+  combatReadinessData:
+    playerIndex: 0
+    currentPosition: 0
+    heightPercentile: 0
+    playerSpeed: 0
+    lapTime: 0
+    currentTime: 0
+  combatReadinessList: []
+  sortedCombatReadinessList: []
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
